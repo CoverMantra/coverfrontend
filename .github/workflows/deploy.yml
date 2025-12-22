@@ -13,21 +13,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup SSH key
-        run: |
-          mkdir -p $HOME/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > $HOME/.ssh/github_deploy_key
-          chmod 600 $HOME/.ssh/github_deploy_key
-
       - name: Sync code to VPS
-        uses: burnett01/rsync-deployments@6.0.0
+        uses: burnett01/rsync-deployments@6.0.0  # Latest version use kar lo if possible
         with:
-          switches: -avz --delete --quiet
+          switches: -avz --delete --exclude=node_modules --exclude=.git
           path: ./
           remote_path: /root/coverfrontend
           remote_host: ${{ secrets.VPS_HOST }}
           remote_user: ${{ secrets.VPS_USER }}
-          remote_key: $HOME/.ssh/github_deploy_key
+          remote_key: ${{ secrets.VPS_SSH_KEY }}  # Direct secret string
           remote_port: 22
 
       - name: Build and restart on VPS
@@ -35,12 +29,12 @@ jobs:
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
+          key: ${{ secrets.VPS_SSH_KEY }}  # Same secret
           port: 22
           script: |
             cd /root/coverfrontend
             rm -rf .next
-            npm install
+            npm ci  # Clean install better than npm install
             npm run build
             pm2 delete frontend || true
-            pm2 start npm --name frontend -- start
+            pm2 start npm --name "frontend" -- start
