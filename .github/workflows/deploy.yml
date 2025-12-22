@@ -14,27 +14,31 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Sync code to VPS
-        uses: burnett01/rsync-deployments@6.0.0  # Latest version use kar lo if possible
+        uses: burnett01/rsync-deployments@6.0.0
         with:
-          switches: -avz --delete --exclude=node_modules --exclude=.git
+          switches: -avz --delete --exclude=node_modules --exclude=.git --exclude=.next
           path: ./
           remote_path: /root/coverfrontend
           remote_host: ${{ secrets.VPS_HOST }}
           remote_user: ${{ secrets.VPS_USER }}
-          remote_key: ${{ secrets.VPS_SSH_KEY }}  # Direct secret string
+          remote_key: ${{ secrets.VPS_SSH_KEY }}
           remote_port: 22
 
-      - name: Build and restart on VPS
-        uses: appleboy/ssh-action@v1.0.0
+      - name: Install Dependencies & Restart PM2
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}  # Same secret
+          key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
           script: |
             cd /root/coverfrontend
-            rm -rf .next
-            npm ci  # Clean install better than npm install
-            npm run build
-            pm2 delete frontend || true
-            pm2 start npm --name "frontend" -- start
+            
+            # Clean install dependencies
+            npm ci
+            
+            # Restart PM2 app (agar pehli baar hai to start ho jaayega)
+            pm2 restart frontend || pm2 start npm --name "frontend" -- start
+            
+            # Status check (optional but helpful for logs)
+            pm2 status frontend
