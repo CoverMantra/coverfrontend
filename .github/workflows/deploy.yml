@@ -1,4 +1,4 @@
-name: Deploy Next.js to VPS (Production)
+name: Deploy Next.js to VPS (rsync + zero downtime)
 
 on:
   push:
@@ -10,10 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Sync code to VPS (rsync)
+      # 2️⃣ Sync files to VPS using rsync (fast & clean)
+      - name: Rsync code to VPS
         uses: burnett01/rsync-deployments@6.0.0
         with:
           switches: -avz --delete --quiet
@@ -23,7 +25,8 @@ jobs:
           remote_user: ${{ secrets.VPS_USER }}
           remote_key: ${{ secrets.VPS_SSH_KEY }}
 
-      - name: Build & Zero-downtime Reload
+      # 3️⃣ Build and reload Next.js with zero downtime
+      - name: Build & Reload App
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.VPS_HOST }}
