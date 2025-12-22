@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.VPS_SSH_KEY }}
           source: "."
           target: /coverfrontend
-          rm: true
+          rm: false   # ⬅️ IMPORTANT
 
       - name: Install, Build and Restart
         uses: appleboy/ssh-action@v1.0.0
@@ -30,10 +30,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           script: |
-            rm -rf coverfrontend
-            mkdir coverfrontend
-            chmod 755 coverfrontend
-            cd coverfrontend
+            cd /coverfrontend
             rm -rf .next
             npm install
             npm run build
