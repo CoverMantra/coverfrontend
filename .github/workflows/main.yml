@@ -1,8 +1,52 @@
-name: Greetings
-on: push
+name: Deploy Next.js to VPS
+
+on:
+  push:
+    branches:
+      - main
+
 jobs:
-    greet:
-      runs-on: ubuntu-latest
-      steps:
-          - name: "Greet User"
-            run: echo "Hello World"
+  deploy:
+    # 👇 ONLY run when commit message contains [deploy]
+    if: contains(github.event.head_commit.message, '[deploy]')
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        
+      - name: Prepare deploy folder 
+        run: |
+          mkdir -p deploy
+          rsync -av --exclude=deploy ./ deploy/
+        
+      - name: SCP Upload Build Folder
+        uses: appleboy/scp-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.PASSWORD }}
+          port: 22
+          source: "deploy/"
+          target: /root/coverfrontend
+
+      - name: Server Script and setup
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.PASSWORD }}
+          port: 22
+          script: |
+            cd /root/coverfrontend
+            npm ci
+            npm run build
+
+            if pm2 list | grep -q frontend; then
+              pm2 restart frontend
+            else
+              pm2 start npm --name "frontend" -- start
+            fi
+
+            pm2 save
+            pm2 status frontend
