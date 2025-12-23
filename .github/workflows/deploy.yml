@@ -7,6 +7,8 @@ on:
 
 jobs:
   deploy:
+    # 👇 ONLY run when commit message contains [deploy]
+    if: contains(github.event.head_commit.message, '[deploy]')
     runs-on: ubuntu-latest
 
     steps:
@@ -35,31 +37,16 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.PASSWORD }}
           port: 22
-          # script_stop: true
           script: |
             cd /root/coverfrontend
-            
-            echo "Installing dependencies..."
             npm ci
-            
-            echo "Building Next.js application..."
             npm run build
-            
-            echo "Restarting PM2 process..."
-            # Check if the PM2 process exists
+
             if pm2 list | grep -q frontend; then
-              echo "Restarting existing frontend process..."
               pm2 restart frontend
             else
-              echo "Starting new frontend process..."
               pm2 start npm --name "frontend" -- start
             fi
-            
-            # Save PM2 process list
+
             pm2 save
-            
-            echo "Checking PM2 status..."
             pm2 status frontend
-            
-            # List all PM2 processes for debugging
-            pm2 list
