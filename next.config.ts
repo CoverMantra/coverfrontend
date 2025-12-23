@@ -1,8 +1,10 @@
-/** @type {import('next').NextConfig} */
+import type { NextConfig } from "next";
+
 const allowedImageHosts = ["cdnwebapp.indialends.com"];
 
-const nextConfig = {
+const nextConfig: NextConfig = {
   reactStrictMode: true,
+
   images: {
     remotePatterns: allowedImageHosts.map((host) => ({
       protocol: "https",
@@ -14,11 +16,11 @@ const nextConfig = {
   async rewrites() {
     return [
       {
-        source: "/api-proxy/:path*", // local path
-        destination: "https://www.covermantra.com/api/:path*", // actual backend API
+        source: "/api-proxy/:path*",
+        destination: "https://www.covermantra.com/api/:path*",
       },
     ];
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
