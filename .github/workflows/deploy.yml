@@ -12,38 +12,30 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
-      - name: Setup SSH known_hosts
+        
+      - name: Prepare deploy folder 
         run: |
-          mkdir -p ~/.ssh
-          ssh-keyscan -H ${{ secrets.VPS_HOST }} >> ~/.ssh/known_hosts
-          cat ~/.ssh/known_hosts
-
-      - name: Test SSH Connection
-        run: |
-          echo "${{ secrets.VPS_SSH_KEY }}" > /tmp/key
-          chmod 600 /tmp/key
-          ssh -i /tmp/key ${{ secrets.VPS_USER }}@${{ secrets.VPS_HOST }} "echo 'SSH Connection Successful!' && whoami && pwd"
-
-      - name: Sync code to VPS
-        uses: burnett01/rsync-deployments@6.0.0
-        with:
-          switches: -avz --delete --exclude=node_modules --exclude=.git --exclude=.next
-          path: ./
-          remote_path: /root/coverfrontend
-          remote_host: ${{ secrets.VPS_HOST }}
-          remote_user: ${{ secrets.VPS_USER }}
-          remote_key: ${{ secrets.VPS_SSH_KEY }}
-          remote_port: 22
-
-      - name: Install Dependencies & Restart PM2
-        uses: appleboy/ssh-action@v1.0.3
+          mkdir -p deploy
+          rsync -av --exclude=deploy ./ deploy/
+        
+      - name: SCP Upload Build Folder
+        uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          script_stop: true
+          source: "deploy/"
+          target: /root/coverfrontend
+
+      - name: Server Script and setup
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: 22
+          # script_stop: true
           script: |
             cd /root/coverfrontend
             
