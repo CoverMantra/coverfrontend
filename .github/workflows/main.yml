@@ -7,14 +7,12 @@ on:
 
 jobs:
   deploy:
-
     if: contains(github.event.head_commit.message, '[deploy]')
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-        
       - name: Prepare deploy folder 
         run: |
           mkdir -p deploy
@@ -37,16 +35,73 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.PASSWORD }}
           port: 22
+          # script_stop: true
           script: |
             cd /root/coverfrontend
+            
+            echo "Installing dependencies..."
             npm ci
+            
+            echo "Building Next.js application..."
             npm run build
-
+            
+            echo "Restarting PM2 process..."
+            # Check if the PM2 process exists
             if pm2 list | grep -q frontend; then
+              echo "Restarting existing frontend process..."
               pm2 restart frontend
             else
+              echo "Starting new frontend process..."
               pm2 start npm --name "frontend" -- start
             fi
-
+            
+            # Save PM2 process list
             pm2 save
+            
+            echo "Checking PM2 status..."
             pm2 status frontend
+            
+            # List all PM2 processes for debugging
+            pm2 list
+      - name: Send success email
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "✅ Frontend Deployed Successfully"
+          to: ${{ secrets.MAIL_TO }}
+          from: "GitHub Actions <${{ secrets.SMTP_USERNAME }}>"
+          body: |
+            🚀 Deployment Successful!
+
+            Project: CoverFrontend
+            Repository: ${{ github.repository }}
+            Branch: main
+            Commit: ${{ github.sha }}
+            Message: ${{ github.event.head_commit.message }}
+            Deployed by: ${{ github.actor }}
+            Time: ${{ github.run_started_at }}
+
+      # ❌ FAILURE EMAIL
+      - name: Send failure email
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 587
+          username: ${{ secrets.SMTP_USERNAME }}
+          password: ${{ secrets.SMTP_PASSWORD }}
+          subject: "❌ Frontend Deployment Failed"
+          to: ${{ secrets.MAIL_TO }}
+          from: "GitHub Actions <${{ secrets.SMTP_USERNAME }}>"
+          body: |
+            ❌ Deployment Failed!
+
+            Repository: ${{ github.repository }}
+            Commit: ${{ github.sha }}
+            Triggered by: ${{ github.actor }}
+
+            Check GitHub Actions logs for details.
