@@ -13,56 +13,49 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      - name: Prepare deploy folder 
-        run: |
-          mkdir -p deploy
-          rsync -av --exclude=deploy ./ deploy/
-        
-      - name: SCP Upload Build Folder
+
+      # Upload repo directly to /root/coverfrontend
+      - name: Upload project to VPS
         uses: appleboy/scp-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.PASSWORD }}
           port: 22
-          source: "deploy/"
-          target: /root/coverfrontend
+          source: "./"
+          target: "/root/coverfrontend"
+          strip_components: 1
 
-      - name: Server Script and setup
+      - name: Server build & restart
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           password: ${{ secrets.PASSWORD }}
           port: 22
-          # script_stop: true
           script: |
             cd /root/coverfrontend
-            
+
+            echo "Cleaning old build..."
+            rm -rf .next node_modules
+
             echo "Installing dependencies..."
             npm ci
-            
+
             echo "Building Next.js application..."
             npm run build
-            
+
             echo "Restarting PM2 process..."
-            # Check if the PM2 process exists
             if pm2 list | grep -q frontend; then
-              echo "Restarting existing frontend process..."
               pm2 restart frontend
             else
-              echo "Starting new frontend process..."
               pm2 start npm --name "frontend" -- start
             fi
-            
-            # Save PM2 process list
+
             pm2 save
-            
-            echo "Checking PM2 status..."
             pm2 status frontend
-            
-            # List all PM2 processes for debugging
             pm2 list
+
       - name: Send success email
         if: success()
         uses: dawidd6/action-send-mail@v3
@@ -85,7 +78,6 @@ jobs:
             Deployed by: ${{ github.actor }}
             Time: ${{ github.run_started_at }}
 
-      # ❌ FAILURE EMAIL
       - name: Send failure email
         if: failure()
         uses: dawidd6/action-send-mail@v3
