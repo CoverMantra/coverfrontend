@@ -235,24 +235,6 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
               maxLength={6}
               className="w-full border border-gray-300 px-4 py-2 rounded-md bg-white text-sm text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
             />
-
-            {/* Consent checkbox for 'otp' step */}
-            {/* <div className="mb-4 flex items-start text-sm">
-              <input
-                type="checkbox"
-                id="consent-otp"
-                checked={consent}
-                onChange={() => setConsent(!consent)}
-                className="mr-2 mt-1 accent-green-800"
-                required
-              />
-              <label htmlFor="consent-otp">1. I agree to be contacted via Email, WhatsApp, SMS, or Call.</label><br />
-              
-            </div>
-            <label htmlFor="consent-otp">2. I give my explicit consent to Covermantra to acess my credit and report and score from credit bureaus</label>
-              <label htmlFor="consent-otp">3 . I have read and Accepted all your Terms & Conditions </label> */}
-
-
             <div className="mb-4 flex items-start text-sm">
               <input
                 type="checkbox"
@@ -286,9 +268,6 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
                 </p>
               </label>
             </div>
-
-
-
             <button
               onClick={handleVerifyOtp}
               // ✅ UPDATED: Disabled if loading OR (OTP is invalid OR consent is false)
