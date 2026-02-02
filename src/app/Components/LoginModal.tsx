@@ -13,10 +13,10 @@ interface Props {
   onSuccess?: () => Promise<void>;
   suppressGlobalModal?: boolean;
   onOtpVerified?: () => void; // new optional prop
-   
+
 }
 
-export default function LoginModal({ isOpen, onClose , onSuccess, suppressGlobalModal}: Props) {
+export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalModal }: Props) {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"phone" | "otp">("phone");
@@ -237,6 +237,22 @@ export default function LoginModal({ isOpen, onClose , onSuccess, suppressGlobal
             />
 
             {/* Consent checkbox for 'otp' step */}
+            {/* <div className="mb-4 flex items-start text-sm">
+              <input
+                type="checkbox"
+                id="consent-otp"
+                checked={consent}
+                onChange={() => setConsent(!consent)}
+                className="mr-2 mt-1 accent-green-800"
+                required
+              />
+              <label htmlFor="consent-otp">1. I agree to be contacted via Email, WhatsApp, SMS, or Call.</label><br />
+              
+            </div>
+            <label htmlFor="consent-otp">2. I give my explicit consent to Covermantra to acess my credit and report and score from credit bureaus</label>
+              <label htmlFor="consent-otp">3 . I have read and Accepted all your Terms & Conditions </label> */}
+
+
             <div className="mb-4 flex items-start text-sm">
               <input
                 type="checkbox"
@@ -246,8 +262,32 @@ export default function LoginModal({ isOpen, onClose , onSuccess, suppressGlobal
                 className="mr-2 mt-1 accent-green-800"
                 required
               />
-              <label htmlFor="consent-otp">I agree to be contacted via Email, WhatsApp, SMS, or Call.</label>
+
+              <label htmlFor="consent-otp" className="leading-relaxed">
+                <p>
+                  1. I agree to be contacted via Email, WhatsApp, SMS, or Phone Call.
+                </p>
+
+                <p className="mt-1">
+                  2. I give my explicit consent to <strong>CoverMantra</strong> to access my
+                  credit report and credit score from authorized credit bureaus.
+                </p>
+
+                <p className="mt-1">
+                  3. I have read and accepted the{" "}
+                  <a
+                    href="/terms"
+                    className="text-green-800 underline hover:text-green-900"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    Terms & Conditions
+                  </a>.
+                </p>
+              </label>
             </div>
+
+
 
             <button
               onClick={handleVerifyOtp}
