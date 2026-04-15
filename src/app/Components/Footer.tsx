@@ -154,6 +154,11 @@ function Footer() {
                     Our Blogs
                   </Link>
                 </li>
+                <li>
+                  <Link href="/datapolicy" className="text-white hover:text-white/75">
+                    Data Policy
+                  </Link>
+                </li>
                  <li>
                   <Link href="/delete-account" className="text-white hover:text-white/75">
                     Account Deletion Request
