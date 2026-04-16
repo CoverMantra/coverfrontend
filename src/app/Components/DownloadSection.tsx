@@ -94,6 +94,11 @@ export default function DownloadAppSection() {
 </div>
 
         </div>
+        <div className="w-full flex justify-center items-center mt-12 pt-2  opacity-80">
+          <p className="text-sm md:text-lg font-serif text-green-900 tracking-[0.2em] font-semibold">
+             <span className="mx-1 md:mx-2">🔱सत्यम शिवम सुंदरम🔱</span> 
+          </p>
+        </div>
       </div>
 
       {/* Login Modal */}

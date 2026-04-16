@@ -66,12 +66,21 @@ export default function LoanCalculator() {
   }, [loanAmount, interestRate, tenure]);
 
   return (
-    <div className="flex justify-center items-start min-h-screen bg-gradient-to-br from-green-50 to-green-100 p-4">
-      <div className="w-full max-w-5xl bg-green-50 rounded-2xl shadow-xl p-4 md:p-10">
-        <h1 className="text-3xl sm:text-3xl md:text-4xl text-center font-bold text-green-600 mt-[-5] mb-4">
+    
+    <div className="flex justify-center items-start min-h-screen bg-gradient-to-br from-green-50 to-green-100 p-2">
+      <div className="w-full max-w-5xl bg-green-50 rounded-2xl shadow-xl p-2 md:p-10">
+       <div className="w-full flex justify-center items-center pt-2 pb-2 opacity-90">
+          <p className="text-sm md:text-lg font-serif text-green-900 tracking-[0.2em] font-semibold">
+            <span className="mx-1 md:mx-2">🔱सत्यम शिवम सुंदरम🔱</span>
+          </p>
+        </div>
+
+        {/* Heading Section - Removed negative margin and added mt-4 */}
+        <h1 className="text-3xl sm:text-3xl md:text-4xl text-center font-bold text-green-600 mt-4 mb-8">
           EMI Calculator
         </h1>
-            <div className="grid md:grid-cols-3 gap-8">
+
+        <div className="grid md:grid-cols-3 gap-8">
           {/* Sliders */}
           <div className="md:col-span-2 space-y-2">
             <div className="p-3 rounded-xl border hover:shadow-md transition">

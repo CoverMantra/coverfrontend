@@ -29,9 +29,16 @@ export default function HeroSection() {
     "./image/manimage.png"
   ];
   return (
-    <section className="relative bg-green-100">
-      <div className="max-w-7xl mx-auto px-6 md:px-12 mt-10 md:mt-18 flex flex-col md:flex-row items-center relative">
+    
+    <section className="relative bg-green-100 pt-15 md:pt-19">
+     <div className="w-full flex justify-center items-center py-2 opacity-90">
+  <p className="text-sm md:text-lg font-serif text-green-900 tracking-[0.1em] font-semibold ">
+   <span className="mx-1 md:mx-2"> 🔱सत्यम शिवम सुंदरम🔱</span>
+  </p>
+</div>
+      <div className="max-w-7xl mx-auto px-6 md:px-12 mt-10 md:mt-8 flex flex-col md:flex-row items-center relative">
       <div className="md:w-1/2 text-center md:text-left py-12 text-black">
+      
         <h1 className="text-4xl font-bold mb-6 ">
             Finance ka Smart Solution <br />
             <span className="text-green-600">CoverMantra</span>
