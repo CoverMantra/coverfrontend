@@ -53,7 +53,18 @@ const lenders = [
     support: "24x7",
     features: ["Quick Approval", "Low Interest", "No Hidden Fees"],
     url: "https://fatakpay.onelink.me/2uSI/652_IUXYC?utm_medium=",
-  },
+  },{
+    id: 5, // Unique ID
+    name: "FlexSalary (Vivifi)",
+    logo: "https://www.flexsalary.com/assets/images/logo.png", // Vivifi/FlexSalary logo URL
+    approval: "92%",
+    amount: "Upto 2L",
+    rate: "Starting from 1.5% per month",
+    tenure: "Flexible",
+    support: "24x7",
+    features: ["Credit Line", "Instant Transfer", "No Fixed EMI"],
+    url: "https://online.flexsalary.com/CustomerLogin/Index?CampaignID=9192300#x", // Internal Page Link
+  }
 ];
 
 const emptyForm = {

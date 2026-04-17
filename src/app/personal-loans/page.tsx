@@ -20,6 +20,20 @@ const cardsData = [
   //   ]
   // },
   {
+    provider: "FlexSalary (Vivifi)",
+    approval: "Good",
+    loanAmount: "Up to ₹3,00,000",
+    interestRate: "Starting from 1.5% per month",
+    processingFee: "Starting from 2% of the approved loan amount",
+    support: "24/7 customer support",
+    ratings: 4.2,
+    logo: "/image/flexsalary.png", 
+    applyLink: "/LenderAPI/vivifi", 
+    features: [
+      "Credit Line Facility", "Instant Disbursal", "Flexible Repayment", "No Fixed EMI", "Minimal Documentation", "24/7 support"
+    ]
+  },
+  {
     provider: "FatakPay Personal Loans",
     approval: "Good",
     loanAmount: "Up to ₹2,00,000",
