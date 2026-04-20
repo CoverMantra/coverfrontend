@@ -27,7 +27,7 @@ const cardsData = [
     processingFee: "Starting from 2% of the approved loan amount",
     support: "24/7 customer support",
     ratings: 4.2,
-    logo: "/image/flexsalary.png", 
+    logo: "/public/image/flexsalary-color-black.webp", 
     applyLink: "/LenderAPI/vivifi", 
     features: [
       "Credit Line Facility", "Instant Disbursal", "Flexible Repayment", "No Fixed EMI", "Minimal Documentation", "24/7 support"

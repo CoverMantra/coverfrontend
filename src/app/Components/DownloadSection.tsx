@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { FaGooglePlay, FaApple, FaCheckCircle, FaShieldAlt, FaBolt, FaMobileAlt } from "react-icons/fa";
+import { FaGooglePlay, FaApple, FaBolt, FaShieldAlt, FaMobileAlt, FaCheckCircle } from "react-icons/fa";
 import LoginModal from "./LoginModal";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
@@ -11,10 +11,10 @@ export default function DownloadAppSection() {
   const [loginOpen, setLoginOpen] = useState(false);
 
   const features = [
-    { icon: <FaBolt />, text: "Instant Approval" },
-    { icon: <FaShieldAlt />, text: "100% Secure" },
-    { icon: <FaMobileAlt />, text: "Paperless" },
-    { icon: <FaCheckCircle />, text: "Easy EMI" },
+    { icon: <FaBolt className="text-white" />, text: "Instant Approval" },
+    { icon: <FaShieldAlt className="text-white" />, text: "100% Secure" },
+    { icon: <FaMobileAlt className="text-white" />, text: "Paperless" },
+    { icon: <FaCheckCircle className="text-white" />, text: "Easy EMI" },
   ];
 
   const handleDownloadClick = () => {
@@ -29,74 +29,101 @@ export default function DownloadAppSection() {
   };
 
   return (
-    <section className="bg-gradient-to-br from-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8">
+    <section className="bg-[#FFF4E5] py-20 px-4 md:px-10 overflow-hidden">
       <div className="max-w-6xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12 items-center">
+        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
           
-          {/* Left Section - Content */}
-          <div className="space-y-6">
+          {/* Left Content */}
+          <div className="space-y-10">
             <div>
-              <h2 className="text-3xl sm:text-5xl font-bold text-gray-900 mb-3">
-                Get The <span className="text-green-600">Covermantra</span> App
+              <h2 className="text-4xl md:text-5xl font-extrabold text-[#08101E] tracking-tight leading-tight">
+                Get The <span className="text-[#FF690B]">CoverMantra</span> App
               </h2>
-              <p className="text-gray-600 text-lg">
-                Download our app for instant loans, secure transactions, and seamless financial management.
+              <p className="mt-6 text-lg text-[#08101E]/80 max-w-lg">
+                Download our app for instant loans, real-time tracking, secure payments, 
+                and complete financial control — all in your pocket.
               </p>
             </div>
 
-            {/* Features */}
-            <div className="grid grid-cols-2 gap-4">
+            {/* Features Grid */}
+            <div className="grid grid-cols-2 gap-6">
               {features.map((feature, index) => (
-                <div key={index} className="flex items-center gap-3">
-                  <div className="bg-green-100 p-2 rounded-lg">
-                    <div className="text-green-600 text-lg">{feature.icon}</div>
+                <div 
+                  key={index} 
+                  className="flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-all"
+                >
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#FF690B] to-[#FF8C00] 
+                                rounded-2xl flex items-center justify-center flex-shrink-0">
+                    {feature.icon}
                   </div>
-                  <span className="font-medium text-gray-800">{feature.text}</span>
+                  <span className="font-semibold text-[#08101E] text-[15.5px]">
+                    {feature.text}
+                  </span>
                 </div>
               ))}
             </div>
 
             {/* Download Buttons */}
-            <div className="flex flex-col sm:flex-row gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button
                 onClick={handleDownloadClick}
-                className="flex items-center justify-center gap-3 bg-gray-900 hover:bg-gray-800 text-white px-6 py-3 rounded-xl font-semibold transition-all hover:shadow-lg hover:scale-[1.02] active:scale-95"
+                className="group flex items-center justify-center gap-4 bg-[#08101E] hover:bg-black 
+                         text-white px-8 py-4 rounded-2xl font-semibold transition-all 
+                         hover:shadow-xl hover:-translate-y-1 active:scale-95"
               >
-                <FaGooglePlay className="text-xl" />
+                <FaGooglePlay className="text-3xl group-hover:scale-110 transition" />
                 <div className="text-left">
-                  <div className="text-xs opacity-80">GET IT ON</div>
-                  <div className="text-base">Google Play</div>
+                  <div className="text-xs opacity-75">GET IT ON</div>
+                  <div className="text-lg tracking-tight">Google Play</div>
                 </div>
               </button>
 
-              <button className="flex items-center justify-center gap-3 bg-white hover:bg-gray-50 border border-gray-300 text-gray-900 px-6 py-3 rounded-xl font-semibold transition-all hover:shadow-lg hover:scale-[1.02] active:scale-95">
-                <FaApple className="text-xl" />
+              <button 
+                className="group flex items-center justify-center gap-4 bg-white border-2 border-gray-300 
+                         hover:border-gray-400 text-gray-900 px-8 py-4 rounded-2xl font-semibold 
+                         transition-all hover:shadow-xl hover:-translate-y-1 active:scale-95"
+              >
+                <FaApple className="text-3xl group-hover:scale-110 transition" />
                 <div className="text-left">
-                  <div className="text-xs opacity-80">COMING SOON</div>
-                  <div className="text-base">App Store</div>
+                  <div className="text-xs opacity-75">COMING SOON</div>
+                  <div className="text-lg tracking-tight">App Store</div>
                 </div>
               </button>
             </div>
-
-            
-           
           </div>
 
-          {/* Right Section - App Preview */}
-         <div className="relative flex justify-center lg:justify-end">
-  <div className="relative max-w-xs sm:max-w-sm lg:max-w-sm rounded-3xl overflow-hidden shadow-2xl hover:scale-105 transition duration-500">
-    <img
-      src="/App.jpg" // your image path in public folder
-      alt="CoverMantra App Screenshot"
-      className="w-full h-auto object-cover rounded-3xl"
-    />
-  </div>
-</div>
+          {/* Right Side - App Mockup */}
+          <div className="relative flex justify-center lg:justify-end">
+            <div className="relative max-w-[280px] sm:max-w-[320px]">
+              {/* Glow Effect */}
+              <div className="absolute -inset-8 bg-gradient-to-br from-[#FF690B]/20 to-transparent 
+                            rounded-[4rem] blur-3xl -z-10" />
+              
+              {/* Phone Frame */}
+              <div className="relative bg-[#08101E] p-4 rounded-[3rem] shadow-2xl border-8 border-white">
+                <div className="bg-black rounded-[2.2rem] overflow-hidden">
+                  <img
+                    src="/App.jpg"
+                    alt="CoverMantra App Screenshot"
+                    className="w-full h-auto object-cover rounded-[2rem]"
+                  />
+                </div>
+              </div>
 
+              {/* Floating Badge */}
+              <div className="absolute -top-6 -right-6 bg-white px-5 py-3 rounded-2xl shadow-xl 
+                            flex items-center gap-3 text-sm font-medium border border-white/70">
+                <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse" />
+                4.8 • 50K+ Ratings
+              </div>
+            </div>
+          </div>
         </div>
-        <div className="w-full flex justify-center items-center mt-12 pt-2  opacity-80">
-          <p className="text-sm md:text-lg font-serif text-green-900 tracking-[0.2em] font-semibold">
-             <span className="mx-1 md:mx-2">🔱सत्यम शिवम सुंदरम🔱</span> 
+
+        {/* Satyam Shivam Sundaram */}
+        <div className="w-full flex justify-center items-center mt-16">
+          <p className="text-xl md:text-2xl font-serif text-[#08101E] tracking-[0.3em] font-semibold opacity-90">
+            🔱 सत्यम शिवम सुंदरम 🔱
           </p>
         </div>
       </div>

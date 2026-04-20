@@ -9,8 +9,8 @@ export default function OurPartners() {
       link: "https://moneyview.in/"
     },
      {
-      name: "FatakPay",
-      logo: "https://fatakpay.com/assets/images/logo/Logo.svg",
+      name: "FDPL Finance",
+      logo: "https://www.fdplfinance.com/assets/images/logo/Logo.svg",
       link: "https://fatakpay.com/"
     },
     {
@@ -18,8 +18,13 @@ export default function OurPartners() {
       logo: "https://www.getzype.com/wp-content/uploads/2024/09/Zype_svg_black.svg",
       link: "https://zype.onelink.me/vx8a?af_xp=custom&pid=CustomerSource&af_dp=com.zype.mobile%3A%2F%2F&deep_link_value=myZype&af_click_lookback=30d&c=Spiraea"
     },
+    {
+      name: "Vivifi",
+      logo: "https://www.vivifin.com/images/vivifi-logo.png",
+      link: "https://www.vivifin.com/"
+    },
   ];
-
+// https://www.vivifin.com/images/vivifi-logo.png
   return (
     <section className="bg-gradient-to-r from-green-100 to-green-300 py-20">
       <div className="max-w-6xl mx-auto text-center px-6">

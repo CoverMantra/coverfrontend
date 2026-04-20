@@ -117,7 +117,7 @@ useEffect(() => {
         </form>
       </div>
 
-      {/* Contact Info hehehheheheh*/}
+      {/* Contact Info*/}
       <div className="space-y-4 ">
         <div className="bg-white  text-black p-6 rounded-xl shadow-lg h-[260px]">
           <h3 className="text-xl font-bold mb-4 text-gray-800">Contact Info</h3>
@@ -132,7 +132,7 @@ useEffect(() => {
             </div>
             <div className="flex">
               <FaPhoneAlt className="text-blue-600 mt-1 mr-3" />
-              <span>Coming soon</span>
+              <span>9729509967</span>
             </div>
             <div className="flex">
               <FaClock className="text-blue-600 mt-1 mr-3" />

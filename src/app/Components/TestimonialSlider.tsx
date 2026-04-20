@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Pagination, Autoplay } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
+import React from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Pagination, Autoplay } from "swiper/modules";
+import 'swiper/swiper.css';
+//import 'swiper/core/pagination.css';
 
 const testimonials = [
   {
@@ -99,62 +99,91 @@ const testimonials = [
   },
 ];
 
-
 export default function TestimonialSlider() {
   return (
-    <section className="bg-gray-100 py-12 px-4 md:px-10">
-      <div className="text-center mb-10">
-        <h2 className="text-3xl sm:text-3xl md:text-4xl font-bold bg-gradient-to-r from-green-500  to-green-900 bg-clip-text text-transparent hover:scale-110 transition-transform duration-300 inline-block">
-          Our Happy Customers
-        </h2>
-        <p className="text-gray-800 text-xl sm:text-base mt-2">
-          What they say about us
-        </p>
-      </div>
+    <section className="bg-[#FFF4E5] py-20 px-4 md:px-10">
+      <div className="max-w-6xl mx-auto">
+        {/* Heading */}
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-[#08101E] tracking-tight mb-4">
+            Our Happy Customers
+          </h2>
+          <p className="text-lg text-[#08101E]/70">
+            Real stories from real people who trusted CoverMantra
+          </p>
+        </div>
 
-      <Swiper
-        spaceBetween={20}
-        slidesPerView={1}
-        pagination={{ clickable: true }}
-        autoplay={{ delay: 5000 }}
-        breakpoints={{
-          640: { slidesPerView: 1 },
-          768: { slidesPerView: 2 },
-          1024: { slidesPerView: 3 },
-        }}
-        modules={[Pagination, Autoplay]}
-        className="w-full"
-      >
-        {testimonials.map((testimonial, index) => (
-          <SwiperSlide key={index}>
-            <div
-              className={`min-h-[280px] flex flex-col  mb-2 justify-between rounded-xl p-6 sm:p-8 bg-white hover:bg-green-50 transition-all duration-500 shadow-md hover:shadow-lg cursor-pointer`}
-            >
-              <p className="text-gray-700 text-sm sm:text-base mb-4 relative leading-relaxed">
-                <span className="text-2xl text-gray-400 absolute top-[-10px] left-[-10px]">“</span>
-                {testimonial.text}
-                <span className="text-2xl text-gray-400 absolute bottom-[-10px] right-[-10px]">”</span>
-              </p>
-              <div className="mt-4">
-                <p className="font-semibold text-gray-900 text-sm sm:text-base">
-                  {testimonial.name}
+        <Swiper
+          spaceBetween={28}
+          slidesPerView={1}
+          pagination={{ 
+            clickable: true,
+            bulletClass: "swiper-pagination-bullet !bg-[#FF690B]/30",
+            bulletActiveClass: "!bg-[#FF690B] !w-3 !h-3"
+          }}
+          autoplay={{ 
+            delay: 4500, 
+            disableOnInteraction: false 
+          }}
+          breakpoints={{
+            640: { slidesPerView: 1 },
+            768: { slidesPerView: 2 },
+            1024: { slidesPerView: 3 },
+          }}
+          modules={[Pagination, Autoplay]}
+          className="pb-12"
+        >
+          {testimonials.map((testimonial, index) => (
+            <SwiperSlide key={index}>
+              <div className="bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-white/60 
+                            hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 
+                            min-h-[320px] flex flex-col relative">
+                
+                {/* Quote Icon */}
+                <div className="text-6xl text-[#FF690B]/20 absolute top-6 right-6">“</div>
+
+                {/* Testimonial Text */}
+                <p className="text-[#5b4637] text-[15.5px] leading-relaxed flex-grow mb-8">
+                  {testimonial.text}
                 </p>
-                <p className="text-gray-600 text-xs sm:text-sm">{testimonial.description}</p>
-                <div className="text-sm sm:text-base mt-1 flex">
-                  {Array.from({ length: 5 }, (_, i) => (
-                    <span
-                      key={i}
-                      className={i < testimonial.rating ? "text-yellow-500" : "text-gray-300"}
-                    >
-                      ★
+
+                {/* User Info */}
+                <div className="mt-auto flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-[#FF690B] to-[#FF8C00] 
+                                rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <span className="text-white text-xl font-bold">
+                      {testimonial.name[0]}
                     </span>
-                  ))}
+                  </div>
+                  
+                  <div>
+                    <p className="font-semibold text-[#08101E] text-lg">
+                      {testimonial.name}
+                    </p>
+                    <p className="text-sm text-[#5b4637]">
+                      {testimonial.description}
+                    </p>
+                    
+                    {/* Rating Stars */}
+                    <div className="flex mt-2">
+                      {Array.from({ length: 5 }, (_, i) => (
+                        <span
+                          key={i}
+                          className={`text-xl ${i < Math.floor(testimonial.rating) 
+                            ? "text-[#FF690B]" 
+                            : "text-gray-300"}`}
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
-                 </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+              </div>
+            </SwiperSlide>
+          ))}
+        </Swiper>
+      </div>
     </section>
   );
 }

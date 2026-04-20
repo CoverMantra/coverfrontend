@@ -1,6 +1,9 @@
 import type { NextConfig } from "next";
 
-const allowedImageHosts = ["cdnwebapp.indialends.com"];
+const allowedImageHosts = ["cdnwebapp.indialends.com","www.vivifin.com",
+  "moneyview.in",
+  "www.fdplfinance.com",
+  "www.flexsalary.com","www.getzype.com",];
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,

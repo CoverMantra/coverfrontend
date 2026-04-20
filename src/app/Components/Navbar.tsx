@@ -9,13 +9,11 @@ import Cookies from "js-cookie";
 import GlobalModal from "./globalmodel";
 import { useModal } from "../context/modelcontext";
 import Image from "next/image";
-import path from "path";
 
-// ✅ Utility function to trigger login status change event
+// ✅ Utility function
 export const triggerLoginStatusChange = () => {
   if (typeof window !== "undefined") {
-    const event = new Event("loginStatusChanged");
-    window.dispatchEvent(event);
+    window.dispatchEvent(new Event("loginStatusChanged"));
   }
 };
 
@@ -24,29 +22,33 @@ export default function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [formCompleted, setFormCompleted] = useState(true);
+  const [isClient, setIsClient] = useState(false);   // ← Hydration fix ke liye
+
   const pathname = usePathname();
   const router = useRouter();
   const menuRef = useRef<HTMLDivElement>(null);
   const { openModal } = useModal();
 
-  // ✅ Run only client-side
+  // Hydration safe login status
   useEffect(() => {
+    setIsClient(true);
+
     const updateLoginStatus = () => {
       setIsLoggedIn(Cookies.get("co_login") === "true");
     };
 
     updateLoginStatus();
-
     window.addEventListener("loginStatusChanged", updateLoginStatus);
+
     return () => {
       window.removeEventListener("loginStatusChanged", updateLoginStatus);
     };
   }, []);
 
-  // ✅ Handle scroll + outside clicks safely
+  // Scroll + Outside click
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 10);
+
     const handleClickOutside = (e: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
         setMobileMenuOpen(false);
@@ -55,18 +57,16 @@ export default function Navbar() {
 
     window.addEventListener("scroll", handleScroll);
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       window.removeEventListener("scroll", handleScroll);
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  // ✅ Prevent hydration mismatch with scroll lock
+  // Body scroll lock
   useEffect(() => {
-    if (typeof document !== "undefined") {
-      document.body.style.overflow =
-        mobileMenuOpen || loginOpen ? "hidden" : "auto";
-    }
+    document.body.style.overflow = mobileMenuOpen || loginOpen ? "hidden" : "auto";
   }, [mobileMenuOpen, loginOpen]);
 
   const handleLogout = () => {
@@ -76,6 +76,7 @@ export default function Navbar() {
     localStorage.removeItem("userInfo");
     Cookies.remove("loanFormData");
     Cookies.remove("loanFormSubmitted");
+
     setIsLoggedIn(false);
     triggerLoginStatusChange();
     router.push("/");
@@ -88,15 +89,14 @@ export default function Navbar() {
       if (item.modal && !excludedModals.includes(item.path)) {
         setLoginOpen(true);
         return;
-      } else if (item.path) {
+      }
+      if (item.path) {
         router.push(item.path);
         setMobileMenuOpen(false);
-        return;
       }
     } else {
-      if (item.modal && !formCompleted) {
-        openModal();
-      } else if (item.path) {
+      // Agar formCompleted check chahiye toh yahan add kar sakte ho
+      if (item.path) {
         router.push(item.path);
         setMobileMenuOpen(false);
       }
@@ -108,128 +108,133 @@ export default function Navbar() {
     { name: "About", path: "/about" },
     { name: "Personal Loans", modal: true, path: "/personal-loans" },
     { name: "Smart Access", modal: true, path: "/quick-links" },
-    // { name: "Business Loans", modal: true, path: "/business-loans" },
-    // { name: "Insurance", modal: true, path: "/insurance" },
-    { name: "Contact", modal: true, path: "/contact" }
-
+    { name: "Contact", modal: true, path: "/contact" },
   ];
+
+  // Server pe initial render safe rakhne ke liye
+  if (!isClient) {
+    return (
+      <nav className="fixed top-0 left-0 w-full px-4 sm:px-6 py-4 z-50 bg-[#08101E] backdrop-blur-lg border-b border-white/20">
+        <div className="max-w-7xl mx-auto flex justify-between items-center">
+          {/* Logo skeleton */}
+          <div className="h-10 w-40 bg-white/10 rounded" />
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <>
-      {/* Navbar */}
       <nav
-        className={`fixed top-0 left-0 w-full px-4 sm:px-6 py-3 sm:py-4 z-50 transition-all duration-300 backdrop-blur-lg border-b border-white/20 ${scrolled ? "bg-green-900 shadow-lg" : "bg-green-900"
-          }`}
+        className={`fixed top-0 left-0 w-full px-4 sm:px-6 py-3 sm:py-4 z-50 transition-all duration-300 backdrop-blur-lg border-b border-white/20 ${
+          scrolled ? "bg-[#08101E] shadow-lg" : "bg-[#08101E]"
+        }`}
       >
         <div className="max-w-7xl mx-auto flex justify-between items-center">
-          {/* Logo */}
-<div>
-  <Link href="/" className="inline-block font-bold text-xl sm:text-xl lg:text-xl relative">
-    <span className="text-xl lg:text-2xl bg-clip-text text-transparent bg-white font-bold">
-      Cover
-    </span>
-    <span className="text-amber-400 text-xl lg:text-2xl">Mantra</span>
-    <span className="block text-[10px] px-2 sm:text-[12px] md:text-[8px] lg:text-[8px] text-white border border-white/50 bg-gradient-to-r from-green-400 to-green-600 uppercase tracking-wide transform -skew-x-12 shadow-sm text-center mt-0 sm:mt-1 md:mt-0 lg:mt-0">
-  Smart Cover, Sure Trust
-</span>
+          {/* Logo - Modern 3D Bhagwa Style */}
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="relative w-9 h-9 sm:w-11 sm:h-11 flex-shrink-0">
+              <span className="absolute inset-0 bg-white/10 rounded-xl group-hover:bg-white/20 transition-all" />
+              <span className="absolute inset-0.5 bg-gradient-to-br from-[#FF690B] to-[#FF8C00] rounded-lg flex items-center justify-center text-[#08101E] font-black text-3xl shadow-inner">
+                C
+              </span>
+            </div>
 
-  </Link>
-</div>
+            <div className="flex flex-col">
+              <div className="font-extrabold text-2xl leading-none tracking-tight">
+                <span className="text-[#C9CBCC]">Cover</span>
+                <span className="text-[#FF690B]">Mantra</span>
+              </div>
+              <span className="text-[10px] mt-1 text-white/80 tracking-[1px] uppercase font-medium">
+                Smart Cover, Sure Trust
+              </span>
+            </div>
+          </Link>
 
-     {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-3 lg:gap-6">
+          {/* Desktop Menu */}
+          <div className="hidden md:flex items-center gap-4 lg:gap-6">
             {navItems.map((item) => {
               const isActive = pathname === item.path;
               return (
                 <button
                   key={item.name}
                   onClick={() => handleMenuClick(item)}
-                  className={`text-white text-sm lg:text-base px-3 py-1.5 lg:px-4 lg:py-2 rounded-xl transition-all hover:bg-green-600 hover:-translate-y-1 hover:shadow-md ${isActive
-                      ? "bg-gradient-to-r from-green-400 to-green-600 shadow-md"
-                      : ""
-                    }`}
+                  className={`text-sm lg:text-base px-5 py-2.5 rounded-2xl font-medium transition-all hover:bg-white/10 hover:text-white ${
+                    isActive
+                      ? "bg-gradient-to-r from-[#FFB900] to-[#FF690B] text-black shadow-md"
+                      : "text-white/90 hover:text-white"
+                  }`}
                 >
                   {item.name}
                 </button>
               );
             })}
 
-            {/* Profile / Login Section */}
+            {/* Login / Profile */}
             {isLoggedIn ? (
-              <div className="flex items-center gap-2 sm:gap-3 bg-gradient-to-r from-green-400 to-green-600 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-semibold text-white shadow-md w-full md:w-auto justify-between md:justify-start">
+              <div className="flex items-center gap-3 bg-gradient-to-r from-[#FFB900] to-[#FF690B] pl-2 pr-5 py-1.5 rounded-full text-black font-semibold shadow-md">
                 <div
-                  className="w-7 sm:w-8 h-7 sm:h-8 cursor-pointer flex-shrink-0"
+                  className="w-8 h-8 cursor-pointer rounded-full overflow-hidden border-2 border-white/50"
                   onClick={() => router.push("/dashboard")}
                 >
                   <Image
                     src="/image/user.png"
-                    alt="User Icon"
+                    alt="User"
                     width={32}
                     height={32}
-                    className="rounded-full"
+                    className="object-cover"
                   />
                 </div>
-                <button
-                  onClick={handleLogout}
-                  className="text-xs sm:text-sm md:text-base whitespace-nowrap"
-                >
+                <button onClick={handleLogout} className="text-sm">
                   Logout
                 </button>
               </div>
             ) : (
               <button
                 onClick={() => setLoginOpen(true)}
-                className="flex items-center gap-1 sm:gap-2 bg-gradient-to-r from-green-400 to-green-600 px-3 sm:px-4 py-1.5 sm:py-2 rounded-full font-semibold text-white shadow-md hover:scale-105 transition w-full md:w-auto justify-center md:justify-start"
+                className="flex items-center gap-2 bg-gradient-to-r from-[#FFB900] to-[#FF690B] px-6 py-2.5 rounded-full font-semibold text-black hover:scale-105 transition shadow-md"
               >
-                <Image
-                  src="/image/profile.png"
-                  alt="User Icon"
-                  width={24}
-                  height={24}
-                  className="rounded-full"
-                />
-                <span className="text-xs sm:text-sm md:text-base">Login</span>
+                <Image src="/image/profile.png" alt="Login" width={22} height={22} />
+                <span>Login</span>
               </button>
             )}
           </div>
 
-          {/* Mobile Toggle */}
-          <div className="md:hidden">
-            <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="text-white"
-            >
-              {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
-            </button>
-          </div>
+          {/* Mobile Hamburger */}
+          <button
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            className="md:hidden text-white p-2"
+          >
+            {mobileMenuOpen ? <X size={28} /> : <Menu size={28} />}
+          </button>
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+      {/* Mobile Full Screen Menu */}
       <div
         ref={menuRef}
-        className={`fixed top-0 right-0 w-full h-full bg-green-950 bg-opacity-95 flex flex-col items-center justify-center gap-6 sm:gap-8 text-white text-lg sm:text-xl z-40 transform transition-transform duration-300 ease-in-out md:hidden ${mobileMenuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+        className={`fixed inset-0 bg-[#08101E] z-50 flex flex-col items-center justify-center gap-8 text-xl md:hidden transition-transform duration-300 ${
+          mobileMenuOpen ? "translate-x-0" : "translate-x-full"
+        }`}
       >
         {navItems.map((item) => (
           <button
             key={item.name}
             onClick={() => handleMenuClick(item)}
-            className="hover:text-green-300 transition"
+            className="hover:text-[#FF690B] transition-colors"
           >
             {item.name}
           </button>
         ))}
 
-        {/* Mobile Profile / Login */}
         {isLoggedIn ? (
-          <div className="flex flex-col items-center gap-4">
+          <div className="flex flex-col items-center gap-6 mt-8">
             <Image
-              src="/image/profile.png"
-              alt="User Icon"
-              width={50}
-              height={50}
-              className="rounded-full cursor-pointer"
+              src="/image/user.png"
+              alt="User"
+              width={70}
+              height={70}
+              className="rounded-full border-4 border-[#FF690B]"
               onClick={() => {
                 router.push("/dashboard");
                 setMobileMenuOpen(false);
@@ -237,10 +242,10 @@ export default function Navbar() {
             />
             <button
               onClick={() => {
-                setMobileMenuOpen(false);
                 handleLogout();
+                setMobileMenuOpen(false);
               }}
-              className="border border-green-400 px-6 py-2 rounded-full hover:bg-green-600 transition text-white"
+              className="px-8 py-3 border border-white/50 rounded-full hover:bg-[#FF690B] hover:text-black transition"
             >
               Logout
             </button>
@@ -251,7 +256,7 @@ export default function Navbar() {
               setMobileMenuOpen(false);
               setLoginOpen(true);
             }}
-            className="border border-green-400 px-6 py-2 rounded-full hover:bg-green-600 transition text-white"
+            className="mt-8 px-10 py-3 border border-[#FF690B] rounded-full hover:bg-[#FF690B] hover:text-black transition font-medium"
           >
             Login
           </button>

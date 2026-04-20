@@ -2,7 +2,6 @@
 
 import React, { useEffect, useState } from 'react';
 
-// Moved outside to avoid ESLint dependency warning
 const stats = [
   { label: 'Happy Users', value: 25000 },
   { label: 'App Downloads', value: 15000 },
@@ -17,8 +16,8 @@ export default function TrustSection() {
     stats.forEach((stat, index) => {
       let start = 0;
       const end = stat.value;
-      const duration = 2000; // total animation time in ms
-      const increment = end / (duration / 30); // step size
+      const duration = 2000;
+      const increment = end / (duration / 30);
 
       const timer = setInterval(() => {
         start += increment;
@@ -35,41 +34,71 @@ export default function TrustSection() {
         });
       }, 30);
     });
-  }, []); // Safe since stats is outside component
+  }, []);
 
   return (
-    <div>
-      <div className="bg-green-50 py-10 px-4 sm:px-6 md:py-16 lg:px-10 rounded-xl">
-        {/* Section 1: Trust & Security */}
-        <div className="text-center mt-6 px-4">
-          <h3 className="text-xl sm:text-2xl lg:text-4xl font-bold bg-gradient-to-r from-green-500 to-green-800 bg-clip-text text-transparent mb-3">
+    <section className="bg-[#FFF4E5] py-20 px-4 md:px-10">
+      <div className="max-w-6xl mx-auto">
+        
+        {/* Trust & Security Section */}
+        <div className="text-center mb-16">
+          <h3 className="text-4xl md:text-5xl font-extrabold text-[#08101E] tracking-tight mb-6">
             Your Security. Our Priority.
           </h3>
-          <p className="text-gray-600 text-sm sm:text-base lg:text-lg max-w-2xl mx-auto leading-relaxed">
-            When it comes to data and security, we implement the latest techniques
+          <p className="text-lg text-[#08101E]/70 max-w-2xl mx-auto leading-relaxed">
+            When it comes to data and security, we implement the latest techniques 
             to ensure your information remains protected at all times.
           </p>
         </div>
 
+        {/* Trust Badges / Highlights */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-20">
+          <div className="bg-white rounded-3xl p-8 shadow-xl border border-white/60 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-[#FF690B] to-[#FF8C00] rounded-2xl flex items-center justify-center">
+              <span className="text-4xl">🔒</span>
+            </div>
+            <h4 className="text-2xl font-bold text-[#08101E] mb-3">256-Bit Encryption</h4>
+            <p className="text-[#5b4637]">Military-grade security for all your financial data</p>
+          </div>
 
-        <br />
-        <hr />
+          <div className="bg-white rounded-3xl p-8 shadow-xl border border-white/60 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-[#FF690B] to-[#FF8C00] rounded-2xl flex items-center justify-center">
+              <span className="text-4xl">🏦</span>
+            </div>
+            <h4 className="text-2xl font-bold text-[#08101E] mb-3">RBI Compliant</h4>
+            <p className="text-[#5b4637]">Fully regulated and transparent lending practices</p>
+          </div>
 
-        {/* Section 2: Achievements */}
-        <div className="text-center mt-12 mb-10">
-          <h2 className="text-xl sm:text-2xl lg:text-4xl font-semibold bg-gradient-to-r from-green-500 to-green-800 bg-clip-text text-transparent mb-4">
-            Your Trust, Our Achievements.
-          </h2>
-          <br />
-          <div className="grid grid-cols-2 mt-6 gap-y-8 gap-x-4 sm:grid-cols-2 md:grid-cols-4 md:gap-x-6 lg:gap-x-12 text-center">
+          <div className="bg-white rounded-3xl p-8 shadow-xl border border-white/60 text-center hover:shadow-2xl hover:-translate-y-2 transition-all duration-300">
+            <div className="w-16 h-16 mx-auto mb-6 bg-gradient-to-br from-[#FF690B] to-[#FF8C00] rounded-2xl flex items-center justify-center">
+              <span className="text-4xl">🛡️</span>
+            </div>
+            <h4 className="text-2xl font-bold text-[#08101E] mb-3">Zero Data Sharing</h4>
+            <p className="text-[#5b4637]">Your data stays with you. Never sold or shared.</p>
+          </div>
+        </div>
+
+        {/* Achievements Section */}
+        <div className="bg-white rounded-3xl shadow-2xl p-10 md:p-16">
+          <div className="text-center mb-12">
+            <h2 className="text-4xl md:text-5xl font-extrabold text-[#08101E] tracking-tight mb-4">
+              Your Trust, Our Achievements
+            </h2>
+            <p className="text-[#08101E]/70 text-lg">Numbers that speak louder than words</p>
+          </div>
+
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 md:gap-12">
             {stats.map((item, idx) => (
-              <div key={idx}>
-                <p className="text-xl font-bold text-blue-700 sm:text-2xl lg:text-3xl">
-                  {item.isRating
-                    ? `${counts[idx]} / 5`
+              <div 
+                key={idx} 
+                className="text-center group"
+              >
+                <div className="text-5xl md:text-6xl font-bold text-[#FF690B] mb-3 transition-all group-hover:scale-110">
+                  {item.isRating 
+                    ? `${counts[idx]} ★` 
                     : counts[idx].toLocaleString() + '+'}
-                </p>
-                <p className="text-sm text-gray-600 mt-1 sm:text-base">
+                </div>
+                <p className="text-[#5b4637] font-medium text-lg">
                   {item.label}
                 </p>
               </div>
@@ -77,6 +106,6 @@ export default function TrustSection() {
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }

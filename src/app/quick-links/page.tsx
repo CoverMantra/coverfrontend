@@ -33,7 +33,7 @@ const lenders = [
   {
     id: 3,
     name: "FatakPay Personal Loans",
-    logo: "https://fatakpay.com/assets/images/logo/Logo.svg",
+    logo: "https://web.fatakpay.com/assets/images/logo/Logo.svg",
     approval: "90%",
     amount: "Upto 5L",
     rate: "Range 12% to 35.95% per annum",
@@ -45,7 +45,7 @@ const lenders = [
   {
     id: 4,
     name: "FatakPay Short Term Loans",
-    logo: "https://fatakpay.com/assets/images/logo/Logo.svg",
+    logo: "https://web.fatakpay.com/assets/images/logo/Logo.svg",
     approval: "90%",
     amount: "Upto 5000",
     rate: "Range 12% to 35.95% per annum",
@@ -56,9 +56,9 @@ const lenders = [
   },{
     id: 5, // Unique ID
     name: "FlexSalary (Vivifi)",
-    logo: "https://www.flexsalary.com/assets/images/logo.png", // Vivifi/FlexSalary logo URL
+    logo: "https://www.flexsalary.com/images/global/flexsalary-color-black.webp", // Vivifi/FlexSalary logo URL
     approval: "92%",
-    amount: "Upto 2L",
+    amount: "Upto 3L",
     rate: "Starting from 1.5% per month",
     tenure: "Flexible",
     support: "24x7",

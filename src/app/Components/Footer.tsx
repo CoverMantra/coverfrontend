@@ -13,7 +13,7 @@ function Footer() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [globalModalOpen, setGlobalModalOpen] = useState(false);
 
-  // ✅ Handle navigation with login check
+  // Handle navigation with login check
   const handleProtectedNavigation = (path: string) => {
     const co_phone = Cookies.get("co_phone");
     const co_token = Cookies.get("co_token");
@@ -25,206 +25,146 @@ function Footer() {
     }
   };
 
-  // ✅ Called when OTP verified successfully
+  // Called when OTP is successfully verified
   const handleOtpVerified = () => {
     setLoginOpen(false);
     setGlobalModalOpen(true);
   };
 
   return (
-    <footer className="bg-green-900 rounded-t-md">
-      <div className="max-w-screen-xl px-4 pt-16 pb-6 mx-auto sm:px-6 lg:px-8 lg:pt-24">
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-3">
-          {/* Company Info */}
-          <div>
-            <p className="max-w-md mt-6 leading-relaxed text-center text-white sm:text-left">
-              <strong className="text-2xl">CoverMantra</strong>
-              <br />
-              <br />
-              2nd floor, MK Flex, Sanyash Aashram Road, Old Fatehabad, Fatehabad
-              <br />
-              Haryana - 125050
+    <footer className="bg-[#08101E] border-t-4 border-[#FF7819] rounded-t-3xl">
+      <div className="max-w-screen-xl px-4 pt-16 pb-8 mx-auto sm:px-6 lg:px-8 lg:pt-20">
+        <div className="grid grid-cols-1 gap-10 lg:grid-cols-3">
+          
+          {/* Company Info + Logo */}
+          <div className="text-center sm:text-left">
+            <div className="flex items-center justify-center sm:justify-start gap-3">
+              <div className="w-10 h-10 bg-gradient-to-br from-[#FF690B] to-[#FF8C00] rounded-xl flex items-center justify-center text-[#08101E] font-black text-3xl shadow-md">
+                C
+              </div>
+              <div>
+                <span className="text-3xl font-extrabold text-white">Cover</span>
+                <span className="text-3xl font-extrabold text-[#FF690B]">Mantra</span>
+              </div>
+            </div>
+
+            <p className="mt-6 text-white/80 leading-relaxed max-w-md mx-auto sm:mx-0">
+              Smart financial solutions for loans and insurance. 
+              Making finance simple, fast and trustworthy.
             </p>
-            <ul className="flex justify-center gap-6 mt-8 md:gap-8 sm:justify-start">
-              <li>
-                <a
-                  href="https://facebook.com"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  className="text-teal-500 transition hover:text-teal-400"
-                  aria-label="Facebook"
-                >
-                  <FaFacebookF className="w-6 h-6" />
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.instagram.com/cover_mantra_pvt_ltd"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  className="text-teal-500 transition hover:text-teal-400"
-                  aria-label="Instagram"
-                >
-                  <FaInstagram className="w-6 h-6" />
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.linkedin.com/company/covermantra/about"
-                  rel="noopener noreferrer"
-                  target="_blank"
-                  className="text-teal-500 transition hover:text-teal-400"
-                  aria-label="LinkedIn"
-                >
-                  <FaLinkedinIn className="w-6 h-6" />
-                </a>
-              </li>
-            </ul>
+
+            <div className="mt-8">
+              <p className="text-sm text-white/70">Registered Office:</p>
+              <p className="text-white mt-1 text-sm leading-relaxed">
+                2nd Floor, MK Flex, Sanyash Aashram Road,<br />
+                Old Fatehabad, Fatehabad,<br />
+                Haryana - 125050
+              </p>
+            </div>
+
+            {/* Social Icons - Updated with Bhagwa theme */}
+            <div className="flex justify-center sm:justify-start gap-4 mt-10">
+              <a
+                href="https://facebook.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-white/10 hover:bg-[#FF690B] text-white hover:text-white rounded-2xl transition-all duration-300"
+                aria-label="Facebook"
+              >
+                <FaFacebookF className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.instagram.com/cover_mantra_pvt_ltd"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-white/10 hover:bg-[#FF690B] text-white hover:text-white rounded-2xl transition-all duration-300"
+                aria-label="Instagram"
+              >
+                <FaInstagram className="w-5 h-5" />
+              </a>
+              <a
+                href="https://www.linkedin.com/company/covermantra/about"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-3 bg-white/10 hover:bg-[#FF690B] text-white hover:text-white rounded-2xl transition-all duration-300"
+                aria-label="LinkedIn"
+              >
+                <FaLinkedinIn className="w-5 h-5" />
+              </a>
+            </div>
           </div>
 
-          {/* Navigation Sections */}
-          <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:col-span-2 md:grid-cols-4">
+          {/* Navigation Links */}
+          <div className="grid grid-cols-1 gap-10 sm:grid-cols-2 lg:col-span-2 md:grid-cols-4">
+            
+            {/* About Us */}
             <div className="text-center sm:text-left">
-              <p className="text-lg font-medium text-white">About Us</p>
-              <ul className="mt-6 space-y-3 text-sm">
-                <li>
-                  <Link href="/about" className="text-white hover:text-white/75">
-                    About CoverMantra
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/contact"
-                    className="text-white hover:text-white/75"
-                  >
-                    Contact Us
-                  </Link>
-                </li>
+              <p className="text-lg font-semibold text-white mb-6">About Us</p>
+              <ul className="space-y-3 text-sm text-white/80">
+                <li><Link href="/about" className="hover:text-[#FF690B] transition">About CoverMantra</Link></li>
+                <li><Link href="/contact" className="hover:text-[#FF690B] transition">Contact Us</Link></li>
               </ul>
             </div>
 
+            {/* Our Services */}
             <div className="text-center sm:text-left">
-              <p className="text-lg font-medium text-white">Our Services</p>
-              <ul className="mt-6 space-y-3 text-sm">
+              <p className="text-lg font-semibold text-white mb-6">Our Services</p>
+              <ul className="space-y-3 text-sm text-white/80">
                 <li>
-                  <Link
-                    href="/business-loans"
-                    className="text-white hover:text-white/75"
-                  >
+                  <Link href="/business-loans" className="hover:text-[#FF690B] transition">
                     Business Loans
                   </Link>
                 </li>
-
-                {/* ✅ Personal Loans with login check */}
                 <li>
                   <button
                     onClick={() => handleProtectedNavigation("/personal-loans")}
-                    className="text-white hover:text-white/75"
+                    className="hover:text-[#FF690B] transition text-left"
                   >
                     Personal Loans
                   </button>
                 </li>
-
                 <li>
-                  <Link
-                    href="/insurance"
-                    className="text-white hover:text-white/75"
-                  >
+                  <Link href="/insurance" className="hover:text-[#FF690B] transition">
                     Insurance
                   </Link>
                 </li>
               </ul>
             </div>
 
+            {/* Helpful Links */}
             <div className="text-center sm:text-left">
-              <p className="text-lg font-medium text-white">Helpful Links</p>
-              <ul className="mt-6 space-y-3 text-sm">
-                <li>
-                  <Link href="/faq" className="text-white hover:text-white/75">
-                    FAQs
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/contact" className="text-white hover:text-white/75">
-                    Support
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/Blogs" className="text-white hover:text-white/75">
-                    Our Blogs
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/datapolicy" className="text-white hover:text-white/75">
-                    Data Policy
-                  </Link>
-                </li>
-                 <li>
-                  <Link href="/delete-account" className="text-white hover:text-white/75">
-                    Account Deletion Request
-                  </Link>
-                </li>
-                <li>
-                  <Link
-                    href="/LenderGrievances"
-                    className="text-white hover:text-white/75"
-                  >
-                    Lender Grievances
-                  </Link>
-                </li>
+              <p className="text-lg font-semibold text-white mb-6">Helpful Links</p>
+              <ul className="space-y-3 text-sm text-white/80">
+                <li><Link href="/faq" className="hover:text-[#FF690B] transition">FAQs</Link></li>
+                <li><Link href="/contact" className="hover:text-[#FF690B] transition">Support</Link></li>
+                <li><Link href="/Blogs" className="hover:text-[#FF690B] transition">Our Blogs</Link></li>
+                <li><Link href="/datapolicy" className="hover:text-[#FF690B] transition">Data Policy</Link></li>
+                <li><Link href="/delete-account" className="hover:text-[#FF690B] transition">Account Deletion</Link></li>
+                <li><Link href="/LenderGrievances" className="hover:text-[#FF690B] transition">Lender Grievances</Link></li>
               </ul>
             </div>
 
+            {/* Contact Us */}
             <div className="text-center sm:text-left">
-              <p className="text-lg font-medium text-white">Contact Us</p>
-              <ul className="mt-6 space-y-3 text-sm">
-                <li className="flex items-center gap-2 justify-center sm:justify-start">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 
-                      8M5 19h14a2 2 0 002-2V7a2 2 
-                      0 00-2-2H5a2 2 0 00-2 2v10a2 
-                      2 0 002 2z"
-                    />
+              <p className="text-lg font-semibold text-white mb-6">Contact Us</p>
+              <ul className="space-y-4 text-sm text-white/80">
+                <li className="flex items-center gap-3 justify-center sm:justify-start">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 text-[#FF690B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
                   </svg>
-                  <span className="text-white">info@covermantra.in</span>
+                  <a href="mailto:info@covermantra.in" className="hover:text-white">info@covermantra.in</a>
                 </li>
-                <li className="flex items-start gap-2 justify-center sm:justify-start">
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-10 h-5 text-white"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M17.657 16.657L13.414 20.9a1.998 
-                      1.998 0 01-2.827 0l-4.244-4.243a8 
-                      8 0 1111.314 0z"
-                    />
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15 11a3 3 0 11-6 
-                      0 3 3 0 016 0z"
-                    />
+
+                <li className="flex items-start gap-3 justify-center sm:justify-start">
+                  <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5 mt-0.5 text-[#FF690B]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
-                  <address className="not-italic text-white">
-                    2nd floor, MK Flex, Sanyash Aashram Road,
-                    Old Fatehabad, Fatehabad <br />
-                    Haryana - 125050
+                  <address className="not-italic leading-relaxed">
+                    2nd Floor, MK Flex,<br />
+                    Sanyash Aashram Road,<br />
+                    Old Fatehabad,<br />
+                    Fatehabad, Haryana - 125050
                   </address>
                 </li>
               </ul>
@@ -233,41 +173,36 @@ function Footer() {
         </div>
 
         {/* Bottom Bar */}
-        <div className="pt-4 mt-8 border-t border-gray-800">
-          <div className="text-center flex flex-col items-center gap-1">
-            <p className="text-sm text-white">
-              © {new Date().getFullYear()} CoverMantra Services Private Limited.
-              All Rights Reserved <br />
-              <Link
-                href="/terms"
-                className="text-blue-400 underline hover:text-blue-300"
-              >
-                Terms & Conditions
-              </Link>{" "}
-              ·{" "}
-              <Link
-                href="/privacy"
-                className="text-blue-400 underline hover:text-blue-300"
-              >
-                Privacy Policy
-              </Link>
+        <div className="pt-10 mt-12 border-t border-white/20">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-center md:text-left">
+            <p className="text-sm text-white/70">
+              © {new Date().getFullYear()} CoverMantra Services Private Limited. 
+              All Rights Reserved.
             </p>
 
-            <p className="mt-2 text-sm text-white">
+            <div className="flex flex-wrap justify-center gap-x-6 text-sm">
+              <Link href="/terms" className="text-white/70 hover:text-white transition">Terms & Conditions</Link>
+              <Link href="/privacy" className="text-white/70 hover:text-white transition">Privacy Policy</Link>
+            </div>
+
+            <p className="text-sm text-white/70">
               CIN: U46109DL2024PTC438732
             </p>
-            <p className="mt-1 text-sm text-white">&copy; 2025 CoverMantra</p>
           </div>
         </div>
       </div>
 
-      {/* ✅ Modals */}
+      {/* Modals */}
       <LoginModal
         isOpen={loginOpen}
         onClose={() => setLoginOpen(false)}
-        onOtpVerified={handleOtpVerified} // call this when OTP verified
+        onOtpVerified={handleOtpVerified}
       />
-      <GlobalModal isOpen={globalModalOpen} onClose={() => setGlobalModalOpen(false)} />
+
+      <GlobalModal 
+        isOpen={globalModalOpen} 
+        onClose={() => setGlobalModalOpen(false)} 
+      />
     </footer>
   );
 }
