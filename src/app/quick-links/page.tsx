@@ -6,18 +6,6 @@ import LoginModal from "../Components/LoginModal";
 import { registerUser } from "../APIs/utils";
 
 const lenders = [
-  // {
-  //   id: 1,
-  //   name: "MoneyView",
-  //   logo: "https://moneyview.in/images/mv-green-logo-v3Compressed.svg",
-  //   approval: "98%",
-  //   amount: "Upto 10L",
-  //   rate: "Starting from 1.33% per month(16% Annually)",
-  //   tenure: "6-18 months",
-  //   support: "24x7",
-  //   features: ["Quick Approval", "Low Interest", "Flexible Repayment"],
-  //   url: " https://moneyview.in/personal-loan?utm_source=covermantra",
-  // },
   {
     id: 2,
     name: "Zype",
@@ -28,7 +16,7 @@ const lenders = [
     tenure: "6-18 months",
     support: "24x7",
     features: ["Quick Approval", "Low Interest", "No Hidden Fees"],
-    url: " https://zype.onelink.me/vx8a?af_xp=custom&pid=CustomerSource&af_dp=com.zype.mobile%3A%2F%2F&deep_link_value=myZype&af_click_lookback=30d&c=Spiraea",
+    url: "https://zype.onelink.me/vx8a?af_xp=custom&pid=CustomerSource&af_dp=com.zype.mobile%3A%2F%2F&deep_link_value=myZype&af_click_lookback=30d&c=Spiraea",
   },
   {
     id: 3,
@@ -40,7 +28,7 @@ const lenders = [
     tenure: "3-24 months",
     support: "24x7",
     features: ["Quick Approval", "Low Interest", "No Hidden Fees"],
-    url: " https://web.fatakpay.com/authentication/login?utm_source=651_TT83W?utm_medium=",
+    url: "https://web.fatakpay.com/authentication/login?utm_source=651_TT83W?utm_medium=",
   },
   {
     id: 4,
@@ -53,33 +41,24 @@ const lenders = [
     support: "24x7",
     features: ["Quick Approval", "Low Interest", "No Hidden Fees"],
     url: "https://fatakpay.onelink.me/2uSI/652_IUXYC?utm_medium=",
-  },{
-    id: 5, // Unique ID
+  },
+  {
+    id: 5,
     name: "FlexSalary (Vivifi)",
-    logo: "https://www.flexsalary.com/images/global/flexsalary-color-black.webp", // Vivifi/FlexSalary logo URL
+    logo: "https://www.flexsalary.com/images/global/flexsalary-color-black.webp",
     approval: "92%",
     amount: "Upto 3L",
     rate: "Starting from 1.5% per month",
     tenure: "Flexible",
     support: "24x7",
     features: ["Credit Line", "Instant Transfer", "No Fixed EMI"],
-    url: "https://online.flexsalary.com/CustomerLogin/Index?CampaignID=9192300#x", // Internal Page Link
+    url: "https://online.flexsalary.com/CustomerLogin/Index?CampaignID=9192300#x",
   }
 ];
 
 const emptyForm = {
-  name: "",
-  phone: "",
-  email: "",
-  employeeType: "",
-  pan: "",
-  pincode: "",
-  loanAmount: "",
-  income: "",
-  dob: "",
-  city: "",
-  state: "",
-  gender: ""
+  name: "", phone: "", email: "", employeeType: "", pan: "",
+  pincode: "", loanAmount: "", income: "", dob: "", city: "", state: "", gender: ""
 };
 
 export default function Page() {
@@ -89,360 +68,153 @@ export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
-    const savedFormData = Cookies.get("loanFormData");
     const savedPhone = Cookies.get("co_phone");
-    if (savedPhone && savedFormData) {
-      const parsedData = JSON.parse(savedFormData);
-      if (parsedData.phone !== savedPhone) {
-        setForm({ ...emptyForm, phone: savedPhone });
-      } else {
-        setForm({ ...emptyForm, ...parsedData, phone: savedPhone });
-      }
-    } else {
-      setForm({ ...emptyForm, phone: savedPhone || "" });
-    }
+    if (savedPhone) setForm(prev => ({ ...prev, phone: savedPhone }));
   }, []);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const target = e.target;
-    const name = target.name;
-    const value =
-      target instanceof HTMLInputElement && target.type === "checkbox"
-        ? target.checked
-        : target.value;
-
-    const updatedForm = { ...form, [name]: value };
-    setForm(updatedForm);
-    Cookies.set("loanFormData", JSON.stringify(updatedForm));
-  };
-
-  const closeLoginModal = () => setLoginModalOpen(false);
-  const openLoginModal = () => setLoginModalOpen(true);
-
-  const isLoggedIn =
-    !!Cookies.get("co_token") || Cookies.get("co_login") === "true";
-
-  const handleRegisterUser = async () => {
-    try {
-      const payload = {
-        name: form.name,
-        phone: form.phone,
-        pan: form.pan.toUpperCase(),
-        dob: form.dob,
-        email: form.email,
-        employment: form.employeeType,
-        income: form.income,
-        pincode: form.pincode,
-        loanAmount: form.loanAmount,
-        city: form.city,
-        state: form.state,
-        gender: form.gender,
-      };
-      await registerUser(payload);
-      Cookies.set("loanFormData", JSON.stringify(form), { expires: 7 });
-      Cookies.set("loanFormSubmitted", "true", { expires: 7 });
-      closeLoginModal();
-      router.push("/personal-loans");
-    } catch (err: any) {
-      const errorMsg = err?.response?.data?.message?.toLowerCase() || err?.message || "";
-
-      if (errorMsg.includes("User already exists.") || errorMsg.includes("Please sign in")) {
-
-        console.log("User already registered, redirecting...");
-        closeLoginModal();
-        router.push("/personal-loans");
-      } else {
-        console.error("Registration failed:", err);
-        alert("User Already Exits. Please try again.");
-      }
-    }
-  };
-
-  const validateMandatoryFields = () => {
-    const mandatoryFields = [
-      "name",
-      "phone",
-      "email",
-      "employeeType",
-      "pan",
-      "pincode",
-      "loanAmount",
-      "income",
-      "dob",
-      "city",
-      "state",
-      "gender"
-    ];
-    for (const field of mandatoryFields) {
-      if (!form[field as keyof typeof form] || form[field as keyof typeof form] === "") {
-        return false;
-      }
-    }
-    return true;
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!consent) return alert("Please agree to terms.");
+    const isLoggedIn = !!Cookies.get("co_token");
+    isLoggedIn ? await handleRegisterUser() : setLoginModalOpen(true);
+  };
 
-    if (!consent) {
-      alert("Please agree to the terms to proceed.");
-      return;
-    }
-
-    if (!validateMandatoryFields()) {
-      alert("Please fill in all required fields.");
-      return;
-    }
-
-    if (isLoggedIn) {
-      await handleRegisterUser();
-    } else {
-      openLoginModal();
+  const handleRegisterUser = async () => {
+    try {
+      await registerUser({ ...form, pan: form.pan.toUpperCase() });
+      router.push("/personal-loans");
+    } catch (err) {
+      router.push("/personal-loans");
     }
   };
 
- return (
-  <section className="bg-gradient-to-r from-green-200 via-lime-200 to-green-700 py-12 px-4 md:px-6 mt-10 rounded-xl shadow-md">
-  <div className="max-w-7xl mx-auto">
-    <div className="text-center mb-10 mt-6">
-      <h2 className="text-4xl font-extrabold text-green-800">
-        Explore Top Loan Offers 💰
-      </h2>
-      <p className="text-lg text-gray-800 mt-3 max-w-3xl mx-auto">
-        Get instant access to verified lenders and apply online in minutes.
-      </p>
-    </div>
+  return (
+    <main className="min-h-screen bg-[#FFF4E5] pt-24 pb-16 px-4 sm:px-6 lg:px-8">
+      {/* Page Heading */}
+      <div className="max-w-7xl mx-auto text-center mb-12">
+        <h2 className="text-3xl md:text-5xl font-black text-[#08101E] tracking-tighter">
+          Compare & Get <span className="text-[#FF7819]">Instant Loans</span> 💰
+        </h2>
+        <p className="text-gray-600 mt-4 font-medium max-w-xl mx-auto">
+          Get instant access to verified lenders and apply online in minutes.
+        </p>
+      </div>
 
-  
-    <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-     
-      <div className="lg:col-span-2">
-         <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-6">
-          {lenders.map((lender) => (
-            <div
-              key={lender.id}
-              className="relative bg-gradient-to-br from-green-50 to-green-300 backdrop-blur-xl border border-green-200 p-4 rounded-xl shadow-md hover:shadow-xl transition duration-500 group h-auto"
-            >
-              {/* Glow Effect */}
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-green-300/40 via-lime-200/30 to-green-400/40 opacity-0 group-hover:opacity-100 blur-lg transition duration-500"></div>
-              <div className="relative z-10">
-          
-                <div className="flex items-center gap-3 mb-4 ">
-                  <img
-                    src={lender.logo}
-                    alt={`${lender.name} logo`}
-                    className="w-20 h-16 rounded-lg object-contain shadow-sm border border-green-200 bg-white p-2"
-                  />
-                  <div>
-                    <h3 className="font-semibold text-xl md:text-2xl text-green-900 group-hover:text-green-700 transition ml-3">
-                      {lender.name}
-                    </h3>
-                    <p className="text-sm text-gray-600 ml-3">{lender.approval} 🌟</p>
+      <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10">
+        
+        {/* LENDERS LIST SECTION */}
+        <div className="lg:col-span-7 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {lenders.map((lender) => (
+              <div 
+                key={lender.id} 
+                className="bg-white p-7 rounded-[2.5rem] border border-white shadow-[0_15px_45px_-15px_rgba(0,0,0,0.08)] hover:shadow-[0_25px_60px_-15px_rgba(255,120,25,0.2)] transition-all duration-300 transform hover:-translate-y-2 flex flex-col"
+              >
+                {/* Logo & Approval Header */}
+                <div className="flex justify-between items-center mb-6">
+                  <div className="bg-gray-50 p-2.5 rounded-2xl border border-gray-100 flex items-center justify-center h-14 w-28">
+                    <img src={lender.logo} alt={lender.name} className="max-h-full max-w-full object-contain" />
+                  </div>
+                  <div className="flex items-center gap-1.5 bg-green-50 text-green-700 px-3 py-1.5 rounded-full border border-green-100 font-bold shadow-sm">
+                    <span className="text-[11px]">{lender.approval}</span>
+                    <span className="text-xs">🌟</span>
                   </div>
                 </div>
 
-                {/* Loan Details: text-xs is ideal for mobile density. */}
-                <div className="text-xs grid grid-cols-2 gap-2 mb-3">
-                  <p className="bg-green-50 px-2 py-1 rounded-md shadow-sm transition transform hover:bg-green-100 hover:scale-105 hover:shadow-md cursor-pointer">
-                    <strong>Loan:</strong> {lender.amount}
-                  </p>
-                  <p className="bg-green-50 px-2 py-1 rounded-md shadow-sm transition transform hover:bg-green-100 hover:scale-105 hover:shadow-md cursor-pointer">
-                    <strong>Rate:</strong> {lender.rate}
-                  </p>
-                  <p className="bg-green-50 px-2 py-1 rounded-md shadow-sm transition transform hover:bg-green-100 hover:scale-105 hover:shadow-md cursor-pointer">
-                    <strong>Tenure:</strong> {lender.tenure}
-                  </p>
-                  <p className="bg-green-50 px-2 py-1 rounded-md shadow-sm transition transform hover:bg-green-100 hover:scale-105 hover:shadow-md cursor-pointer">
-                    <strong>Support:</strong> {lender.support}
-                  </p>
+                <h3 className="text-xl font-black text-[#08101E] mb-5 tracking-tight leading-tight">{lender.name}</h3>
+
+                {/* Key Metrics Grid */}
+                <div className="grid grid-cols-2 gap-3 mb-6">
+                  <div className="bg-gray-50 p-3.5 rounded-2xl border border-gray-50 shadow-inner">
+                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-1">Max Loan</p>
+                    <p className="text-xs font-bold text-[#08101E]">{lender.amount}</p>
+                  </div>
+                  <div className="bg-gray-50 p-3.5 rounded-2xl border border-gray-50 shadow-inner">
+                    <p className="text-[9px] text-gray-400 font-bold uppercase tracking-widest mb-1">Interest</p>
+                    <p className="text-[10px] font-bold text-[#08101E] leading-tight">{lender.rate}</p>
+                  </div>
                 </div>
 
-              
-                <div className="flex gap-2 text-[11px] mb-4 overflow-x-auto whitespace-nowrap scrollbar-hide">
-                  {lender.features.map((feature, idx) => (
-                    <span
-                      key={idx}
-                      className="bg-gradient-to-r from-green-100 to-green-200 text-green-800 px-2 py-1 rounded-full shadow-sm inline-block flex-shrink-0"
-                    >
-                      ✅ {feature}
-                    </span>
-                  ))}
+                {/* --- SHOWING ALL FEATURES HERE --- */}
+                <div className="mb-8 mt-auto">
+                   <p className="text-[9px] text-gray-400 font-black uppercase tracking-widest mb-3 px-1">Highlights</p>
+                   <div className="flex flex-wrap gap-2">
+                    {lender.features.map((feature, i) => (
+                      <span key={i} className="flex items-center gap-1.5 text-[10px] font-bold bg-green-50/70 text-green-700 px-3 py-1.5 rounded-xl border border-green-100/50">
+                        <span className="text-xs">✅</span> {feature}
+                      </span>
+                    ))}
+                  </div>
                 </div>
 
-           <a href={lender.url} target="_blank" rel="noopener noreferrer">
-                  <button className="w-full bg-gradient-to-r from-blue-500 to-green-600 hover:from-blue-600 hover:to-green-700 text-white text-sm font-semibold py-3 rounded-lg shadow-md hover:shadow-lg transition duration-300">
+                {/* Modern Action Button */}
+                <a href={lender.url} target="_blank" rel="noopener noreferrer" className="block mt-2">
+                  <button className="w-full bg-gradient-to-r from-[#21C55E] to-[#16A34A] hover:from-[#16A34A] hover:to-[#15803D] text-white font-black py-4.5 rounded-2xl shadow-[0_12px_25px_-5px_rgba(22,163,74,0.4)] transition-all flex items-center justify-center gap-2.5 active:scale-[0.98] uppercase tracking-widest text-xs">
                     Apply Now 🚀
                   </button>
                 </a>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
-      <div className="flex justify-center lg:block">
-        <div className="w-full max-w-md lg:max-w-none bg-white p-6 rounded-xl shadow-2xl lg:sticky lg:top-4">
-          <h3 className="text-2xl font-bold text-green-800 mb-6 text-center">
-            Check Your Eligibility
-          </h3>
-          <form className="space-y-4 text-sm" onSubmit={handleSubmit}>
-            <input
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              value={form.name}
-              onChange={handleChange}
-              autoComplete="name"
-              className="w-full border rounded px-4 py-2 focus:ring-green-500 focus:border-green-500"
-              required
-            />
-            <input
-              type="tel"
-              name="phone"
-              placeholder="Phone Number"
-              value={form.phone}
-              onChange={handleChange}
-              autoComplete="tel"
-              className="w-full border rounded px-4 py-2 focus:ring-green-500 focus:border-green-500"
-              required
-            />
-            <input
-              type="email"
-              name="email"
-              placeholder="Email Address"
-              value={form.email}
-              onChange={handleChange}
-              autoComplete="email"
-              className="w-full border rounded px-4 py-2 focus:ring-green-500 focus:border-green-500"
-              required
-            />
-            <select
-              name="employeeType"
-              value={form.employeeType}
-              onChange={handleChange}
-              className="w-full border rounded px-4 py-2 focus:ring-green-500 focus:border-green-500 text-gray-700"
-              required
-            >
-              <option value="" disabled>
-                Employment Type *
-              </option>
-              <option value="salaried">Salaried</option>
-              <option value="self-employed">Self-employed</option>
-            </select>
-            <input
-              type="text"
-              name="pan"
-              placeholder="PAN Number"
-              value={form.pan}
-              onChange={handleChange}
-              className="w-full border rounded px-4 py-2 uppercase focus:ring-green-500 focus:border-green-500"
-              required
-            />
-            <select
-              name="gender"
-              value={form.gender}
-              onChange={handleChange}
-              required
-              className="w-full border rounded px-4 py-2 focus:ring-green-500 focus:border-green-500 text-gray-700"
-            >
-              <option value="">Gender *</option>
-              <option value="Male">Male</option>
-              <option value="Female">Female</option>
-              <option value="Other">Other</option>
-            </select>
-            <input
-              type="text"
-              name="pincode"
-              placeholder="Pincode"
-              value={form.pincode}
-              onChange={handleChange}
-              className="w-full border rounded px-4 py-2 focus:ring-green-500 focus:border-green-500"
-              required
-            />
-            <input
-              type="text"
-              name="city"
-              placeholder="City"
-              value={form.city}
-              onChange={handleChange}
-              className="w-full border rounded px-4 py-2 focus:ring-green-500 focus:border-green-500"
-              required
-            />
-            <input
-              type="text"
-              name="state"
-              placeholder="State"
-              value={form.state}
-              onChange={handleChange}
-              className="w-full border rounded px-4 py-2 focus:ring-green-500 focus:border-green-500"
-              required
-            />
-            <input
-              type="number"
-              name="loanAmount"
-              placeholder="Loan Amount Required"
-              value={form.loanAmount}
-              onChange={handleChange}
-              className="w-full border rounded px-4 py-2 focus:ring-green-500 focus:border-green-500"
-              required
-              min={0}
-            />
-            <input
-              type="number"
-              name="income"
-              placeholder="Monthly Income"
-              value={form.income}
-              onChange={handleChange}
-              className="w-full border rounded px-4 py-2 focus:ring-green-500 focus:border-green-500"
-              required
-              min={0}
-            />
-            <input
-              type="date"
-              name="dob"
-              value={form.dob}
-              onChange={handleChange}
-              className="w-full border rounded px-4 py-2 focus:ring-green-500 focus:border-green-500 text-gray-700"
-              required
-            />
+        {/* ELIGIBILITY FORM SECTION */}
+        <div className="lg:col-span-5 lg:sticky lg:top-28 h-fit">
+          <div className="bg-white p-8 sm:p-10 rounded-[3rem] shadow-[0_30px_70px_-20px_rgba(0,0,0,0.12)] border border-white">
+            <h2 className="text-2xl font-black text-[#08101E] mb-10 text-center uppercase tracking-tighter">Check Your Eligibility</h2>
             
-            <div className="flex items-start text-xs pt-2">
-              <input
-                type="checkbox"
-                id="consent"
-                checked={consent}
-                onChange={() => setConsent(!consent)}
-                className="mr-2 mt-1 accent-green-800 flex-shrink-0"
-                required
-              />
-              <label htmlFor="consent" className="text-gray-600">
-                I agree to be contacted via Email, WhatsApp, SMS, or Call.
-              </label>
-            </div>
-            <button
-              type="submit"
-              className={`w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-3 rounded transition shadow-md hover:shadow-lg ${!consent ? "disabled:opacity-50 disabled:cursor-not-allowed" : ""
-                }`}
-              disabled={!consent}
-            >
-              Submit Request
-            </button>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <input name="name" placeholder="Full Name (As per PAN)" value={form.name} onChange={handleChange} className="w-full bg-gray-50 border border-transparent rounded-xl px-5 py-4 focus:bg-white focus:border-[#FF7819]/20 outline-none transition-all font-semibold shadow-inner" required />
+              
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} className="w-full bg-gray-50 border border-transparent rounded-xl px-5 py-4 outline-none font-semibold shadow-inner" required />
+                <input name="pan" placeholder="PAN Number" value={form.pan} onChange={handleChange} className="w-full bg-gray-50 border border-transparent rounded-xl px-5 py-4 outline-none font-semibold shadow-inner uppercase" required />
+              </div>
 
-          </form>
+              <div className="grid grid-cols-2 gap-4">
+                <select name="employeeType" value={form.employeeType} onChange={handleChange} className="bg-gray-50 border border-transparent rounded-xl px-5 py-4 outline-none font-semibold shadow-inner text-gray-500" required>
+                  <option value="" disabled>Emp Type</option>
+                  <option value="Salaried">Salaried</option>
+                  <option value="Self-Employed">Self-Employed</option>
+                </select>
+                <select name="gender" value={form.gender} onChange={handleChange} className="bg-gray-50 border border-transparent rounded-xl px-5 py-4 outline-none font-semibold shadow-inner text-gray-500" required>
+                  <option value="" disabled>Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                </select>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2">
+                {['City', 'State', 'Pincode'].map(item => (
+                  <input key={item} name={item.toLowerCase()} placeholder={item} onChange={handleChange} className="w-full bg-gray-50 border border-transparent rounded-xl px-2 py-4 text-center outline-none font-bold shadow-inner text-[10px]" required />
+                ))}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <input name="loanAmount" type="number" placeholder="Loan Required" onChange={handleChange} className="w-full bg-gray-50 border border-transparent rounded-xl px-5 py-4 outline-none font-semibold shadow-inner" required />
+                <input name="income" type="number" placeholder="Income" onChange={handleChange} className="w-full bg-gray-50 border border-transparent rounded-xl px-5 py-4 outline-none font-semibold shadow-inner" required />
+              </div>
+
+              <div className="flex items-start gap-3 py-4 mt-4 px-2 border-t border-gray-100">
+                <input type="checkbox" id="consent" checked={consent} onChange={() => setConsent(!consent)} className="mt-1 w-4 h-4 accent-[#FF7819]" required />
+                <label htmlFor="consent" className="text-[10px] text-gray-500 font-medium leading-relaxed">
+                  I authorize CoverMantra to contact me regarding my loan application through Call, SMS, or WhatsApp.
+                </label>
+              </div>
+
+              <button type="submit" className="w-full bg-[#08101E] hover:bg-black text-white font-black py-5 rounded-2xl shadow-xl transition-all active:scale-95 uppercase tracking-widest text-xs mt-2">
+                Submit Request
+              </button>
+            </form>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
 
-  {/* Login Modal */}
-  <LoginModal
-    isOpen={loginModalOpen}
-    onClose={closeLoginModal}
-    onSuccess={handleRegisterUser}
-    suppressGlobalModal={true}
-  />
-</section>
-);
+      <LoginModal isOpen={loginModalOpen} onClose={() => setLoginModalOpen(false)} onSuccess={handleRegisterUser} suppressGlobalModal={true} />
+    </main>
+  );
 }

@@ -3,9 +3,10 @@
 import Head from "next/head";
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
-import { CheckCircle, FileText, Shield } from "lucide-react";
+import { CheckCircle, FileText, Shield, Home, Zap, ArrowRight, Award } from "lucide-react";
 import AOS from "aos";
 import HomeCalculator from "../AllCalculators/HomeCalculator";
+import "aos/dist/aos.css";
 
 import home from "../../../animations/Home1.json";
 
@@ -15,152 +16,157 @@ const Player = dynamic(
 );
 
 export default function HomeInsurancePage() {
-  // ✅ Init AOS
   useEffect(() => {
-    import("aos/dist/aos.css").then(() => {
-      AOS.init({ duration: 1000, once: true });
-    });
+    AOS.init({ duration: 1000, once: true, disable: 'phone' });
   }, []);
 
   return (
     <>
       <Head>
-        <title>Home Insurance | YourBank</title>
+        <title>Premium Home Insurance | Secure Your Sanctuary</title>
       </Head>
 
-      <main className="min-h-screen bg-green-50 text-green-900">
-        {/* Hero Section */}
-        <section
-          className="bg-green-900 text-white px-6 py-16 text-center flex flex-col items-center mt-10"
-          data-aos="fade-up"
-        >
-          <Player
-            autoplay
-            loop
-            src={JSON.stringify(home)}
-            style={{ height: "120px", width: "120px" }}
-          />
-          <h1 className="text-3xl md:text-5xl font-bold mt-6">
-            Home Insurance Plans
-          </h1>
-          <p className="mt-4 text-lg max-w-2xl">
-            Secure your house and valuables from fire, theft, and natural
-            disasters with our trusted home insurance policies.
-          </p>
+      <main className="min-h-screen bg-[#FFF4E5] text-[#08101E] overflow-x-hidden font-sans">
+        
+        {/* 🏠 LUXURY HERO SECTION */}
+        <section className="relative bg-[#08101E] text-white pt-28 pb-24 px-6 overflow-hidden">
+          {/* Background Glows */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-orange-500/10 rounded-full blur-[120px] -mr-32 -mt-32" />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-600/10 rounded-full blur-[100px] -ml-20 -mb-20" />
+
+          <div className="relative max-w-7xl mx-auto flex flex-col items-center text-center z-10" data-aos="fade-down">
+            <div className="w-32 h-32 md:w-44 md:h-44 bg-white/5 backdrop-blur-xl rounded-[2.5rem] flex items-center justify-center border border-white/10 mb-8 shadow-2xl transform -rotate-3 hover:rotate-0 transition-transform duration-500">
+              <Player
+                autoplay
+                loop
+                src={home}
+                style={{ height: "140px", width: "140px" }}
+              />
+            </div>
+            
+            <h1 className="text-4xl md:text-7xl font-black mb-6 tracking-tighter leading-tight italic">
+              Elite <span className="text-[#FF7819]">Home Protection</span> <br />
+              Beyond Boundaries
+            </h1>
+            
+            <p className="text-lg md:text-xl text-gray-400 max-w-3xl mx-auto font-medium leading-relaxed">
+              Secure your legacy and valuables from fire, theft, and natural 
+              catastrophes with our next-generation premium insurance policies.
+            </p>
+          </div>
         </section>
 
-        {/* Why Home Insurance */}
-        <section className="py-16 px-6 max-w-6xl mx-auto" data-aos="fade-right">
-          <h2 className="text-2xl md:text-4xl font-bold text-center mb-10">
-            Why Do You Need Home Insurance?
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* 🛡️ WHY HOME INSURANCE - 3D Card Grid */}
+        <section className="py-24 px-6 max-w-7xl mx-auto">
+          <div className="flex flex-col items-center mb-16" data-aos="fade-up">
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#08101E] text-center">
+              Maximum <span className="text-[#FF7819]">Security</span> Features
+            </h2>
+            <div className="w-24 h-2 bg-[#FF7819] mt-4 rounded-full" />
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              "Protection against fire & natural disasters",
-              "Coverage for burglary & theft",
-              "Covers accidental damages (short circuit, gas explosion)",
-              "Structural protection (walls, roof, foundation)",
-              "Liability protection for accidents inside your home",
-              "Peace of mind for homeowners & tenants",
+              "Fire & Natural Disaster Shield",
+              "Advanced Burglary & Theft Cover",
+              "Accidental Damage Protection",
+              "Full Structural Fortification",
+              "Comprehensive Liability Shield",
+              "Absolute Peace for Homeowners",
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="bg-white border rounded-xl shadow p-6 flex gap-3 items-start"
+                className="group bg-white border border-gray-100 rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.03)] p-8 flex flex-col gap-4 hover:bg-[#08101E] transition-all duration-500"
                 data-aos="zoom-in"
+                data-aos-delay={idx * 100}
               >
-                <CheckCircle className="text-green-600 mt-1" />
-                <p>{item}</p>
+                <div className="w-14 h-14 bg-[#FFF4E5] rounded-2xl flex items-center justify-center text-[#FF7819] group-hover:bg-[#FF7819] group-hover:text-white transition-all">
+                  <Shield size={28} />
+                </div>
+                <p className="text-xl font-bold text-[#08101E] group-hover:text-white">{item}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Types of Plans */}
-        <section className="py-16 px-6 bg-green-100" data-aos="fade-left">
-          <h2 className="text-2xl md:text-4xl font-bold text-center mb-10">
-            Types of Home Insurance Plans
+        {/* 💎 TIERED PLANS - Modern Bento Style */}
+        <section className="py-24 px-6 bg-[#08101E] rounded-[4rem] mx-4" data-aos="fade-up">
+          <h2 className="text-3xl md:text-5xl font-black text-center text-white mb-16">
+            Protection <span className="text-[#FF7819]">Tiers</span>
           </h2>
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 lg:grid-cols-5 gap-6 max-w-[90rem] mx-auto">
             {[
-              {
-                title: "Basic Fire & Perils Policy",
-                desc: "Covers damages due to fire, floods, storms, and earthquakes.",
-              },
-              {
-                title: "Comprehensive Home Policy",
-                desc: "Full protection for house structure + household contents.",
-              },
-              {
-                title: "Tenant's Insurance",
-                desc: "Protects your personal belongings in a rented home.",
-              },
-              {
-                title: "Landlord's Insurance",
-                desc: "Covers property damage and loss of rental income.",
-              },
-              {
-                title: "Contents-Only Policy",
-                desc: "Safeguards furniture, appliances, electronics, and jewelry.",
-              },
+              { title: "Basic Fire & Perils", desc: "Covers damages due to fire, floods, and earthquakes." },
+              { title: "Comprehensive Home", desc: "Full protection for house structure + contents." },
+              { title: "Tenant's Shield", desc: "Protects your personal belongings in rented space." },
+              { title: "Landlord's Cover", desc: "Covers property damage and loss of rental income." },
+              { title: "Contents Only", desc: "Safeguards appliances, electronics, and jewelry." },
             ].map((plan, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl shadow border p-6 text-center hover:shadow-lg transition"
-                data-aos="flip-left"
+                className="bg-white/5 backdrop-blur-md rounded-[2.5rem] border border-white/10 p-8 flex flex-col justify-between hover:bg-white/10 transition-all group"
+                data-aos="flip-right"
+                data-aos-delay={idx * 100}
               >
-                <h3 className="text-xl font-bold mb-3">{plan.title}</h3>
-                <p className="text-green-700 mb-4">{plan.desc}</p>
-                <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                  View Details
+                <div>
+                  <Zap className="text-[#FF7819] mb-6 w-10 h-10 group-hover:scale-125 transition-transform" />
+                  <h3 className="text-xl font-black mb-3 text-white">{plan.title}</h3>
+                  <p className="text-gray-400 text-sm mb-6 leading-relaxed">{plan.desc}</p>
+                </div>
+                <button className="w-full bg-[#FF7819] text-white py-3 rounded-2xl font-bold hover:shadow-[0_10px_20px_rgba(255,120,25,0.3)] transition-all flex items-center justify-center gap-2">
+                  Explore <ArrowRight size={16} />
                 </button>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Documents & Benefits */}
-        <section className="py-16 px-6 bg-green-100" data-aos="fade-up">
-          <h2 className="text-2xl md:text-4xl font-bold text-center mb-10">
-            Documents & Benefits of Home Insurance
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
+        {/* 📄 DOCS & BENEFITS - Elevated Split View */}
+        <section className="py-24 px-6 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12 items-stretch">
             {/* Documents */}
-            <div className="bg-white shadow rounded-xl p-6 border" data-aos="fade-right">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <FileText className="text-green-600" /> Documents Required
-              </h3>
-              <ul className="space-y-3 text-green-800">
+            <div className="bg-white rounded-[3rem] p-10 shadow-2xl border border-gray-50" data-aos="fade-right">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="p-4 bg-[#FFF4E5] rounded-3xl text-[#FF7819]">
+                  <FileText size={36} />
+                </div>
+                <h3 className="text-3xl font-black">Digital Vault <br /><span className="text-gray-400 text-lg">Documents Required</span></h3>
+              </div>
+              <ul className="space-y-5">
                 {[
-                  "Proof of Identity (Aadhar, PAN, Passport)",
-                  "Proof of Address (Utility Bill, Rental Agreement)",
-                  "Property Ownership Documents / Sale Deed",
+                  "Proof of Identity (Aadhar, PAN)",
+                  "Proof of Address (Utility Bills)",
+                  "Property Sale Deed Documents",
                   "Property Tax Receipts",
-                  "Previous Insurance Policy (if any)",
-                  "Photographs of the Property",
+                  "Previous Policy Records",
+                  "High-Res Property Photos",
                 ].map((doc, idx) => (
-                  <li key={idx} className="flex gap-2 items-center">
-                    <CheckCircle className="text-green-600" /> {doc}
+                  <li key={idx} className="flex gap-4 items-center font-bold text-[#08101E]">
+                    <CheckCircle className="text-[#FF7819]" size={22} /> {doc}
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Benefits */}
-            <div className="bg-white shadow rounded-xl p-6 border" data-aos="fade-left">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                <Shield className="text-green-600" /> Benefits of Home Insurance
-              </h3>
-              <ul className="space-y-3 text-green-800">
+            <div className="bg-[#FF7819] rounded-[3rem] p-10 text-white shadow-[0_30px_60px_rgba(255,120,25,0.2)]" data-aos="fade-left">
+              <div className="flex items-center gap-4 mb-10">
+                <div className="p-4 bg-white/20 rounded-3xl text-white">
+                  <Award size={36} />
+                </div>
+                <h3 className="text-3xl font-black">Core Rewards <br /><span className="text-orange-100 text-lg">Member Benefits</span></h3>
+              </div>
+              <ul className="space-y-5">
                 {[
-                  "Financial protection against unforeseen damages",
-                  "Covers both structure & contents of home",
-                  "Protection against burglary, theft & disasters",
-                  "Low premium, high-value coverage",
-                  "Peace of mind for homeowners & tenants",
-                  "Additional riders for electronics & valuables",
+                  "Global damage repair coverage",
+                  "Structure & interior contents protection",
+                  "Zero-theft liability rider",
+                  "Ultra-low premium rates",
+                  "Tenant-specific belonging cover",
+                  "24/7 dedicated claim concierge",
                 ].map((benefit, idx) => (
-                  <li key={idx} className="flex gap-2 items-center">
-                    <CheckCircle className="text-green-600" /> {benefit}
+                  <li key={idx} className="flex gap-4 items-center font-bold">
+                    <CheckCircle className="text-white" size={22} /> {benefit}
                   </li>
                 ))}
               </ul>
@@ -168,54 +174,55 @@ export default function HomeInsurancePage() {
           </div>
         </section>
 
-        {/* Calculator Section */}
-        <section className="py-12 px-4 max-w-4xl mx-auto" data-aos="fade-up">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-4">
-            Home Insurance Premium Calculator
-          </h2>
-          <div className="bg-green-50 p-4 rounded-xl shadow border mt-0">
-            <HomeCalculator />
+        {/* 🧮 CALCULATOR - Floating Glassmorphism */}
+        <section className="py-20 px-6" data-aos="fade-up">
+          <div className="max-w-5xl mx-auto bg-white rounded-[4rem] shadow-2xl border border-gray-100 overflow-hidden relative">
+             <div className="bg-[#08101E] p-8 md:p-12 text-center">
+                <h2 className="text-3xl md:text-5xl font-black text-white mb-2">
+                  Premium <span className="text-[#FF7819]">Calculator</span>
+                </h2>
+                <p className="text-gray-400 font-medium">Real-time estimation for your dream sanctuary.</p>
+             </div>
+             <div className="p-6 md:p-12 bg-white">
+                <HomeCalculator />
+             </div>
           </div>
         </section>
 
-        {/* How It Works */}
-        <section className="py-16 px-6 bg-green-100 text-center" data-aos="fade-up">
-          <h2 className="text-2xl md:text-4xl font-bold mb-10">
-            How to Get Your Home Insured?
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {["Choose Plan", "Enter Property Details", "Pay Premium", "Download Policy"].map(
-              (step, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white rounded-xl shadow p-6 flex flex-col items-center"
-                  data-aos="zoom-in"
-                >
-                  <div className="text-green-600 text-3xl font-bold mb-2">
-                    {idx + 1}
-                  </div>
-                  <p>{step}</p>
+        {/* 🛤️ HOW IT WORKS - Process Flow */}
+        <section className="py-24 px-6 bg-[#08101E]/5 rounded-[4rem] mx-4 text-center" data-aos="fade-up">
+          <h2 className="text-3xl md:text-5xl font-black mb-16">The Seamless <span className="text-[#FF7819]">Process</span></h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            {["Select Tier", "Property Scan", "Vault Payment", "Policy Genesis"].map((step, idx) => (
+              <div key={idx} className="relative group" data-aos="zoom-in" data-aos-delay={idx * 100}>
+                <div className="bg-white rounded-[2.5rem] p-10 h-full shadow-lg border border-gray-100 group-hover:bg-[#FF7819] group-hover:translate-y-[-10px] transition-all duration-500">
+                  <div className="text-5xl font-black text-gray-100 group-hover:text-white/20 mb-6 transition-colors">0{idx + 1}</div>
+                  <p className="font-black text-xl text-[#08101E] group-hover:text-white">{step}</p>
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-16 px-6 text-center" data-aos="fade-up">
-          <h2 className="text-2xl md:text-4xl font-bold mb-4">
-            Protect Your Dream Home Today!
-          </h2>
-          <p className="text-green-800 mb-6 max-w-2xl mx-auto">
-            Get the right coverage for your house and belongings. Choose a plan
-            that fits your needs and secure your home.
-          </p>
-          <a
-            href="/apply-insurance"
-            className="inline-block bg-green-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-green-700 transition text-lg"
-          >
-            Apply Now
-          </a>
+        {/* 📣 FINAL CTA - Impact Section */}
+        <section className="py-32 px-6 text-center" data-aos="fade-up">
+          <div className="max-w-5xl mx-auto bg-[#08101E] rounded-[3.5rem] p-12 md:p-24 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#FF7819]/10 rounded-full blur-[80px]" />
+            <div className="relative z-10">
+              <h2 className="text-4xl md:text-7xl font-black text-white mb-8 tracking-tighter">
+                Ready to Secure <br /> Your <span className="text-[#FF7819]">Safe Haven?</span>
+              </h2>
+              <p className="text-gray-400 text-lg md:text-xl mb-12 max-w-2xl mx-auto font-medium">
+                Join thousands of homeowners who trust our elite structural and content protection layers.
+              </p>
+              <a
+                href="/apply-insurance"
+                className="inline-flex items-center gap-4 bg-[#FF7819] text-white px-12 py-5 rounded-full font-black text-xl hover:shadow-[0_20px_40px_rgba(255,120,25,0.4)] hover:scale-105 transition-all"
+              >
+                Apply For Coverage <ArrowRight />
+              </a>
+            </div>
+          </div>
         </section>
       </main>
     </>

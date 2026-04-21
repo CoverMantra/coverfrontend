@@ -1,19 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { sendOtp, verifyOtp, getUser } from "../APIs/utils";
 import { useRouter } from "next/navigation";
 import { useModal } from "../context/modelcontext";
 import { triggerLoginStatusChange } from "./Navbar";
+import { motion, AnimatePresence } from "framer-motion";
+import { FaPhoneAlt, FaLock, FaCheckCircle, FaShieldAlt, FaTimes } from "react-icons/fa";
 
 interface Props {
   isOpen: boolean;
   onClose: () => void;
   onSuccess?: () => Promise<void>;
   suppressGlobalModal?: boolean;
-  onOtpVerified?: () => void; // new optional prop
-
+  onOtpVerified?: () => void;
 }
 
 export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalModal }: Props) {
@@ -22,11 +23,10 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
   const [step, setStep] = useState<"phone" | "otp">("phone");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
-  const [consent, setConsent] = useState(false); // Added consent state
+  const [consent, setConsent] = useState(false);
   const router = useRouter();
   const { openModal } = useModal();
 
-  // Reset state whenever modal is opened
   useEffect(() => {
     if (isOpen) {
       setStep("phone");
@@ -37,64 +37,40 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
     }
   }, [isOpen]);
 
-  // Login helper
   const login = ({ phone, token }: { phone: string; token: string }) => {
     router.push("/");
   };
 
-  // Send OTP
   const handleSendOtp = async () => {
     setErrorMsg("");
-
     if (!/^[6-9]\d{9}$/.test(phone)) {
-      setErrorMsg("Enter a valid 10-digit mobile number");
+      setErrorMsg("Invalid 10-digit number");
       return;
     }
-
-    // NOTE: Removed 'if (!consent)' check here to rely on button 'disabled' state.
-    // However, I'm re-adding it below for robustness in case the button's disabled state fails.
     if (!consent) {
-      setErrorMsg("Please agree to the contact terms to proceed.");
+      setErrorMsg("Agreement required to proceed");
       return;
     }
 
     setIsLoading(true);
     try {
       const res = await sendOtp(phone);
-
-      if (
-        res?.success === true ||
-        res?.status === true ||
-        res?.status === "success" ||
-        res?.message?.toLowerCase().includes("otp sent")
-      ) {
+      if (res?.success || res?.status === "success" || res?.message?.toLowerCase().includes("otp sent")) {
         setStep("otp");
       } else {
         setErrorMsg(res?.message || "Failed to send OTP!");
       }
     } catch (err: any) {
-      const msg =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to send OTP!";
-      setErrorMsg(msg);
-      console.error("Send OTP Error:", err);
+      setErrorMsg(err?.response?.data?.message || "Failed to send OTP!");
     } finally {
       setIsLoading(false);
     }
   };
 
-  // Verify OTP + Check user existence
   const handleVerifyOtp = async () => {
     setErrorMsg("");
-
     if (otp.length !== 6) {
-      setErrorMsg("Please enter a valid 6-digit OTP");
-      return;
-    }
-
-    if (!consent) {
-      setErrorMsg("Please agree to the contact terms to proceed.");
+      setErrorMsg("Enter 6-digit OTP");
       return;
     }
 
@@ -103,12 +79,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
       const response = await verifyOtp(phone, otp);
       const token = response?.token;
 
-      if (
-        response?.success === true ||
-        response?.status === true ||
-        response?.message?.toLowerCase().includes("otp verified")
-      ) {
-        // Save cookies
+      if (response?.success || response?.status || response?.message?.toLowerCase().includes("otp verified")) {
         if (token) Cookies.set("co_token", token, { expires: 7 });
         Cookies.set("co_phone", phone, { expires: 7 });
         Cookies.set("co_login", "true", { expires: 7 });
@@ -123,40 +94,27 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
             onClose();
           } else {
             if (suppressGlobalModal) {
-              // Instead of opening global modal, call onSuccess directly only for suppressGlobalModal pages
-              if (onSuccess) {
-                await onSuccess();
-              }
+              if (onSuccess) await onSuccess();
               onClose();
             } else {
-              // Default behavior — open global modal as before
               openModal();
               setTimeout(() => onClose(), 50);
             }
           }
         } catch (userErr) {
-          console.error("getUser API failed", userErr);
           if (suppressGlobalModal) {
-            if (onSuccess) {
-              await onSuccess();
-            }
+            if (onSuccess) await onSuccess();
             onClose();
           } else {
             openModal();
             setTimeout(() => onClose(), 50);
           }
         }
-
       } else {
         setErrorMsg(response?.message || "OTP verification failed!");
       }
     } catch (err: any) {
-      const msg =
-        err?.response?.data?.message ||
-        err?.message ||
-        "Failed to verify OTP!";
-      setErrorMsg(msg);
-      console.error("OTP verification failed", err);
+      setErrorMsg(err?.response?.data?.message || "Failed to verify OTP!");
     } finally {
       setIsLoading(false);
     }
@@ -164,128 +122,135 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
 
   if (!isOpen) return null;
 
-  // Helper function to check if the phone number is valid
   const isPhoneValid = /^[6-9]\d{9}$/.test(phone);
-
-  // Helper function to check if the OTP is valid
   const isOtpValid = otp.length === 6;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center text-black backdrop-blur-sm bg-black/40 px-4">
-      <div className="w-full max-w-sm bg-gradient-to-br from-green-300 via-lime-300 to-green-600 p-6 rounded-2xl shadow-xl relative">
-        {/* Close Button */}
-        <button
+    <AnimatePresence>
+      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        {/* Backdrop */}
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }} 
+          exit={{ opacity: 0 }}
           onClick={onClose}
-          className="absolute top-3 right-3 text-white hover:text-red-600 text-xl font-bold"
+          className="absolute inset-0 bg-[#08101E]/40 backdrop-blur-md"
+        />
+
+        {/* Compact 3D Modal Card */}
+        <motion.div 
+          initial={{ scale: 0.9, opacity: 0, y: 10 }}
+          animate={{ scale: 1, opacity: 1, y: 0 }}
+          exit={{ scale: 0.9, opacity: 0, y: 10 }}
+          className="relative w-full max-w-[380px] bg-white rounded-[2rem] shadow-[0_30px_60px_-12px_rgba(0,0,0,0.25)] overflow-hidden border border-white"
         >
-          ✕
-        </button>
+          {/* Brand Line */}
+          <div className="h-1.5 bg-gradient-to-r from-[#FF7819] to-[#FFB800]" />
 
-        {/* Title */}
-        <h2 className="text-2xl font-semibold text-green-700 text-center mb-6">
-          {step === "phone" ? "Login with OTP" : "Enter OTP"}
-        </h2>
+          <div className="p-6 sm:p-8">
+            {/* Close Button */}
+            <button
+              onClick={onClose}
+              className="absolute top-5 right-5 text-gray-300 hover:text-[#FF7819] transition-colors"
+            >
+              <FaTimes size={14} />
+            </button>
 
-        {/* Error message */}
-        {errorMsg && (
-          <div className="bg-red-100 text-red-700 text-sm p-2 rounded mb-3">
-            {errorMsg}
-          </div>
-        )}
-
-        {step === "phone" ? (
-          <>
-            <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
-              placeholder="Enter mobile number"
-              className="w-full border border-gray-300 px-4 py-2 rounded-md bg-white text-sm text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
-            />
-
-            {/* Consent checkbox for 'phone' step */}
-            <div className="mb-4 flex items-start text-sm">
-              <input
-                type="checkbox"
-                id="consent-phone"
-                checked={consent}
-                onChange={() => setConsent(!consent)}
-                className="mr-2 mt-1 accent-green-800"
-                required
-              />
-              <label htmlFor="consent-phone">I agree to be contacted via Email, WhatsApp, SMS, or Call.</label>
+            {/* Header */}
+            <div className="flex flex-col items-center mb-6">
+              <div className="w-14 h-14 bg-[#FFF4E5] rounded-2xl flex items-center justify-center text-[#FF7819] shadow-inner mb-4">
+                {step === "phone" ? <FaPhoneAlt size={20} /> : <FaLock size={20} />}
+              </div>
+              <h2 className="text-2xl font-black text-[#08101E] tracking-tight">
+                {step === "phone" ? "Welcome Back" : "Security Check"}
+              </h2>
+              <p className="text-[12px] font-bold text-gray-400 mt-1 uppercase tracking-tighter">
+                {step === "phone" ? "Enter your mobile number" : `OTP sent to +91 ${phone}`}
+              </p>
             </div>
 
-            <button
-              onClick={handleSendOtp}
-              // ✅ UPDATED: Disabled if loading OR (phone is invalid OR consent is false)
-              disabled={isLoading || !isPhoneValid || !consent}
-              className="w-full bg-white text-green-800 font-medium py-2 rounded-md hover:bg-green-400 hover:text-white transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? "Sending..." : "Send OTP"}
-            </button>
-          </>
-        ) : (
-          <>
-            <input
-              type="text"
-              value={otp}
-              onChange={(e) => setOtp(e.target.value)}
-              placeholder="Enter OTP"
-              maxLength={6}
-              className="w-full border border-gray-300 px-4 py-2 rounded-md bg-white text-sm text-gray-800 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green-500 mb-4"
-            />
-            <div className="mb-4 flex items-start text-sm">
-              <input
-                type="checkbox"
-                id="consent-otp"
-                checked={consent}
-                onChange={() => setConsent(!consent)}
-                className="mr-2 mt-1 accent-green-800"
-                required
-              />
+            {/* Form */}
+            <div className="space-y-4">
+              {errorMsg && (
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="bg-red-50 text-red-600 text-[11px] font-black p-3 rounded-xl border border-red-100 text-center">
+                  ⚠️ {errorMsg}
+                </motion.div>
+              )}
 
-              <label htmlFor="consent-otp" className="leading-relaxed">
-                <p>
-                  1. I agree to be contacted via Email, WhatsApp, SMS, or Phone Call.
-                </p>
+              {step === "phone" ? (
+                <>
+                  <input
+                    type="tel"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
+                    placeholder="Mobile Number"
+                    maxLength={10}
+                    className="w-full bg-[#F8FAFC] border-2 border-transparent focus:border-[#FF7819] rounded-xl py-3 px-5 text-[#08101E] font-bold outline-none transition-all text-sm"
+                  />
 
-                <p className="mt-1">
-                  2. I give my explicit consent to <strong>CoverMantra</strong> to access my
-                  credit report and credit score from authorized credit bureaus.
-                </p>
+                  <div className="p-4 bg-[#FFF4E5]/30 rounded-xl border border-[#FF7819]/5">
+                    <label className="flex items-start gap-3 cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={consent}
+                        onChange={() => setConsent(!consent)}
+                        className="w-4 h-4 rounded accent-[#FF7819] mt-0.5 shrink-0"
+                      />
+                      <span className="text-[10px] font-semibold text-gray-500 leading-tight">
+I agree to be contacted via Email, WhatsApp, SMS, or Call.                      </span>
+                    </label>
+                  </div>
 
-                <p className="mt-1">
-                  3. I have read and accepted the{" "}
-                  <a
-                    href="/terms"
-                    className="text-green-800 underline hover:text-green-900"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <motion.button
+                    whileTap={{ scale: 0.97 }}
+                    onClick={handleSendOtp}
+                    disabled={isLoading || !isPhoneValid || !consent}
+                    className={`w-full py-4 rounded-xl font-black text-sm tracking-wider shadow-lg transition-all ${
+                      isPhoneValid && consent && !isLoading
+                        ? "bg-[#FF7819] text-white shadow-[#FF7819]/20"
+                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    }`}
                   >
-                    Terms & Conditions
-                  </a>.
-                </p>
-              </label>
+                    {isLoading ? "Sending..." : "GET OTP"}
+                  </motion.button>
+                </>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    value={otp}
+                    onChange={(e) => setOtp(e.target.value)}
+                    placeholder="••••••"
+                    maxLength={6}
+                    className="w-full bg-[#F8FAFC] border-2 border-transparent focus:border-[#FF7819] rounded-xl py-4 text-center text-2xl font-black tracking-[0.8rem] text-[#08101E] outline-none transition-all"
+                  />
+                  <motion.button
+                    whileTap={{ scale: 0.97 }}
+                    onClick={handleVerifyOtp}
+                    disabled={isLoading || !isOtpValid}
+                    className={`w-full py-4 rounded-xl font-black text-sm tracking-wider shadow-lg transition-all ${
+                      isOtpValid && !isLoading
+                        ? "bg-[#08101E] text-white"
+                        : "bg-gray-100 text-gray-400 cursor-not-allowed"
+                    }`}
+                  >
+                    {isLoading ? "Verifying..." : "SECURE LOGIN"}
+                  </motion.button>
+                  <button onClick={() => setStep("phone")} className="w-full text-[10px] font-black text-[#FF7819] uppercase tracking-widest hover:opacity-70">
+                    Change Number
+                  </button>
+                </>
+              )}
             </div>
-            <button
-              onClick={handleVerifyOtp}
-              // ✅ UPDATED: Disabled if loading OR (OTP is invalid OR consent is false)
-              disabled={isLoading || !isOtpValid || !consent}
-              className="w-full bg-white text-green-800 font-medium py-2 rounded-md hover:bg-green-400 hover:text-white transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isLoading ? "Verifying..." : "Verify OTP"}
-            </button>
 
-            <button
-              onClick={() => setStep("phone")}
-              className="text-xs text-green-800 mt-2 underline hover:text-green-900"
-            >
-              Edit mobile number
-            </button>
-          </>
-        )}
+            {/* Footer */}
+            <div className="mt-8 pt-5 border-t border-gray-50 flex items-center justify-center gap-2">
+               <FaShieldAlt className="text-green-500" size={10}/>
+               <span className="text-[9px] font-black uppercase tracking-[0.15em] text-gray-400">Verified & Encrypted</span>
+            </div>
+          </div>
+        </motion.div> 
       </div>
-    </div>
+    </AnimatePresence>
   );
 }

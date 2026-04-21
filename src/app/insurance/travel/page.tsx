@@ -2,8 +2,8 @@
 
 import Head from "next/head";
 import dynamic from "next/dynamic";
-import { Plane, HeartPulse, Wallet, MapPin, ShieldCheck, Clock, CheckCircle } from "lucide-react";
-import { useState, useEffect } from "react";
+import { Plane, HeartPulse, Wallet, MapPin, ShieldCheck, Clock, CheckCircle, ArrowRight, Globe, Compass } from "lucide-react";
+import { useEffect } from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import travel from "../../../animations/AeroplaneFlying.json";
@@ -15,189 +15,198 @@ const Player = dynamic(
 );
 
 export default function TravelInsurancePage() {
-  // Initialize AOS
   useEffect(() => {
-    AOS.init({ duration: 1000 });
+    AOS.init({ duration: 1000, once: true });
   }, []);
 
   return (
     <>
       <Head>
-        <title>Travel Insurance</title>
+        <title>Premium Travel Insurance | Secure Journeys</title>
       </Head>
 
-      <main className="min-h-screen bg-green-50 text-green-900">
-        {/* Hero Section */}
-        <section className="bg-green-900 text-white px-6 py-16 flex flex-col items-center text-center mt-10" data-aos="fade-down">
-          <div className="w-full flex justify-center mb-6">
-            <Player
-              autoplay
-              loop
-              src={JSON.stringify(travel)}
-              style={{ height: "120px", width: "120px" }}
-            />
-          </div>
-          <div className="w-full max-w-2xl">
-            <h1 className="text-3xl md:text-5xl font-bold">
-              Travel Insurance
+      <main className="min-h-screen bg-[#FFF4E5] text-[#08101E] font-sans selection:bg-[#FF7819] selection:text-white">
+        
+        {/* ✈️ HERO SECTION: CINEMATIC DARK MODE */}
+        <section className="relative bg-[#08101E] text-white pt-32 pb-24 px-6 overflow-hidden rounded-b-[3rem] md:rounded-b-[5rem]">
+          {/* Decorative Glows */}
+          <div className="absolute top-[-10%] right-[-5%] w-96 h-96 bg-[#FF7819]/20 rounded-full blur-[120px]" />
+          <div className="absolute bottom-[-10%] left-[-5%] w-80 h-80 bg-blue-500/10 rounded-full blur-[100px]" />
+
+          <div className="relative z-10 max-w-7xl mx-auto flex flex-col items-center text-center" data-aos="fade-down">
+            <div className="mb-8 p-4 bg-white/5 backdrop-blur-xl border border-white/10 rounded-[2.5rem] shadow-2xl transform hover:scale-105 transition-transform">
+              <Player
+                autoplay
+                loop
+                src={travel}
+                style={{ height: "140px", width: "140px" }}
+              />
+            </div>
+            <h1 className="text-4xl md:text-7xl font-black tracking-tighter leading-[1.1] italic">
+              Uncharted <span className="text-[#FF7819]">Safety</span> <br /> 
+              For Global Citizens
             </h1>
-            <p className="mt-4 text-lg">
-              Wherever you go, we make sure your journey stays protected.
+            <p className="mt-6 text-lg md:text-xl text-gray-400 max-w-2xl font-medium">
+              Elite protection for every mile of your journey. From lost passports to medical emergencies, we’ve got you covered globally.
             </p>
           </div>
         </section>
 
-        {/* Why Choose Travel Insurance */}
-        <section className="py-16 px-6 max-w-6xl mx-auto text-center">
-          <h2 className="text-2xl md:text-4xl font-bold mb-10" data-aos="fade-up">
-            Why Choose Travel Insurance?
-          </h2>
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        {/* 🗺️ FEATURES: 3D FLOATING CARDS */}
+        <section className="py-24 px-6 max-w-7xl mx-auto">
+          <div className="text-center mb-16" data-aos="fade-up">
+            <h2 className="text-3xl md:text-5xl font-black tracking-tight mb-4">
+              Why <span className="text-[#FF7819]">Premium</span> Travel Cover?
+            </h2>
+            <div className="w-20 h-2 bg-[#FF7819] mx-auto rounded-full" />
+          </div>
+
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
             {[
-              { icon: <HeartPulse className="text-green-600 w-7 h-7" />, text: "Emergency Medical Assistance", aos: "fade-right" },
-              { icon: <Wallet className="text-green-600 w-7 h-7" />, text: "Loss of Baggage & Documents", aos: "fade-up" },
-              { icon: <Plane className="text-green-600 w-7 h-7" />, text: "Flight Delays & Cancellations", aos: "fade-left" },
-              { icon: <ShieldCheck className="text-green-600 w-7 h-7" />, text: "Personal Accident Cover", aos: "zoom-in" },
-              { icon: <MapPin className="text-green-600 w-7 h-7" />, text: "Global Protection", aos: "flip-left" },
-              { icon: <Clock className="text-green-600 w-7 h-7" />, text: "24x7 Assistance", aos: "flip-right" },
+              { icon: <HeartPulse />, text: "Emergency Medical Care", desc: "Best-in-class health support abroad.", aos: "fade-up" },
+              { icon: <Wallet />, text: "Asset Protection", desc: "Coverage for baggage & vital docs.", aos: "fade-up" },
+              { icon: <Plane />, text: "Logistical Shield", desc: "Flight delays & cancellation cover.", aos: "fade-up" },
+              { icon: <ShieldCheck />, text: "Accident Indemnity", desc: "Highest tier personal accident cover.", aos: "fade-up" },
+              { icon: <Globe />, text: "Borderless Support", desc: "Protection valid in 190+ countries.", aos: "fade-up" },
+              { icon: <Clock />, text: "Priority Concierge", desc: "24/7 dedicated travel assistance.", aos: "fade-up" },
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="bg-white border rounded-xl shadow p-6 flex flex-col items-center hover:shadow-md transition"
+                className="group bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.03)] hover:bg-[#08101E] transition-all duration-500"
                 data-aos={item.aos}
+                data-aos-delay={idx * 100}
               >
-                {item.icon}
-                <p className="mt-3 font-medium">{item.text}</p>
+                <div className="w-16 h-16 bg-[#FFF4E5] rounded-2xl flex items-center justify-center text-[#FF7819] group-hover:bg-[#FF7819] group-hover:text-white transition-all duration-300 mb-6">
+                  {item.icon}
+                </div>
+                <h3 className="text-xl font-bold group-hover:text-white mb-2">{item.text}</h3>
+                <p className="text-gray-500 group-hover:text-gray-400 text-sm">{item.desc}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Travel Insurance Plans */}
-        <section className="py-16 px-6 bg-green-100">
-          <h2 className="text-2xl md:text-4xl font-bold text-center mb-10" data-aos="fade-up">
-            Our Travel Insurance Plans
+        {/* 💎 PLANS: BENTO GRID STYLE */}
+        <section className="py-24 px-6 bg-[#08101E] rounded-[3rem] md:rounded-[5rem] mx-4">
+          <h2 className="text-3xl md:text-5xl font-black text-center text-white mb-16">
+            Elite <span className="text-[#FF7819]">Travel</span> Plans
           </h2>
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+          <div className="grid md:grid-cols-3 gap-8 max-w-7xl mx-auto">
             {[
-              { title: "Solo Traveler", desc: "Affordable plans for individuals on domestic or international trips.", aos: "fade-right" },
-              { title: "Family Plan", desc: "One policy that covers the entire family while traveling together.", aos: "fade-up" },
-              { title: "Student Plan", desc: "Special coverage for students studying or traveling abroad.", aos: "fade-left" },
-              { title: "Corporate Travel", desc: "Business trip protection with quick claims & global support.", aos: "zoom-in" },
-              { title: "Senior Citizen Plan", desc: "Extra care and medical support for senior travelers.", aos: "flip-left" },
+              { title: "Solo Voyager", desc: "Designed for independent explorers hitting domestic or foreign soils.", color: "border-blue-500/30" },
+              { title: "Family Dynasty", desc: "One unified policy covering all family members with shared benefits.", color: "border-[#FF7819]/30" },
+              { title: "Scholar Global", desc: "Tailored for students pursuing education in foreign universities.", color: "border-purple-500/30" },
+              { title: "Corporate Elite", desc: "Fast-track claims and VIP support for business professionals.", color: "border-emerald-500/30" },
+              { title: "Silver Voyager", desc: "Specialized medical attention and comfort for senior citizens.", color: "border-orange-500/30" },
+              { title: "Custom Journey", desc: "Flexible protection built specifically for your unique itinerary.", color: "border-pink-500/30" },
             ].map((plan, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl shadow border p-6 text-center hover:shadow-lg transition"
-                data-aos={plan.aos}
+                className={`bg-white/5 backdrop-blur-md border ${plan.color} rounded-[2.5rem] p-8 hover:bg-white/10 transition-all flex flex-col justify-between group`}
+                data-aos="zoom-in"
               >
-                <h3 className="text-xl font-bold mb-3">{plan.title}</h3>
-                <p className="text-green-700 mb-4">{plan.desc}</p>
-                <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
-                  View Details
+                <div>
+                  <Compass className="text-[#FF7819] mb-6 w-10 h-10 group-hover:rotate-45 transition-transform duration-500" />
+                  <h3 className="text-2xl font-black text-white mb-4">{plan.title}</h3>
+                  <p className="text-gray-400 leading-relaxed mb-8">{plan.desc}</p>
+                </div>
+                <button className="w-full bg-white text-[#08101E] py-4 rounded-2xl font-black hover:bg-[#FF7819] hover:text-white transition-all flex items-center justify-center gap-2">
+                  Plan Details <ArrowRight size={18} />
                 </button>
               </div>
             ))}
           </div>
         </section>
-        {/* Calculator Section */}
-        <section className="py-10 px-4 max-w-4xl mx-auto" data-aos="fade-up">
-          <h2 className="text-2xl md:text-3xl font-bold text-center mb-4">
-            Travel Insurance Premium Calculator
-          </h2>
-          <div className="bg-green-50 p-0 rounded-xl shadow border mt-0">
-            <TravelCalculator />
+
+        {/* 🧮 CALCULATOR: FLOATING GLASS PANEL */}
+        <section className="py-24 px-4" data-aos="fade-up">
+          <div className="max-w-4xl mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl md:text-4xl font-black tracking-tight">Premium Estimator</h2>
+              <p className="text-gray-500 font-medium">Calculate your protection costs instantly.</p>
+            </div>
+            <div className="bg-white rounded-[3rem] p-4 shadow-2xl border border-gray-100">
+              <TravelCalculator />
+            </div>
           </div>
         </section>
 
-
-        {/* Documents & Benefits Section */}
-        <section className="py-12 px-6 bg-green-50 max-w-6xl mx-auto">
-          <h2 className="text-2xl md:text-4xl font-bold text-center mb-8" data-aos="fade-up">
-            Documents & Benefits of Travel Insurance
-          </h2>
-          <div className="flex flex-col md:flex-row gap-8 justify-center items-stretch">
-            {/* Documents Required */}
-            <div className="flex-1 bg-white border rounded-xl shadow p-6 flex flex-col h-full" data-aos="fade-right" data-aos-delay="100">
-              <h3 className="text-xl font-bold mb-4 text-green-700 text-center">
-                Documents Required
+        {/* 📄 DOCS & BENEFITS: NEUMORPHIC SPLIT */}
+        <section className="py-24 px-6 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-12">
+            {/* Documents */}
+            <div className="bg-white rounded-[3rem] p-10 shadow-xl border border-gray-50" data-aos="fade-right">
+              <h3 className="text-2xl font-black mb-8 flex items-center gap-3">
+                <div className="p-3 bg-[#FFF4E5] rounded-2xl text-[#FF7819]"><ShieldCheck /></div>
+                Onboarding Docs
               </h3>
-              <ul className="space-y-3 text-left flex-1">
+              <ul className="grid gap-4">
                 {[
-                  "Passport copy",
-                  "Visa copy (if required)",
-                  "ID Proof (Aadhar, PAN, Passport)",
-                  "Travel itinerary",
-                  "Previous insurance policy (if renewal)",
-                  "Passport-size photographs",
-                ].map((doc, idx) => (
-                  <li key={idx} className="flex items-center gap-2" data-aos="fade-right" data-aos-delay={idx * 100}>
-                    <ShieldCheck className="text-green-600" />
-                    {doc}
+                  "Digital Passport Copy", "Verified Visa Records", "National ID ([Aadhaar Redacted])", 
+                  "Trip Itinerary Details", "Existing Policy (Renewal)", "Recent Photographs"
+                ].map((doc, i) => (
+                  <li key={i} className="flex items-center gap-4 font-bold text-[#08101E]/80 bg-gray-50 p-4 rounded-2xl">
+                    <CheckCircle className="text-[#FF7819]" size={20} /> {doc}
                   </li>
                 ))}
               </ul>
             </div>
 
             {/* Benefits */}
-            <div className="flex-1 bg-white border rounded-xl shadow p-6 flex flex-col h-full" data-aos="fade-left" data-aos-delay="100">
-              <h3 className="text-xl font-bold mb-4 text-green-700 text-center">
-                Benefits of Travel Insurance
+            <div className="bg-[#FF7819] rounded-[3rem] p-10 text-white shadow-2xl shadow-[#FF7819]/20" data-aos="fade-left">
+              <h3 className="text-2xl font-black mb-8 flex items-center gap-3">
+                <div className="p-3 bg-white/20 rounded-2xl text-white"><ArrowRight /></div>
+                Core Benefits
               </h3>
-              <ul className="space-y-3 text-left flex-1">
+              <ul className="grid gap-4">
                 {[
-                  "Emergency medical coverage",
-                  "Trip cancellation & interruption",
-                  "Loss of baggage & documents",
-                  "Accidental death & disability coverage",
-                  "24x7 global assistance",
-                  "Peace of mind during travel",
-                ].map((benefit, idx) => (
-                  <li key={idx} className="flex items-center gap-2" data-aos="fade-left" data-aos-delay={idx * 100}>
-                    <CheckCircle className="text-green-600" />
-                    {benefit}
+                  "Global Medical Sanctuary", "Trip Interruption Guard", "Baggage Recovery Suite", 
+                  "Accidental Disability Cover", "24x7 Global Concierge", "Full Digital Policy Issuance"
+                ].map((benefit, i) => (
+                  <li key={i} className="flex items-center gap-4 font-bold p-4 border border-white/20 rounded-2xl bg-white/5">
+                    <CheckCircle className="text-white" size={20} /> {benefit}
                   </li>
                 ))}
               </ul>
             </div>
           </div>
         </section>
-        {/* How It Works */}
-        <section className="py-16 px-6 bg-green-100 text-center" data-aos="fade-up">
-          <h2 className="text-2xl md:text-4xl font-bold mb-10">
-            How to Get Covered?
-          </h2>
-          <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {["Select Plan", "Enter Trip Details", "Pay Online", "Get Instant Policy"].map(
-              (step, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white rounded-xl shadow p-6 flex flex-col items-center"
-                >
-                  <div className="text-green-600 text-3xl font-bold mb-2">
-                    {idx + 1}
-                  </div>
-                  <p>{step}</p>
+
+        {/* 🏁 HOW TO GET COVERED: PROCESS FLOW */}
+        <section className="py-24 px-6 bg-[#08101E]/5 text-center">
+          <h2 className="text-3xl md:text-5xl font-black mb-16" data-aos="fade-up">Getting <span className="text-[#FF7819]">Insured</span> Is Simple</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-7xl mx-auto">
+            {["Pick Tier", "Log Itinerary", "Digital Pay", "Policy Active"].map((step, idx) => (
+              <div key={idx} className="relative group" data-aos="zoom-in" data-aos-delay={idx * 150}>
+                <div className="bg-white rounded-[2.5rem] p-10 h-full shadow-lg border border-gray-100 group-hover:bg-[#FF7819] transition-all duration-500">
+                  <span className="text-5xl font-black text-gray-100 group-hover:text-white/20 mb-6 block">0{idx + 1}</span>
+                  <p className="font-black text-[#08101E] group-hover:text-white uppercase tracking-widest text-xs">{step}</p>
                 </div>
-              )
-            )}
+              </div>
+            ))}
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-16 px-6 text-center" data-aos="fade-up">
-          <h2 className="text-2xl md:text-4xl font-bold mb-4">
-            Ready to Travel Worry-Free?
-          </h2>
-          <p className="text-green-800 mb-6">
-            Buy travel insurance in minutes and explore the world with peace of mind.
-          </p>
-          <a
-            href="/apply-insurance"
-            className="inline-block bg-green-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-green-700 transition text-lg"
-          >
-            Apply Now
-          </a>
+        {/* 🚀 FINAL CTA */}
+        <section className="py-32 px-6 text-center">
+          <div className="max-w-5xl mx-auto bg-[#08101E] rounded-[4rem] p-12 md:p-24 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-20 pointer-events-none">
+              <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,#FF7819_0%,transparent_70%)]" />
+            </div>
+            <h2 className="text-4xl md:text-7xl font-black text-white mb-8 tracking-tighter" data-aos="fade-up">
+              The World Is <span className="text-[#FF7819]">Waiting.</span> <br /> Fly Worry-Free.
+            </h2>
+            <p className="text-gray-400 text-lg md:text-xl mb-12 max-w-xl mx-auto" data-aos="fade-up">
+              Join 2 million+ travelers who explored the globe under our protection. Instant policy in 2 minutes.
+            </p>
+            <a
+              href="/apply-insurance"
+              className="inline-flex items-center gap-4 bg-[#FF7819] text-white px-12 py-5 rounded-full font-black text-xl hover:shadow-[0_20px_40px_rgba(255,120,25,0.4)] hover:scale-105 transition-all"
+              data-aos="fade-up"
+            >
+              Get Protected Now <Plane size={24} />
+            </a>
+          </div>
         </section>
       </main>
     </>

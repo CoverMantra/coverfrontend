@@ -1,20 +1,13 @@
 "use client";
-import React from 'react';
-interface TableData {
-  headers: string[];
-  rows: string[][];
-}
-interface ToolItem {
-  name: string;
-  description: string;
-}
 
-interface ToolCategory {
-  title: string;
-  icon: string; 
-  tools: ToolItem[];
-}
+import React, { useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
+// Interface definitions (Logic preserved as per request)
+interface TableData { headers: string[]; rows: string[][]; }
+interface ToolItem { name: string; description: string; }
+interface ToolCategory { title: string; icon: string; tools: ToolItem[]; }
 interface Section {
   title: string;
   content: string[];
@@ -22,21 +15,16 @@ interface Section {
   motivationalTakeaway?: string;
   list?: string[];
   table?: TableData;
-  showcase?: ToolCategory[]; 
+  showcase?: ToolCategory[];
 }
-
-interface BlogContent {
-  title: string;
-  subtitle: string;
-  sections: Section[];
-}
+interface BlogContent { title: string; subtitle: string; sections: Section[]; }
 
 const blogContent: BlogContent = {
-  title: "Generative AI in Everyday Life: How AI is Reshaping Our Daily Lives and What It Means for the Future of Work",
-  subtitle: "From Smart Assistants to Creative Partners - How AI is Revolutionizing Daily Tasks and Boosting Productivity",
+  title: "Generative AI in Everyday Life",
+  subtitle: "From Smart Assistants to Creative Partners — Reshaping the Future of Work",
   sections: [
     {
-      title: "Introduction: AI is Already Here - Are You Using It?",
+      title: "Introduction: AI is Already Here",
       content: [
         "Remember when AI felt like science fiction? Today, **generative AI tools** are seamlessly integrated into our daily routines, making us more efficient, creative, and productive. The revolution isn't coming—it's already here, and it's transforming how we work, learn, and create.",
         "From writing emails to designing presentations, generative AI has moved from novelty to necessity. Let's explore the real, practical applications that are changing lives right now."
@@ -44,107 +32,88 @@ const blogContent: BlogContent = {
       type: "prose",
     },
     {
-      title: "Supercharge Your Work & Productivity",
-      content: [
-        "Generative AI is becoming the ultimate productivity partner for professionals across industries. Here's how it's making work easier and more efficient:",
-      ],
+      title: "Supercharge Your Productivity",
+      content: ["Generative AI is becoming the ultimate productivity partner. Here's how it's making work easier:"],
       table: {
         headers: ["Use Case", "How AI Helps", "Popular Tools"],
         rows: [
-          ["**Email & Communication**", "Drafts professional emails, improves tone, generates quick responses", "Grammarly, ChatGPT, Gmail Smart Compose"],
-          ["**Content Creation**", "Writes blog posts, social media content, marketing copy in minutes", "Jasper, Copy.ai, Claude"],
-          ["**Presentation Design**", "Creates slide decks, suggests layouts, generates visuals", "Gamma, Beautiful.ai, Canva AI"],
-          ["**Data Analysis**", "Summarizes reports, identifies trends, creates insights from data", "ChatGPT Advanced Analytics, Microsoft Copilot"],
-          ["**Meeting Efficiency**", "Transcribes calls, generates meeting notes, tracks action items", "Otter.ai, Fireflies.ai, Zoom AI Companion"]
+          ["**Email & Communication**", "Drafts professional emails, improves tone", "Grammarly, ChatGPT"],
+          ["**Content Creation**", "Writes blog posts, social media content", "Jasper, Claude"],
+          ["**Presentation Design**", "Creates slide decks, suggests layouts", "Gamma, Beautiful.ai"],
+          ["**Data Analysis**", "Summarizes reports, identifies trends", "Microsoft Copilot"],
+          ["**Meeting Efficiency**", "Transcribes calls, generates meeting notes", "Otter.ai, Fireflies.ai"]
         ]
       },
       type: "table",
-      motivationalTakeaway: "Stop spending hours on routine tasks. Let AI handle the groundwork while you focus on strategy and creativity. **Your time is your most valuable asset—AI helps you reclaim it.**",
+      motivationalTakeaway: "Stop spending hours on routine tasks. **Your time is your most valuable asset—AI helps you reclaim it.**",
     },
     {
-      title: "Transform Your Learning & Education",
-      content: [
-        "AI is revolutionizing how we learn and acquire new skills, making education more personalized and accessible than ever before.",
-      ],
+      title: "Transform Your Learning",
+      content: ["AI is revolutionizing how we acquire new skills, making education more personalized."],
       list: [
-        "**Personalized Tutoring**: AI adapts to your learning style, provides instant explanations, and creates custom study plans",
-        "**Language Learning**: Practice conversations with AI tutors that never get tired and provide real-time feedback",
-        "**Research Assistance**: Quickly summarize complex papers, generate literature reviews, and find relevant sources",
-        "**Skill Development**: Get step-by-step guidance for learning coding, design, writing, or any new skill",
-        "**Homework Help**: AI explains difficult concepts and helps you work through problems without just giving answers"
+        "**Personalized Tutoring**: AI adapts to your learning style and study plans.",
+        "**Language Learning**: Practice conversations with AI tutors in real-time.",
+        "**Research Assistance**: Summarize complex papers and find relevant sources.",
+        "**Skill Development**: Get step-by-step guidance for coding or design."
       ],
       type: "list",
     },
     {
-      title: "The Developer's New Co-pilot: Coding and Debugging",
-      content: [
-        "For developers and anyone who touches code, generative AI has become an indispensable co-pilot. It accelerates development cycles and makes complex tasks manageable.",
-      ],
+      title: "The Developer's Co-pilot",
+      content: ["For developers, generative AI has become an indispensable tool for speed and accuracy."],
       list: [
-        "**Code Generation**: Quickly generate boilerplate code, functions, or entire components from a simple natural language prompt.",
-        "**Debugging**: AI can analyze error messages, suggest fixes, and explain *why* a particular piece of code is failing.",
-        "**Code Review & Refactoring**: Get instant feedback on code quality, security vulnerabilities, and suggestions for improving performance.",
-        "**Documentation**: Generate comprehensive and accurate documentation for your codebase automatically, saving countless hours.",
-        "**Learning New Languages**: Ask the AI to explain concepts, show working examples, or translate code snippets between languages."
+        "**Code Generation**: Quickly generate boilerplate code from natural language.",
+        "**Debugging**: AI analyzes error messages and suggests immediate fixes.",
+        "**Documentation**: Generate comprehensive documentation for your codebase.",
+        "**Learning New Languages**: Translate code snippets between languages effortlessly."
       ],
       type: "list",
-      motivationalTakeaway: "AI doesn't replace the programmer; it **supercharges the programmer**. Embrace it to write less boilerplate and focus on solving bigger, more complex problems.",
+      motivationalTakeaway: "AI doesn't replace the programmer; it **supercharges the programmer**.",
     },
     {
-      title: "Enhance Your Creativity & Personal Projects",
-      content: [
-        "Whether you're a professional artist or someone who just wants to create, AI is democratizing creativity and making artistic expression more accessible. Here are three major creative areas AI can assist with:",
-      ],
-      list: [ 
-        "**Visual Art & Design**: Generate unique images, create logos, design social media graphics, or visualize concepts that were previously limited by your drawing skills (e.g., Midjourney, DALL-E).",
-        "**Writing & Storytelling**: Overcome writer's block, brainstorm ideas, get feedback on your writing, or co-write stories and scripts (e.g., Sudowrite, Jasper).",
-        "**Music & Audio**: Compose original music, create background scores, generate voiceovers, or remix existing audio content (e.g., Suno, ElevenLabs)."
+      title: "Enhance Your Creativity",
+      content: ["AI is democratizing creativity, making artistic expression more accessible than ever."],
+      list: [
+        "**Visual Art & Design**: Generate unique images and logos (Midjourney, DALL-E).",
+        "**Writing & Storytelling**: Overcome writer's block and co-write scripts.",
+        "**Music & Audio**: Compose original music and generate high-quality voiceovers."
       ],
       type: "list",
-      motivationalTakeaway: "You don't need to be a professional artist to create amazing work. **AI amplifies your creative vision** and helps bring your ideas to life, regardless of your technical skills.",
+      motivationalTakeaway: "**AI amplifies your creative vision** and helps bring your ideas to life.",
     },
     {
       title: "Your Essential AI Toolkit",
-      content: [
-        "Ready to start? Here are some of the most popular generative AI tools categorized by their primary use case.",
-      ],
+      content: ["Ready to start? Here are the must-have tools categorized by use case."],
       type: "showcase",
       showcase: [
         {
-          title: "Chat & Writing",
-          icon: "✍️",
+          title: "Chat & Writing", icon: "✍️",
           tools: [
-            { name: "ChatGPT (OpenAI)", description: "General AI assistant and excellent writer." },
-            { name: "Claude (Anthropic)", description: "Advanced reasoning and long-context processing." },
-            { name: "GrammarlyGo", description: "Writing enhancement and quick drafting." },
+            { name: "ChatGPT", description: "General assistant and excellent writer." },
+            { name: "Claude", description: "Advanced reasoning and long processing." }
           ]
         },
         {
-          title: "Coding & Development",
-          icon: "💻",
+          title: "Coding", icon: "💻",
           tools: [
-            { name: "GitHub Copilot", description: "In-editor code suggestions and function generation." },
-            { name: "Code Llama", description: "Open-source large language model for code." },
-            { name: "Tabnine", description: "AI code completions for various IDEs." },
+            { name: "GitHub Copilot", description: "In-editor code suggestions." },
+            { name: "Tabnine", description: "AI completions for various IDEs." }
           ]
         },
         {
-          title: "Design & Creative",
-          icon: "🎨",
+          title: "Creative", icon: "🎨",
           tools: [
-            { name: "Midjourney", description: "High-quality, artistic image generation." },
-            { name: "DALL-E 3 (OpenAI)", description: "AI artwork integrated into ChatGPT and Bing." },
-            { name: "Runway", description: "Text-to-video and video editing tools." },
+            { name: "Midjourney", description: "High-quality artistic image generation." },
+            { name: "Runway", description: "Cutting-edge text-to-video tools." }
           ]
         },
       ]
     },
     {
-      title: "Conclusion: Your AI-Powered Future Starts Today",
+      title: "Conclusion: The Future is Today",
       content: [
-        "Generative AI isn't about replacing human intelligence—it's about **augmenting it**. It's the calculator for creative work, the GPS for complex problems, the personal assistant that never sleeps.",
-        "The people who thrive in this new era won't be those who fear AI, but those who embrace it as a powerful tool for amplifying their abilities and achieving their goals faster.",
-        "You have two choices: watch the AI revolution from the sidelines, or grab the tools and start building your AI-enhanced life today. The technology is here, it's accessible, and it's waiting for you to put it to work.",
+        "Generative AI is about **augmenting human intelligence**. It's the calculator for creative work, the GPS for complex problems.",
+        "The people who thrive will be those who embrace it as a powerful tool for amplifying their abilities.",
         "**Your AI-powered productivity boost is just one prompt away.**"
       ],
       type: "prose",
@@ -152,149 +121,175 @@ const blogContent: BlogContent = {
   ],
 };
 
-interface ProseBlockProps {
-  content: string[];
-}
+// --- Blocks (Logic Kept Intact, UI Upgraded) ---
 
-interface MotivationalBoxProps {
-  text: string;
-}
-
-interface TableBlockProps {
-  table: TableData;
-}
-
-interface ListBlockProps {
-  list: string[];
-}
-
-interface ShowcaseBlockProps {
-  showcase: ToolCategory[];
-}
-
-const ProseBlock: React.FC<ProseBlockProps> = ({ content }) => (
-  <div className="space-y-4">
+const ProseBlock: React.FC<{ content: string[] }> = ({ content }) => (
+  <div className="space-y-6">
     {content.map((p, i) => (
-      <p key={i} className="text-gray-700 leading-relaxed" dangerouslySetInnerHTML={{ __html: p.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+      <p key={i} className="text-gray-400 text-lg leading-relaxed font-medium" 
+         dangerouslySetInnerHTML={{ __html: p.replace(/\*\*(.*?)\*\*/g, '<span class="text-white font-black">$1</span>') }} />
     ))}
   </div>
 );
 
-const MotivationalBox: React.FC<MotivationalBoxProps> = ({ text }) => (
-  <div className="my-8 p-6 bg-purple-50 border-l-4 border-purple-500 rounded-lg shadow-inner">
-    <h4 className="text-xl font-semibold text-purple-800 mb-2">💡 Pro Tip:</h4>
-    <p className="text-purple-700 font-medium" dangerouslySetInnerHTML={{ __html: text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+const MotivationalBox: React.FC<{ text: string }> = ({ text }) => (
+  <div className="my-10 p-8 bg-gradient-to-r from-purple-900/40 to-blue-900/40 border-l-4 border-cyan-400 rounded-2xl backdrop-blur-md shadow-[0_0_20px_rgba(34,211,238,0.1)]">
+    <div className="flex items-center gap-3 mb-3 text-cyan-400 font-black uppercase tracking-widest text-xs">
+      <span className="w-2 h-2 bg-cyan-400 rounded-full animate-pulse" /> Pro Insights
+    </div>
+    <p className="text-gray-200 text-xl italic leading-snug" 
+       dangerouslySetInnerHTML={{ __html: text.replace(/\*\*(.*?)\*\*/g, '<span class="text-cyan-400 font-bold">$1</span>') }} />
   </div>
 );
 
-const TableBlock: React.FC<TableBlockProps> = ({ table }) => (
-  <div className="my-8 overflow-x-auto">
-    <table className="min-w-full divide-y divide-gray-300 border border-gray-200 rounded-lg shadow-sm">
-      <thead className="bg-purple-50">
-        <tr>
-          {table.headers.map((header, i) => (
-            <th key={i} scope="col" className="px-6 py-3 text-left text-xs font-medium text-purple-700 uppercase tracking-wider">
-              {header}
-            </th>
-          ))}
-        </tr>
-      </thead>
-      <tbody className="bg-white divide-y divide-gray-200">
-        {table.rows.map((row, i) => (
-          <tr key={i} className="hover:bg-gray-50 transition-colors">
-            {row.map((cell, j) => (
-              <td key={j} className="px-6 py-4 text-sm text-gray-800" dangerouslySetInnerHTML={{ __html: cell.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
+const TableBlock: React.FC<{ table: TableData }> = ({ table }) => (
+  <div className="my-10 overflow-hidden rounded-3xl border border-white/10 bg-white/5 backdrop-blur-xl">
+    <div className="overflow-x-auto">
+      <table className="w-full text-left border-collapse">
+        <thead>
+          <tr className="bg-white/10">
+            {table.headers.map((h, i) => (
+              <th key={i} className="px-6 py-5 text-cyan-400 uppercase text-xs font-black tracking-widest">{h}</th>
             ))}
           </tr>
-        ))}
-      </tbody>
-    </table>
-  </div>
-);
-
-const ListBlock: React.FC<ListBlockProps> = ({ list }) => (
-  <ul className="list-disc pl-6 space-y-3 my-6 text-gray-700">
-    {list.map((item, i) => (
-      <li key={i} className="leading-relaxed" dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }} />
-    ))}
-  </ul>
-);
-const AIToolsShowcase: React.FC<ShowcaseBlockProps> = ({ showcase }) => (
-  <div className="my-10 p-8 bg-gradient-to-br from-blue-50 to-purple-50 rounded-2xl border border-purple-200 shadow-lg">
-    <h3 className="text-2xl font-extrabold text-gray-900 mb-6 border-b pb-3 border-purple-200">🚀 Your Essential AI Toolkit</h3>
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {showcase.map((category, i) => (
-        <div key={i} className="bg-white p-5 rounded-xl shadow-md transition-shadow hover:shadow-lg">
-          <h4 className="flex items-center text-lg font-bold text-purple-700 mb-3">
-            <span className="text-2xl mr-2">{category.icon}</span>
-            {category.title}
-          </h4>
-          <ul className="text-sm text-gray-600 space-y-2">
-            {category.tools.map((tool, j) => (
-              <li key={j} className="border-l-2 border-blue-300 pl-3">
-                <strong className="text-gray-800">{tool.name}</strong>: {tool.description}
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
+        </thead>
+        <tbody className="divide-y divide-white/5">
+          {table.rows.map((row, i) => (
+            <tr key={i} className="hover:bg-white/5 transition-colors">
+              {row.map((cell, j) => (
+                <td key={j} className="px-6 py-5 text-sm text-gray-300" 
+                    dangerouslySetInnerHTML={{ __html: cell.replace(/\*\*(.*?)\*\*/g, '<span class="text-white font-bold">$1</span>') }} />
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
     </div>
   </div>
 );
+
+const ListBlock: React.FC<{ list: string[] }> = ({ list }) => (
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-8">
+    {list.map((item, i) => (
+      <div key={i} className="p-5 bg-[#121826] border border-white/5 rounded-2xl flex items-start gap-4 hover:border-purple-500/50 transition-all group">
+        <div className="mt-1 w-2 h-2 rounded-full bg-purple-500 group-hover:shadow-[0_0_10px_#a855f7]" />
+        <span className="text-gray-300 text-sm leading-relaxed" 
+              dangerouslySetInnerHTML={{ __html: item.replace(/\*\*(.*?)\*\*/g, '<span class="text-white font-bold">$1</span>') }} />
+      </div>
+    ))}
+  </div>
+);
+
+const AIToolsShowcase: React.FC<{ showcase: ToolCategory[] }> = ({ showcase }) => (
+  <div className="my-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+    {showcase.map((cat, i) => (
+      <div key={i} className="p-6 bg-gradient-to-b from-white/10 to-transparent rounded-[2rem] border border-white/10 hover:shadow-2xl hover:shadow-purple-500/10 transition-all">
+        <div className="text-4xl mb-4">{cat.icon}</div>
+        <h4 className="text-xl font-black text-white uppercase italic mb-4 tracking-tighter">{cat.title}</h4>
+        <ul className="space-y-3">
+          {cat.tools.map((t, j) => (
+            <li key={j} className="text-xs text-gray-400 leading-tight">
+              <span className="text-cyan-400 font-bold block mb-1 uppercase tracking-tighter">{t.name}</span>
+              {t.description}
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+);
+
+// --- Main Page Component ---
+
 export default function BlogPage() {
+  useEffect(() => {
+    AOS.init({ duration: 1000, once: true });
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
-      <header className="bg-white shadow-xl border-b border-purple-100">
-        <div className="max-w-5xl mx-auto py-10 px-4 sm:px-6 lg:px-8"> 
-          <div className="text-center">
-            <div className="inline-flex mt-15 items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-4"> {/* Reduced size */}
-              <span className="text-3xl">🤖</span> 
-            </div>
-            <h1 className="text-4xl font-extrabold text-gray-900 leading-tight mb-3"> {/* Adjusted title size */}
-              {blogContent.title}
-            </h1>
-            <p className="text-xl text-purple-600 italic">
-              {blogContent.subtitle}
-            </p>
+    <div className="min-h-screen bg-[#080B14] text-white selection:bg-cyan-500 selection:text-black font-sans">
+      
+      {/* 🔮 NEON HERO HEADER */}
+      <header className="relative py-24 px-6 overflow-hidden">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-[500px] bg-gradient-to-b from-purple-600/20 to-transparent blur-[120px] pointer-events-none" />
+        
+        <div className="max-w-4xl mx-auto text-center relative z-10" data-aos="fade-down">
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-cyan-400 text-[10px] font-black uppercase tracking-[0.3em] mb-8">
+            <span className="w-2 h-2 bg-cyan-400 rounded-full animate-ping" /> Global AI Trends 2026
           </div>
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter uppercase italic leading-[0.9] mb-8">
+            Reshaping <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-blue-600">Daily Life</span>
+          </h1>
+          <p className="text-gray-400 text-lg md:text-2xl font-medium max-w-2xl mx-auto leading-tight italic">
+            {blogContent.subtitle}
+          </p>
         </div>
       </header>
 
-      <main className="max-w-5xl mx-auto py-12 px-4 sm:px-6 lg:px-4">
-        <article className="bg-white rounded-3xl shadow-2xl p-6 md:p-12">
-          {blogContent.sections.map((section, index) => (
-            <section key={index} className="mb-10 last:mb-0">
-              
-              <h2 className={`text-3xl font-bold ${index === 0 ? 'text-purple-700' : 'text-gray-900'} mb-6 pb-3 border-b border-gray-200`}>
-                {section.title}
-              </h2>
-              {section.type === 'prose' && <ProseBlock content={section.content} />}
-              
-              {section.type === 'table' && section.table && (
-                <>
-                  <ProseBlock content={section.content} />
-                  <TableBlock table={section.table} />
-                </>
-              )}
-              
-              {section.type === 'list' && section.list && (
-                <>
-                  <ProseBlock content={section.content} />
-                  <ListBlock list={section.list} />
-                </>
-              )}
-              
-              {section.type === 'showcase' && section.showcase && (
-                <>
-                  <ProseBlock content={section.content} />
-                  <AIToolsShowcase showcase={section.showcase} />
-                </>
-              )}
-             {section.motivationalTakeaway && <MotivationalBox text={section.motivationalTakeaway} />}
-            </section>
-          ))}
-        </article>
+      {/* 🚀 MAIN CONTENT */}
+      <main className="max-w-6xl mx-auto px-6 pb-32">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+          
+          {/* Article Container */}
+          <article className="lg:col-span-12 space-y-20">
+            {blogContent.sections.map((section, idx) => (
+              <section key={idx} className="relative" data-aos="fade-up">
+                
+                {/* Section Title with Tech-Accent */}
+                <div className="flex items-center gap-4 mb-10">
+                   <span className="text-cyan-400 font-mono text-sm tracking-tighter">0{idx + 1} //</span>
+                   <h2 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter border-b border-white/10 pb-4 w-full">
+                    {section.title}
+                   </h2>
+                </div>
+
+                {/* Content Logic Rendering */}
+                <div className="relative z-10">
+                  {section.type === 'prose' && <ProseBlock content={section.content} />}
+                  
+                  {section.type === 'table' && (
+                    <>
+                      <ProseBlock content={section.content} />
+                      <TableBlock table={section.table!} />
+                    </>
+                  )}
+                  
+                  {section.type === 'list' && (
+                    <>
+                      <ProseBlock content={section.content} />
+                      <ListBlock list={section.list!} />
+                    </>
+                  )}
+                  
+                  {section.type === 'showcase' && (
+                    <>
+                      <ProseBlock content={section.content} />
+                      <AIToolsShowcase showcase={section.showcase!} />
+                    </>
+                  )}
+
+                  {section.motivationalTakeaway && (
+                    <MotivationalBox text={section.motivationalTakeaway} />
+                  )}
+                </div>
+              </section>
+            ))}
+          </article>
+        </div>
       </main>
+
+      {/* 🏁 FUTURISTIC FOOTER */}
+      <footer className="bg-black py-20 px-6 border-t border-white/5 rounded-t-[3rem] md:rounded-t-[6rem]">
+        <div className="max-w-4xl mx-auto text-center space-y-10">
+          <div className="text-6xl">🤖</div>
+          <h3 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter">
+            Your Future is <span className="text-cyan-400 italic">One Prompt</span> Away
+          </h3>
+          <p className="text-gray-500 text-xs font-black uppercase tracking-[0.5em]">
+            AI Integration Studio © 2026 • Build the Future Today
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

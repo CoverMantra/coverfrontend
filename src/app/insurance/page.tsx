@@ -2,7 +2,7 @@
 
 import Head from "next/head";
 import { motion } from "framer-motion";
-import { Clock } from "lucide-react";
+import { Clock, ShieldCheck, ArrowUpRight } from "lucide-react";
 import dynamic from "next/dynamic";
 import health from "../../animations/health.json";
 import car from "../../animations/Car1.json";
@@ -22,127 +22,185 @@ const insuranceCards = [
   {
     title: "Health Insurance",
     badge: "FREE Home Visit",
-    badgeColor: "bg-green-100 text-green-600",
+    badgeColor: "bg-orange-100 text-orange-600",
     lottie: health,
     link: "/insurance/health",
   },
   {
     title: "Car Insurance",
     badge: "Upto 25% Discount",
-    badgeColor: "bg-green-100 text-green-700",
+    badgeColor: "bg-blue-100 text-blue-600",
     lottie: car,
     link: "/insurance/car",
   },
   {
     title: "Home Insurance",
-    badge: "Upto 25% Discount",
-    badgeColor: "bg-green-100 text-green-700",
+    badge: "Maximum Security",
+    badgeColor: "bg-purple-100 text-purple-600",
     lottie: home,
     link: "/insurance/home",
   },
   {
     title: "Travel Insurance",
-    badge: "Upto 25% Discount",
-    badgeColor: "bg-green-100 text-green-700",
+    badge: "Global Cover",
+    badgeColor: "bg-sky-100 text-sky-600",
     lottie: aeroplane,
     link: "/insurance/travel",
   },
   {
     title: "Life Insurance",
-    badge: "Upto 25% Discount",
-    badgeColor: "bg-green-100 text-green-700",
+    badge: "Secure Family",
+    badgeColor: "bg-red-100 text-red-600",
     lottie: family,
     link: "/insurance/life",
   },
   {
     title: "Two Wheeler Insurance",
-    badge: "Upto 25% Discount",
-    badgeColor: "bg-green-100 text-green-700",
+    badge: "Instant Policy",
+    badgeColor: "bg-emerald-100 text-emerald-600",
     lottie: bike,
     link: "/insurance/two-wheeler",
   },
-
 ];
+
 export default function InsurancePage() {
   const [activeTab, setActiveTab] = useState("Health Insurance");
 
   return (
     <>
       <Head>
-        <title>Insurance Plans | YourBank</title>
+        <title>Insurance Plans | Premium Security</title>
       </Head>
-      <main className="min-h-screen mt-15 bg-green-50 text-green-900">
-        {/* Hero Section */}
-        <section className="bg-green-900 text-white min-h-[150px] px-4 py-10 text-center flex flex-col justify-center items-center">
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1 }}
-            className="flex items-center gap-3 mb-4"
-          >
-            <Clock className="w-8 h-8 text-yellow-400" />
-            <h2 className="text-2xl md:text-4xl font-bold text-yellow-400">
-              Coming Soon
-            </h2>
-          </motion.div>
-          <h1 className="text-3xl md:text-5xl font-bold mb-6 px-2">
-            Secure Your Future with Our Insurance Plans
-          </h1>
-          <p className="text-base md:text-xl max-w-3xl mx-auto mb-6 px-3">
-            Protect yourself and your loved ones with flexible, reliable, and
-            comprehensive insurance solutions.
-          </p>
-        </section>
 
-        {/* Types of Insurance */}
-        <section className="py-12 px-4 bg-green-50 max-w-7xl mx-auto">
-          <h2 className="text-2xl md:text-4xl font-bold mb-10 text-center">
-            Types of Insurance We Offer
-          </h2>
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 items-stretch">
-            {insuranceCards.map((item, idx) => (
-              <Link key={idx} href={item.link} className="h-full">
-                <div className="h-full bg-green-100 border rounded-xl shadow hover:shadow-lg p-3 flex flex-col items-center justify-between transition cursor-pointer">
-                  {item.badge && (
-                    <span
-                      className={`text-sm font-semibold px-2 py-1 rounded-full mb-2 ${item.badgeColor}`}
-                    >
-                      {item.badge}
-                    </span>
-                  )}
-                  {/* Lottie Animation */}
-                  <Player
-                    autoplay
-                    loop
-                    src={item.lottie}
-                    style={{ height: "95px", width: "100px" }}
-                  />
-                  <h3 className="text-xl md:text-base font-bold text-center mt-3">
-                    {item.title}
-                  </h3>
-                </div>
-              </Link>
-            ))}
+      <main className="min-h-screen bg-[#FFF4E5] text-[#08101E] overflow-x-hidden font-sans">
+        
+        {/* 🚀 Premium Hero Section */}
+        <section className="relative bg-[#08101E] text-white pt-32 pb-20 px-6 overflow-hidden">
+          {/* Animated Background Orbs */}
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#FF7819]/10 rounded-full blur-[120px] -mr-48 -mt-48" />
+          <div className="absolute bottom-0 left-0 w-[300px] h-[300px] bg-blue-500/10 rounded-full blur-[100px] -ml-24 -mb-24" />
 
+          <div className="relative max-w-7xl mx-auto flex flex-col items-center text-center z-10">
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="inline-flex items-center gap-2 px-6 py-2 mb-8 bg-white/5 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl"
+            >
+              <Clock className="w-5 h-5 text-[#FF7819] animate-pulse" />
+              <span className="text-sm font-black tracking-widest text-[#FF7819] uppercase">
+                Product Launching Soon
+              </span>
+            </motion.div>
+
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="text-4xl md:text-7xl font-black mb-8 leading-[1.1] tracking-tighter"
+            >
+              Secure Your Future <br />
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF7819] to-[#FFB076]">
+                Without Compromise
+              </span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="text-lg md:text-2xl text-gray-400 max-w-3xl mx-auto mb-10 font-medium px-4"
+            >
+              Protect yourself and your loved ones with flexible, reliable, and
+              comprehensive insurance solutions designed for the modern era.
+            </motion.p>
           </div>
         </section>
 
-      
-        <section className="py-16 bg-green-100 text-center px-4">
-          <h2 className="text-2xl md:text-4xl font-bold mb-4 text-green-900">
-            Get Insured Today
-          </h2>
-          <p className="mb-6 text-green-800 text-base md:text-lg max-w-2xl mx-auto">
-            Start your journey to a safer tomorrow. Choose the right plan for
-            your needs and secure peace of mind for your family.
-          </p>
-          <a
-            href="/apply-insurance"
-            className="inline-block bg-green-600 text-white px-6 md:px-8 py-3 md:py-4 rounded-full font-semibold hover:bg-green-700 transition text-lg"
-          >
-            Apply for Insurance
-          </a>
+        {/* 💎 3D Bento Grid Section */}
+        <section className="py-24 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto -mt-16 relative z-20">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-12 gap-6">
+            <div className="text-left">
+              <h2 className="text-3xl md:text-5xl font-black tracking-tight text-[#08101E]">
+                Insurance <span className="text-[#FF7819]">Portfolio</span>
+              </h2>
+              <p className="text-gray-500 mt-2 font-medium">Choose from our top-tier protection plans.</p>
+            </div>
+          </div>
 
+          <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {insuranceCards.map((item, idx) => (
+              <motion.div
+                key={idx}
+                whileHover={{ y: -12 }}
+                className="group relative"
+              >
+                <Link href={item.link}>
+                  <div className="h-full bg-white rounded-[2.5rem] p-8 shadow-[0_20px_50px_rgba(0,0,0,0.03)] border border-gray-100 transition-all duration-500 group-hover:shadow-[0_40px_80px_rgba(255,120,25,0.1)] group-hover:border-[#FF7819]/20 flex flex-col items-center">
+                    
+                    {/* Badge */}
+                    <div className="absolute top-6 right-6">
+                       <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl ${item.badgeColor}`}>
+                        {item.badge}
+                      </span>
+                    </div>
+
+                    {/* 3D Lottie Player Wrapper */}
+                    <div className="w-40 h-40 flex items-center justify-center bg-[#FFF4E5] rounded-full mb-6 group-hover:scale-110 transition-transform duration-500 overflow-hidden">
+                      <Player
+                        autoplay
+                        loop
+                        src={item.lottie}
+                        style={{ height: "120px", width: "120px" }}
+                      />
+                    </div>
+
+                    <div className="text-center w-full">
+                      <h3 className="text-2xl font-black text-[#08101E] mb-2 group-hover:text-[#FF7819] transition-colors">
+                        {item.title}
+                      </h3>
+                      <div className="flex items-center justify-center gap-2 text-gray-400 font-bold text-sm">
+                        Learn More <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+          </div>
+        </section>
+
+        {/* 📣 Modern Call to Action */}
+        <section className="py-24 px-6 relative">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            className="max-w-6xl mx-auto rounded-[3.5rem] p-10 md:p-20 bg-[#08101E] text-center text-white relative overflow-hidden shadow-2xl"
+          >
+            {/* Subtle Texture Overlay */}
+            <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
+                 style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")` }} />
+
+            <div className="relative z-10">
+              <ShieldCheck className="w-16 h-16 text-[#FF7819] mx-auto mb-8" />
+              <h2 className="text-4xl md:text-6xl font-black mb-8 tracking-tighter">
+                Get Insured Today
+              </h2>
+              <p className="mb-12 text-lg md:text-xl text-gray-400 max-w-2xl mx-auto font-medium">
+                Start your journey to a safer tomorrow. Choose the right plan for
+                your needs and secure peace of mind for your family.
+              </p>
+              
+              <motion.a
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                href="/insurance"
+                className="inline-flex items-center gap-4 bg-[#FF7819] text-white px-10 py-5 rounded-2xl font-black text-lg hover:bg-[#E65C00] transition-all shadow-[0_20px_40px_rgba(255,120,25,0.3)]"
+              >
+                Apply for Insurance Portfolio
+              </motion.a>
+            </div>
+          </motion.div>
         </section>
       </main>
     </>

@@ -1,7 +1,7 @@
 "use client";
 
 import Head from "next/head";
-import { ShieldCheck, Wrench, Clock, CheckCircle, Heart, FileCheck, Star } from "lucide-react";
+import { ShieldCheck, Wrench, Clock, CheckCircle, Heart, FileCheck, Star, Zap, Navigation, Award, ArrowRight } from "lucide-react";
 import bike from "../../../animations/Bike Riding.json";
 import dynamic from "next/dynamic";
 import { useEffect } from "react";
@@ -16,180 +16,205 @@ const Player = dynamic(
 
 export default function TwoWheelerInsurancePage() {
   useEffect(() => {
-    AOS.init({ duration: 800, once: true });
+    AOS.init({ duration: 1000, once: true });
   }, []);
 
   return (
     <>
       <Head>
-        <title>2-Wheeler Insurance | YourBank</title>
+        <title>Two-Wheeler Insurance | Ride Secure</title>
       </Head>
 
-      <main className="min-h-screen bg-green-50 text-green-900">
+      <main className="min-h-screen bg-[#FFF4E5] text-[#08101E] overflow-x-hidden font-sans">
+        
+        {/* 🏍️ HERO SECTION: NEON VELOCITY */}
+        <section className="relative bg-[#08101E] pt-28 pb-20 md:pt-40 md:pb-32 px-6 rounded-b-[4rem] md:rounded-b-[8rem] shadow-2xl">
+          {/* Animated Background Glows */}
+          <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500/10 rounded-full blur-[120px] animate-pulse" />
+          <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-[#FF7819]/10 rounded-full blur-[120px] animate-pulse" />
 
-        {/* Hero Section */}
-        <section
-          className="bg-green-900 text-white px-6 py-16 text-center flex flex-col items-center mt-10"
-          data-aos="fade-up"
-        >
-          <Player autoplay loop src={JSON.stringify(bike)} style={{ height: "120px", width: "120px" }} />
-          <h1 className="text-3xl md:text-5xl font-bold mt-6">Two-Wheeler Insurance</h1>
-          <p className="mt-4 text-lg max-w-2xl">
-            Protect your bike or scooter with our fast, affordable and reliable insurance plans.
-          </p>
+          <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 relative z-10">
+            <div className="w-full md:w-1/2 text-center md:text-left" data-aos="fade-right">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-blue-400 text-sm font-bold mb-6">
+                <Zap size={16} fill="currentColor" /> Instant Protection for Every Rider
+              </div>
+              <h1 className="text-4xl md:text-7xl font-black text-white leading-tight">
+                Ride Hard. <br />
+                <span className="text-[#FF7819]">Stay Protected.</span>
+              </h1>
+              <p className="mt-6 text-gray-400 text-lg md:text-xl max-w-xl leading-relaxed">
+                Premium coverage for your bike or scooter. Fast claims, zero paperwork, and total peace of mind on every turn.
+              </p>
+              <div className="mt-10 flex flex-wrap justify-center md:justify-start gap-4">
+                <button className="bg-[#FF7819] text-white px-8 py-4 rounded-2xl font-bold text-lg hover:shadow-[0_10px_30px_rgba(255,120,25,0.4)] transition-all transform hover:-translate-y-1">
+                  Get Covered Now
+                </button>
+                <button className="bg-white/5 border border-white/10 text-white px-8 py-4 rounded-2xl font-bold text-lg hover:bg-white/10 transition-all">
+                  Check Plans
+                </button>
+              </div>
+            </div>
+
+            <div className="w-full md:w-1/2 flex justify-center" data-aos="zoom-in">
+              <div className="relative">
+                {/* 3D Container for Animation */}
+                <div className="bg-gradient-to-br from-white/10 to-transparent p-4 rounded-[3rem] backdrop-blur-xl border border-white/10 shadow-2xl">
+                  <Player autoplay loop src={JSON.stringify(bike)} style={{ height: "300px", width: "300px" }} />
+                </div>
+                {/* Floating Stats */}
+                <div className="absolute -top-6 -right-6 bg-white p-4 rounded-2xl shadow-xl border border-gray-100 hidden md:block animate-bounce-slow">
+                  <p className="text-[10px] uppercase tracking-tighter font-bold text-gray-400">Claims Settled</p>
+                  <p className="text-2xl font-black text-[#08101E]">15k+</p>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
-        {/* Why Riders Choose Us */}
-        <section className="py-16 px-6 max-w-6xl mx-auto text-center" data-aos="fade-up">
-          <h2 className="text-2xl md:text-4xl font-bold mb-10">Why Riders Choose Us?</h2>
+        {/* 🛠️ RIDERS GRID: BENTO STYLE */}
+        <section className="py-24 px-6 max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
+            <div data-aos="fade-right">
+              <h2 className="text-3xl md:text-5xl font-black italic tracking-tighter uppercase">Why Riders <span className="text-[#FF7819]">Trust Us</span></h2>
+              <p className="text-gray-500 font-medium mt-2">Designed by riders, for riders.</p>
+            </div>
+            <div className="hidden md:block h-px flex-1 bg-gray-200 mx-10 mb-4" />
+          </div>
+
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
-              { icon: <ShieldCheck className="w-7 h-7 text-green-600" />, text: "Third-Party Liability Cover" },
-              { icon: <Heart className="w-7 h-7 text-green-600" />, text: "Personal Accident Protection" },
-              { icon: <Wrench className="w-7 h-7 text-green-600" />, text: "Cashless Garage Repairs" },
-              { icon: <FileCheck className="w-7 h-7 text-green-600" />, text: "Instant Digital Policy" },
-              { icon: <Clock className="w-7 h-7 text-green-600" />, text: "Quick Claim Settlement" },
-              { icon: <Star className="w-7 h-7 text-green-600" />, text: "No Claim Bonus Benefits" },
+              { icon: <ShieldCheck className="w-8 h-8" />, text: "Third-Party Liability", desc: "Covers legal liabilities to others." },
+              { icon: <Heart className="w-8 h-8" />, text: "Accident Protection", desc: "Safety net for you and your pillion." },
+              { icon: <Wrench className="w-8 h-8" />, text: "Cashless Repairs", desc: "5000+ network garages across India." },
+              { icon: <FileCheck className="w-8 h-8" />, text: "Digital Policy", desc: "Policy in your inbox in 2 minutes." },
+              { icon: <Clock className="w-8 h-8" />, text: "Quick Settlement", desc: "Hassle-free, rapid claim processing." },
+              { icon: <Star className="w-8 h-8" />, text: "No Claim Bonus", desc: "Save more for every claim-free year." },
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="bg-white border rounded-xl shadow p-6 flex flex-col items-center hover:shadow-md transition"
-                data-aos="zoom-in"
+                className="group bg-white border border-gray-100 rounded-[2.5rem] p-8 shadow-sm hover:shadow-2xl hover:bg-[#08101E] transition-all duration-500"
+                data-aos="fade-up"
                 data-aos-delay={idx * 100}
               >
-                {item.icon}
-                <p className="mt-3 font-medium">{item.text}</p>
+                <div className="w-16 h-16 bg-[#FFF4E5] rounded-2xl flex items-center justify-center text-[#FF7819] group-hover:bg-[#FF7819] group-hover:text-white transition-all mb-6">
+                  {item.icon}
+                </div>
+                <h3 className="text-xl font-bold group-hover:text-white mb-2">{item.text}</h3>
+                <p className="text-gray-500 group-hover:text-gray-400 text-sm">{item.desc}</p>
               </div>
             ))}
           </div>
         </section>
 
-        {/* Types of Plans */}
-        <section className="py-16 px-6 bg-green-100" data-aos="fade-up">
-          <h2 className="text-2xl md:text-4xl font-bold text-center mb-10">
-            Types of Two-Wheeler Insurance Plans
-          </h2>
-          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        {/* 📊 CALCULATOR: DARK THEME PRESETS */}
+        <section className="py-20 px-6 bg-[#08101E] rounded-[3rem] md:rounded-[6rem] mx-4 overflow-hidden relative">
+          <div className="absolute top-0 right-0 p-10 opacity-5 text-white">
+            <Navigation size={300} />
+          </div>
+          <div className="max-w-4xl mx-auto relative z-10" data-aos="fade-up">
+            <h2 className="text-3xl md:text-4xl font-black text-center text-white mb-10">
+              Calculate Your <span className="text-[#FF7819]">Premium</span>
+            </h2>
+            <div className="bg-white rounded-[3rem] overflow-hidden shadow-2xl p-2 md:p-6">
+              <TwoWheeler />
+            </div>
+          </div>
+        </section>
+
+        {/* 📑 PLANS: TIERED CARDS */}
+        <section className="py-24 px-6 max-w-7xl mx-auto">
+          <h2 className="text-3xl md:text-5xl font-black text-center mb-16 tracking-tighter">SELECT YOUR <span className="text-[#FF7819]">COVERAGE</span></h2>
+          <div className="grid md:grid-cols-3 gap-8">
             {[
-              { title: "Third-Party Liability", desc: "Mandatory cover for damages or injuries to third parties." },
-              { title: "Comprehensive Cover", desc: "Protects your own vehicle plus third-party liability." },
-              { title: "Own Damage Policy", desc: "Covers only damages to your own 2-wheeler." },
-              { title: "Long-Term Policy", desc: "Secure your bike for 2–3 years with a single premium." },
-              { title: "Zero Depreciation Add-On", desc: "Get full claim without depreciation cuts." },
+              { title: "Third-Party", desc: "Legal mandatory cover for damage to others.", accent: "blue" },
+              { title: "Comprehensive", desc: "All-in-one protection for you and your bike.", accent: "saffron", popular: true },
+              { title: "Own Damage", desc: "Specifically covers repair costs for your vehicle.", accent: "blue" },
             ].map((plan, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-xl shadow border p-6 text-center hover:shadow-lg transition"
-                data-aos="flip-right"
+                className={`relative bg-white rounded-[3rem] p-10 border-2 transition-all ${plan.popular ? 'border-[#FF7819] scale-105 shadow-2xl z-10' : 'border-gray-50 hover:border-gray-200 shadow-xl'}`}
+                data-aos="flip-left"
                 data-aos-delay={idx * 100}
               >
-                <h3 className="text-xl font-bold mb-3">{plan.title}</h3>
-                <p className="text-green-700 mb-4">{plan.desc}</p>
-                <button className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700">
+                {plan.popular && <span className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#FF7819] text-white px-6 py-1 rounded-full text-xs font-black uppercase tracking-widest">Most Popular</span>}
+                <h3 className="text-2xl font-black mb-4 uppercase italic">{plan.title}</h3>
+                <p className="text-gray-500 mb-8 font-medium">{plan.desc}</p>
+                <button className={`w-full py-4 rounded-2xl font-bold transition-all ${plan.popular ? 'bg-[#FF7819] text-white shadow-lg' : 'bg-[#08101E] text-white'}`}>
                   View Details
                 </button>
               </div>
             ))}
           </div>
         </section>
-          <section className="py-12 px-6 max-w-4xl mx-auto" data-aos="fade-up">
-                  <h2 className="text-2xl md:text-3xl font-bold text-center mb-6">
-                    Two Wheeler Insurance Premium Calculator
-                  </h2>
-                  <div className="bg-green-50 p-0 rounded-xl shadow border">
-                   <TwoWheeler/>
-                  </div>
-                </section>
 
-        {/* Documents & Benefits Section */}
-        <section className="py-16 px-6 max-w-6xl mx-auto" data-aos="fade-up">
-          <h2 className="text-2xl md:text-4xl font-bold text-center mb-10" data-aos="fade-up">
-            Documents & Benefits of Two-Wheeler Insurance
-          </h2>
-
-          <div className="grid md:grid-cols-2 gap-6">
-
-            {/* Documents Required */}
-            <div className="bg-green-50 border rounded-xl shadow p-6" data-aos="fade-right">
-              <h2 className="text-2xl font-bold mb-4 text-green-900">Documents Required</h2>
-              <ul className="list-none text-green-800 space-y-2">
+        {/* 📜 DOCS & BENEFITS: MODERN SPLIT */}
+        <section className="py-24 px-6 max-w-7xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Documents Card */}
+            <div className="bg-white rounded-[3.5rem] p-10 md:p-14 shadow-2xl border border-gray-50" data-aos="fade-right">
+              <div className="flex items-center gap-4 mb-8">
+                <Award className="text-[#FF7819]" size={32} />
+                <h2 className="text-3xl font-black uppercase italic tracking-tighter">Essentials</h2>
+              </div>
+              <div className="space-y-4">
                 {[
-                  "Driving License",
-                  "Vehicle Registration Certificate (RC)",
-                  "Previous Insurance (if any)",
-                  "ID Proof (Aadhar/PAN/Passport)",
-                  "Address Proof",
+                  "Driving License", "Vehicle RC", "Previous Policy", 
+                  "ID Proof ([Aadhaar Redacted])", "Address Proof"
                 ].map((doc, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-center"
-                    data-aos="fade-right"
-                    data-aos-delay={idx * 100}
-                  >
-                    <ShieldCheck className="w-5 h-5 text-green-600 mr-2 flex-shrink-0" />
-                    {doc}
-                  </li>
+                  <div key={idx} className="flex items-center gap-4 bg-[#FFF4E5] p-4 rounded-2xl font-bold text-[#08101E]/80">
+                    <ShieldCheck className="text-[#FF7819]" size={20} /> {doc}
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
 
-            {/* Benefits of This Insurance */}
-            <div className="bg-green-50 border rounded-xl shadow p-6" data-aos="fade-left">
-              <h2 className="text-2xl font-bold mb-4 text-green-900">Benefits of 2-Wheeler Insurance</h2>
-              <ul className="list-none text-green-800 space-y-2">
+            {/* Benefits Card */}
+            <div className="bg-[#FF7819] rounded-[3.5rem] p-10 md:p-14 text-white shadow-2xl shadow-[#FF7819]/20" data-aos="fade-left">
+              <div className="flex items-center gap-4 mb-8">
+                <Star size={32} />
+                <h2 className="text-3xl font-black uppercase italic tracking-tighter">Perks</h2>
+              </div>
+              <div className="space-y-4">
                 {[
-                  "Financial protection against accidents & theft",
-                  "Cashless repairs at network garages",
-                  "Quick and hassle-free claim settlement",
-                  "Personal accident cover for rider & pillion",
-                  "No claim bonus for claim-free years",
+                  "Theft & Accident Shield", "Network Garage Access", "Zero-Paperwork Claims",
+                  "Pillion Rider Cover", "No Claim Bonus Rewards"
                 ].map((benefit, idx) => (
-                  <li
-                    key={idx}
-                    className="flex items-center"
-                    data-aos="fade-left"
-                    data-aos-delay={idx * 100}
-                  >
-                    <CheckCircle className="w-5 h-5 text-green-600 mr-2 flex-shrink-0" />
-                    {benefit}
-                  </li>
+                  <div key={idx} className="flex items-center gap-4 bg-white/10 p-4 rounded-2xl font-bold border border-white/10 backdrop-blur-sm">
+                    <CheckCircle size={20} /> {benefit}
+                  </div>
                 ))}
-              </ul>
+              </div>
             </div>
-            </div>
-        </section>
-       {/* How It Works */}
-        <section className="py-16 px-6 bg-green-100 text-center" data-aos="fade-up">
-          <h2 className="text-2xl md:text-4xl font-bold mb-10">How to Get Your Bike Covered?</h2>
-          <div className="grid md:grid-cols-4 gap-6 max-w-6xl mx-auto">
-            {["Choose Plan", "Share Vehicle Details", "Make Payment", "Get Instant Policy"].map(
-              (step, idx) => (
-                <div
-                  key={idx}
-                  className="bg-white rounded-xl shadow p-6 flex flex-col items-center"
-                  data-aos="fade-up"
-                  data-aos-delay={idx * 100}
-                >
-                  <div className="text-green-600 text-3xl font-bold mb-2">{idx + 1}</div>
-                  <p>{step}</p>
-                </div>
-              )
-            )}
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="py-16 px-6 text-center" data-aos="fade-up">
-          <h2 className="text-2xl md:text-4xl font-bold mb-4">Secure Your Ride Today!</h2>
-          <p className="text-green-800 mb-6">
-            Get 2-wheeler insurance in just a few clicks. Ride worry-free with our trusted protection.
-          </p>
-          <a
-            href="/apply-insurance"
-            className="inline-block bg-green-600 text-white px-8 py-4 rounded-full font-semibold hover:bg-green-700 transition text-lg"
-          >
-            Apply Now
-          </a>
+        {/* ⚡ HOW IT WORKS */}
+        <section className="py-24 px-6 text-center bg-[#08101E] rounded-t-[4rem] md:rounded-t-[8rem]">
+          <h2 className="text-3xl md:text-5xl font-black text-white mb-16 italic uppercase tracking-tighter">Fast <span className="text-[#FF7819]">Lane</span> Process</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-6xl mx-auto">
+            {["Pick Plan", "Bike Stats", "Pay Fast", "Get Policy"].map((step, idx) => (
+              <div key={idx} className="bg-white/5 border border-white/10 p-8 rounded-[2.5rem] backdrop-blur-md group hover:bg-[#FF7819] transition-all duration-500 cursor-default" data-aos="fade-up" data-aos-delay={idx * 100}>
+                <span className="text-4xl font-black text-[#FF7819] group-hover:text-white transition-colors">0{idx + 1}</span>
+                <p className="text-white font-bold mt-4 text-sm uppercase tracking-wider">{step}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* 🚀 FINAL CTA */}
+        <section className="py-24 px-6 text-center bg-[#08101E]">
+          <div className="max-w-4xl mx-auto" data-aos="zoom-in">
+            <h2 className="text-4xl md:text-6xl font-black text-white mb-6 uppercase italic">Secure Your <span className="text-[#FF7819]">Ride</span> Today</h2>
+            <p className="text-gray-400 mb-12 text-lg">
+              Don't wait for a breakdown. Join 2 million+ riders who stay worry-free with our trusted protection.
+            </p>
+            <a
+              href="/apply-insurance"
+              className="group inline-flex items-center gap-4 bg-[#FF7819] text-white px-12 py-5 rounded-full font-black text-xl hover:shadow-[0_20px_50px_rgba(255,120,25,0.4)] transition-all transform hover:scale-105"
+            >
+              Apply In Seconds <ArrowRight className="group-hover:translate-x-2 transition-transform" />
+            </a>
+          </div>
         </section>
       </main>
     </>

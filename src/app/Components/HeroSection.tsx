@@ -6,8 +6,14 @@ import Cookies from "js-cookie";
 import LoginModal from "./LoginModal";
 import GlobalModal from "./globalmodel";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay } from "swiper/modules";
+import { Autoplay, EffectFade, Pagination } from "swiper/modules";
+import { motion } from "framer-motion";
 import Image from "next/image";
+
+// Swiper Essential Styles
+import "swiper/css";
+import "swiper/css/effect-fade";
+import "swiper/css/pagination";
 
 export default function HeroSection() {
   const router = useRouter();
@@ -16,7 +22,6 @@ export default function HeroSection() {
   const handleApplyNow = () => {
     const co_phone = Cookies.get("co_phone");
     const co_token = Cookies.get("co_token");
-
     if (co_phone && co_token) {
       router.push("/personal-loans");
     } else {
@@ -31,124 +36,139 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="relative bg-[#FFF4E5] overflow-hidden pt-16 md:pt-20">
-      {/* Satyam Shivam Sundaram Bar - As per your instruction */}
-      <div className="w-full flex justify-center items-center py-3 bg-[#FFF4E5] border-b border-[#FF690B]/20">
-        <p className="text-sm md:text-lg font-serif text-[#138808] tracking-[0.15em] font-semibold flex items-center gap-2">
-          🔱 सत्यम शिवम सुंदरम 🔱
-        </p>
+    <section className="relative bg-[#08101E] overflow-hidden min-h-screen md:min-h-0 flex flex-col pt-20 sm:pt-24 md:pt-28 text-white">
+      
+      {/* 🔱 Satyam Shivam Sundaram - Subtle Dark Glow */}
+      <div className="absolute top-24 left-1/2 -translate-x-1/2 z-10 opacity-20 pointer-events-none hidden md:block">
+         <div className="flex items-center gap-4 text-white font-serif tracking-[0.4em] uppercase text-xs font-bold">
+            <span className="h-[1px] w-16 bg-gradient-to-r from-transparent to-white" />
+            सत्यम शिवम सुंदरम
+            <span className="h-[1px] w-16 bg-gradient-to-l from-transparent to-white" />
+         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 md:px-12 pt-10 pb-20 flex flex-col md:flex-row items-center gap-12 relative">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-12 pb-32 md:pb-48 flex flex-col md:flex-row items-center gap-8 md:gap-12 relative z-20 w-full">
         
-        {/* Left Content - Modern 3D Card Style */}
-        <div className="md:w-1/2 text-center md:text-left z-20">
-          <div className="inline-flex items-center gap-2 px-5 py-2 bg-white/80 backdrop-blur-md rounded-3xl border border-white shadow-sm mb-6">
-            <div className="w-2 h-2 bg-[#FF690B] rounded-full animate-pulse" />
-            <span className="text-sm font-medium text-[#08101E]">India's Trusted Finance Partner</span>
+        {/* Left Content Section */}
+        <div className="w-full md:w-1/2 text-center md:text-left z-30 order-2 md:order-1">
+          <motion.div 
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-6"
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF690B] opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF690B]"></span>
+            </span>
+            <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-white/60">India's Trusted Finance Partner</span>
+          </motion.div>
+
+          <motion.h1 
+            initial={{ opacity: 0, x: -30 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="text-4xl sm:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight"
+          >
+            Finance ka <br />
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] via-[#FF8C00] to-[#FFD700] drop-shadow-[0_0_30px_rgba(255,105,11,0.3)]">
+              Smart Mantra
+            </span>
+          </motion.h1>
+
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3 }}
+            className="mt-6 text-base md:text-xl text-white/70 max-w-lg mx-auto md:mx-0 font-medium leading-relaxed"
+          >
+            Experience seamless personal loans, instant insurance covers, and 
+            tailored financial growth — all in one secure platform.
+          </motion.p>
+
+          {/* 3D Stats Grid - Glassmorphism Style */}
+          <div className="mt-10 grid grid-cols-3 gap-3 md:gap-4 max-w-md mx-auto md:mx-0">
+            {[
+              { val: "50M+", lbl: "Users" },
+              { val: "4.8★", lbl: "Rating" },
+              { val: "2Cr+", lbl: "Disbursed" }
+            ].map((stat, i) => (
+              <div key={i} className="bg-white/5 backdrop-blur-xl rounded-2xl p-3 md:p-4 border border-white/10 shadow-2xl group hover:scale-105 hover:bg-white/10 transition-all duration-300">
+                <p className="text-xl md:text-2xl font-black text-[#FF690B]">{stat.val}</p>
+                <p className="text-[9px] md:text-[10px] font-bold text-white/40 uppercase tracking-tighter mt-1">{stat.lbl}</p>
+              </div>
+            ))}
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-extrabold leading-tight text-[#08101E] tracking-tighter">
-            Finance ka <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] via-[#FF8C00] to-[#FF9933]">Smart Mantra</span>
-          </h1>
-
-          <p className="mt-6 text-lg md:text-xl text-[#08101E]/80 max-w-lg mx-auto md:mx-0">
-            Personalized loans, instant insurance, and smart credit solutions — 
-            all in one secure platform.
-          </p>
-
-          {/* Trust Stats - 3D Card Style */}
-          <div className="mt-10 grid grid-cols-3 gap-4 max-w-md mx-auto md:mx-0">
-            <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/60 hover:-translate-y-1 transition-all">
-              <p className="text-3xl font-bold text-[#FF690B]">50M+</p>
-              <p className="text-xs text-[#08101E]/70 mt-1">Happy Users</p>
-            </div>
-            <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/60 hover:-translate-y-1 transition-all">
-              <p className="text-3xl font-bold text-[#FF690B]">4.8★</p>
-              <p className="text-xs text-[#08101E]/70 mt-1">Rating</p>
-            </div>
-            <div className="bg-white/90 backdrop-blur-md rounded-2xl p-4 shadow-lg border border-white/60 hover:-translate-y-1 transition-all">
-              <p className="text-3xl font-bold text-[#FF690B]">2Cr+</p>
-              <p className="text-xs text-[#08101E]/70 mt-1">Downloads</p>
-            </div>
-          </div>
-
-          {/* CTA Button - 3D Modern Style */}
-          <div className="mt-12">
+          <motion.div className="mt-10 md:mt-12">
             <button
               onClick={handleApplyNow}
-              className="group relative px-10 py-4 bg-gradient-to-r from-[#FF690B] to-[#FF9933] text-white font-semibold text-lg rounded-2xl shadow-xl hover:shadow-2xl hover:-translate-y-1 active:scale-95 transition-all duration-300 overflow-hidden"
+              className="w-full sm:w-auto group relative inline-flex items-center justify-center gap-4 px-10 py-4 bg-white text-[#08101E] font-black text-lg rounded-2xl shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:scale-105 transition-all"
             >
-              <span className="relative z-10 flex items-center gap-3">
-                Apply Now
-                <span className="text-xl group-hover:rotate-12 transition">→</span>
-              </span>
-              <div className="absolute inset-0 bg-white/20 scale-x-0 group-hover:scale-x-100 transition-transform origin-left" />
+              <span>APPLY NOW</span>
+              <div className="w-8 h-8 bg-[#FF690B] rounded-full flex items-center justify-center group-hover:translate-x-2 transition-transform shadow-lg">
+                <span className="text-white">→</span>
+              </div>
             </button>
-          </div>
+          </motion.div>
         </div>
 
-        {/* Right Side - 3D Floating Images with Swiper */}
-        <div className="md:w-1/2 flex justify-center relative">
-          <div className="relative w-full max-w-md md:max-w-lg">
-            {/* Subtle Glow Background */}
-            <div className="absolute -inset-10 bg-gradient-to-br from-[#FF690B]/10 to-transparent rounded-[4rem] blur-3xl -z-10" />
+        {/* Right Side Image Slider */}
+        <div className="w-full md:w-1/2 flex justify-center relative order-1 md:order-2 h-[380px] sm:h-[480px] md:h-[580px]">
+          {/* Main Glow Effect */}
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[#FF690B]/20 rounded-full blur-[120px] -z-10" />
+          
+          <Swiper
+            modules={[Autoplay, EffectFade, Pagination]}
+            effect="fade"
+            fadeEffect={{ crossFade: true }}
+            autoplay={{ delay: 3500, disableOnInteraction: false }}
+            pagination={{ clickable: true, dynamicBullets: true }}
+            loop={true}
+            className="h-full w-full custom-swiper"
+          >
+            {images.map((src, i) => (
+              <SwiperSlide key={i} className="flex items-center justify-center">
+                <motion.div 
+                  animate={{ y: [0, -20, 0] }}
+                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+                  className="relative w-full h-full"
+                >
+                  <Image
+                    src={src}
+                    alt="CoverMantra Hero"
+                    fill
+                    className="object-contain drop-shadow-[0_20px_80px_rgba(255,105,11,0.2)]"
+                    priority={i === 0}
+                  />
+                </motion.div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
-            <Swiper
-              modules={[Autoplay]}
-              autoplay={{
-                delay: 2800,
-                disableOnInteraction: false,
-              }}
-              loop={true}
-              speed={800}
-              className="w-full aspect-[4/3.5] rounded-3xl overflow-hidden shadow-2xl"
-            >
-              {images.map((src, i) => (
-                <SwiperSlide key={i} className="relative">
-                  <div className="relative w-full h-full">
-                    <Image
-                      src={src}
-                      alt={`Financial Journey ${i + 1}`}
-                      fill
-                      className="object-contain drop-shadow-2xl scale-95 hover:scale-100 transition-transform duration-700"
-                      priority={i === 0}
-                    />
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
-
-            {/* Floating Badge */}
-            <div className="absolute -top-4 -right-4 bg-white px-5 py-2.5 rounded-2xl shadow-xl border border-white/70 flex items-center gap-2 text-sm font-medium">
-              <span className="text-[#FF690B]">✅</span>
-              RBI Registered Partners
+          {/* Floating RBI Badge - Dark Version */}
+          <div className="absolute top-0 right-0 md:top-10 md:-right-5 bg-[#1A2332] p-3 md:p-4 rounded-2xl shadow-2xl border border-white/10 z-40 flex items-center gap-3 backdrop-blur-md">
+            <div className="w-8 h-8 bg-green-500/20 rounded-xl flex items-center justify-center text-green-400 font-bold">✓</div>
+            <div>
+              <p className="text-[10px] font-black text-white/40 uppercase leading-none">Status</p>
+              <p className="text-xs md:text-sm font-black text-white">RBI Registered</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Wave Divider - Modern Clean */}
-      <div className="absolute bottom-0 left-0 w-full">
-        <svg
-          className="w-full h-24 md:h-32"
-          viewBox="0 0 1440 320"
-          preserveAspectRatio="none"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            fill="#ffffff"
-            d="M0,224L30,213.3C60,203,120,181,180,192C240,203,300,245,360,245.3C420,245,480,203,540,197.3C600,192,660,224,720,218.7C780,213,840,171,900,165.3C960,160,1020,192,1080,208C1140,224,1200,224,1260,213.3C1320,203,1380,181,1410,170.7L1440,160L1440,320L0,320Z"
-          />
+      {/* Modern Wave Divider - Blends into Next White Section */}
+      <div className="absolute bottom-0 left-0 w-full leading-[0] z-30">
+        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+          <path d="M0 120L1440 120L1440 0C1100 60 700 60 0 0L0 120Z" fill="white" />
         </svg>
       </div>
 
-      {/* Modals */}
-      <LoginModal 
-        isOpen={loginOpen} 
-        onClose={() => setLoginOpen(false)} 
-      />
+      <style jsx global>{`
+        .custom-swiper .swiper-pagination-bullet { background: #white; opacity: 0.2; }
+        .custom-swiper .swiper-pagination-bullet-active { background: #FF690B !important; opacity: 1; width: 24px; border-radius: 10px; }
+        .custom-swiper { padding-bottom: 40px !important; }
+      `}</style>
+
+      <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
       <GlobalModal />
     </section>
   );

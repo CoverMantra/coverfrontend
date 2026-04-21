@@ -5,7 +5,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import { FaCheckCircle, FaMoneyBillWave } from "react-icons/fa";
 import 'swiper/swiper.css';
-//import 'swiper/css/pagination';
+import 'swiper/css/pagination';
 
 const steps = [
   {
