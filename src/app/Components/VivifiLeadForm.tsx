@@ -1,10 +1,8 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../lib/axios";
 import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
-
-const BASE_URL = "https://www.covermantra.com";
 
 const VivifiLeadForm = () => {
   const [loading, setLoading] = useState(false);
@@ -32,8 +30,8 @@ const VivifiLeadForm = () => {
 
       setIsLoadingUser(true);
       try {
-        const response = await axios.post(`${BASE_URL}/api/user/profile`, { phone: storedPhone });
-        const user = response.data.user;
+        const { data } = await api.post("/api/user/profile", { phone: storedPhone });
+        const user = data.user;
         if (user) {
           // Name split logic (First Name & Last Name)
           const nameParts = user.name ? user.name.split(" ") : ["", ""];
@@ -73,13 +71,13 @@ const VivifiLeadForm = () => {
     setLoading(true);
     try {
       // API call to our Next.js backend
-      const response = await axios.post("/api/vivifi/register", formData);
+      const { data } = await api.post("/api/vivifi/register", formData);
 
-      if (response.data.success && response.data.redirectUrl) {
+      if (data.success && data.redirectUrl) {
         toast.success("Eligible! Redirecting...");
-        window.location.href = response.data.redirectUrl;
+        window.location.href = data.redirectUrl;
       } else {
-        toast.error(response.data.message || "Currently not eligible.");
+        toast.error(data.message || "Currently not eligible.");
       }
     } catch (error: any) {
       toast.error(error.response?.data?.message || "Something went wrong!");

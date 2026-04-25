@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
+import api from "../../../lib/axios";
 
 export default function MoneyViewPage() {
   const [formData, setFormData] = useState({
@@ -31,15 +32,7 @@ export default function MoneyViewPage() {
   // Fetch user profile API
   const fetchUserData = async (storedPhone: string) => {
     try {
-      const response = await fetch("https://www.covermantra.com/api/user/profile", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ phone: storedPhone })
-      });
-
-      if (!response.ok) throw new Error(`API error: ${response.statusText}`);
-
-      const data = await response.json();
+      const { data } = await api.post("/api/user/profile", { phone: storedPhone });
       return data.user;
     } catch (error) {
       console.error("Fetch User API Error:", error);
@@ -112,13 +105,7 @@ export default function MoneyViewPage() {
         consent_timestamp: new Date().toISOString(),
       };
 
-      const res = await fetch("https://covermantra.com/api/moneyview/register", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-
-      const response = await res.json();
+      const { data: response } = await api.post("/api/moneyview/register", payload);
 
       if (response?.pwa) {
         window.location.href = response.pwa;

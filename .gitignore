@@ -36,7 +36,8 @@ yarn-error.log*
 # vercel
 .vercel
 frontend_Architecture.md
-
+architeecturefullstack.md
+implimentation_plan.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts

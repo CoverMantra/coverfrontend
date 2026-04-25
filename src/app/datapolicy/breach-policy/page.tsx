@@ -1,147 +1,207 @@
 "use client";
 
 import React from "react";
+import { FaShieldAlt, FaExclamationTriangle, FaLock, FaSyncAlt } from "react-icons/fa";
 
 const DataBreachPolicy = () => {
   return (
-    <section className="pt-32 pb-20 bg-gradient-to-b from-green-100 to-white min-h-screen px-6 md:px-12">
-      <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg border border-green-100 p-8 md:p-12 transition-all duration-300 hover:shadow-xl">
-        
-        {/* Header Section */}
-        <div className="text-center mb-12">
-          <h1 className="text-5xl font-extrabold text-green-800 mb-5 tracking-wide">
-            Data Breach Policy
+    <main className="min-h-screen bg-[#FFF4E5] font-sans">
+      {/* 🌑 Dark Header Section */}
+      <section className="bg-[#08101E] pt-32 pb-20 px-6 md:px-12 relative overflow-hidden">
+        {/* Decorative 3D Glows */}
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#FF7819]/10 rounded-full blur-[100px] -z-0" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px] -z-0" />
+
+        <div className="max-w-6xl mx-auto relative z-10 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#FF7819] text-[10px] font-black tracking-[0.2em] uppercase mb-6">
+            <FaShieldAlt className="animate-pulse" /> Security Protocol
+          </div>
+          <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter mb-6 italic uppercase">
+            Data Breach <span className="text-[#FF7819]">Policy</span>
           </h1>
-          <div className="flex flex-col items-center text-gray-600 space-y-1">
-            <p className="font-semibold text-lg text-green-700">CoverMantra Services Private Limited</p>
-            <p>Effective Date: Sept 24, 2025 | Version: 1.0</p>
+          <div className="flex flex-col items-center text-gray-400 space-y-1 font-bold text-xs uppercase tracking-widest">
+            <p className="text-white/80">CoverMantra Services Private Limited</p>
+            <p className="flex items-center gap-4">
+              <span>Effective: Sept 24, 2025</span>
+              <span className="text-[#FF7819]">|</span>
+              <span>Version: 1.0</span>
+            </p>
           </div>
-          <hr className="mt-8 border-green-100" />
         </div>
+      </section>
 
-        <div className="space-y-10">
-          {/* 1. Purpose */}
-          <div>
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">1. Purpose</h2>
-            <p className="text-gray-700 leading-relaxed">
-              The purpose of this Data Breach Policy is to establish a structured
-              approach for identifying, reporting, managing, and mitigating any
-              incidents that may compromise the confidentiality, integrity, or
-              availability of data. CoverMantra Services Pvt. Ltd. (“Company”,
-              “we”, “our”) is committed to handling all data breaches responsibly
-              and in compliance with applicable laws and regulations.
-            </p>
-          </div>
+      {/* 📄 Content Section */}
+      <section className="py-16 px-4 sm:px-6 md:px-12 -mt-10 relative z-20">
+        <div className="max-w-5xl mx-auto bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] border border-white p-8 md:p-16 transition-all duration-500 hover:shadow-[0_50px_120px_-30px_rgba(255,120,25,0.15)]">
+          
+          <div className="space-y-16">
+            {/* 1. Purpose */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="w-10 h-10 rounded-xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center font-black shadow-sm group-hover:scale-110 transition-transform">1</span>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">Purpose</h2>
+              </div>
+              <p className="text-gray-600 leading-relaxed font-medium pl-14">
+                The purpose of this Data Breach Policy is to establish a structured
+                approach for identifying, reporting, managing, and mitigating any
+                incidents that may compromise the confidentiality, integrity, or
+                availability of data. CoverMantra Services Pvt. Ltd. (“Company”,
+                “we”, “our”) is committed to handling all data breaches responsibly
+                and in compliance with applicable laws and regulations.
+              </p>
+            </div>
 
-          {/* 2. Scope */}
-          <div>
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">2. Scope</h2>
-            <p className="text-gray-700 mb-3">This policy applies to:</p>
-            <ul className="list-disc pl-6 text-gray-700 leading-relaxed space-y-2">
-              <li>All employees, contractors, and third-party service providers handling company or customer data.</li>
-              <li>All types of data (personal, financial, transactional, technical, and operational) collected or processed by the Company.</li>
-              <li>All systems, applications, networks, cloud platforms, and physical records.</li>
-            </ul>
-          </div>
-
-          {/* 3. Definition */}
-          <div>
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">3. Definition of a Data Breach</h2>
-            <p className="text-gray-700 mb-3">
-              A data breach is any confirmed or suspected incident that leads to
-              authorized access, disclosure, alteration, destruction, or loss of:
-            </p>
-            <ul className="list-disc pl-6 text-gray-700 leading-relaxed space-y-1 mb-4">
-              <li>Customer personal or financial information.</li>
-              <li>Business-critical or confidential company data.</li>
-              <li>IT systems or networks impacting availability and integrity.</li>
-            </ul>
-            <p className="font-semibold text-green-600 mt-4 mb-2">Examples include:</p>
-            <ul className="list-disc pl-6 text-gray-700 leading-relaxed space-y-1">
-              <li>Unauthorized access to systems or databases.</li>
-              <li>Loss or theft of devices containing sensitive data.</li>
-              <li>Accidental disclosure of customer information.</li>
-              <li>Malware, ransomware, or cyberattacks impacting systems.</li>
-            </ul>
-          </div>
-
-          {/* 4. Roles & Responsibilities */}
-          <div>
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">4. Roles & Responsibilities</h2>
-            <ul className="list-disc pl-6 text-gray-700 leading-relaxed space-y-2">
-              <li><b>Employees/Contractors</b> – Immediately report suspected or actual breaches.</li>
-              <li><b>Information Security Officer (ISO)</b> – Lead investigation, coordinate response, and implement corrective measures.</li>
-              <li><b>Incident Response Team (IRT)</b> – Handle containment, forensics, and recovery activities.</li>
-              <li><b>Management</b> – Ensure resources, oversight, and regulatory reporting.</li>
-              <li><b>Third-Party Vendors</b> – Must notify the Company immediately of any breach involving shared data.</li>
-            </ul>
-          </div>
-
-          {/* 5. Breach Response Procedure */}
-          <div>
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">5. Breach Response Procedure</h2>
-            <ol className="list-decimal pl-6 text-gray-700 leading-relaxed space-y-3 font-medium">
-              <li>Identification – <span className="font-normal text-gray-600 text-sm">Detect or report a potential breach.</span></li>
-              <li>Containment – <span className="font-normal text-gray-600 text-sm">Isolate affected systems, stop unauthorized access, and prevent further damage.</span></li>
-              <li>Assessment – <span className="font-normal text-gray-600 text-sm">Determine the scope, type of data affected, and potential impact.</span></li>
-              <li>Notification – 
-                <ul className="list-disc pl-6 mt-2 font-normal text-gray-600 space-y-1">
-                  <li>Inform senior management and relevant stakeholders.</li>
-                  <li>Notify regulators (RBI/DCA or applicable authority) within legally mandated timelines.</li>
-                  <li>Inform affected customers promptly with guidance on protective measures.</li>
+            {/* 2. Scope */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="w-10 h-10 rounded-xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center font-black shadow-sm group-hover:scale-110 transition-transform">2</span>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">Scope</h2>
+              </div>
+              <div className="pl-14 space-y-4">
+                <p className="text-gray-600 font-bold uppercase text-[10px] tracking-widest">This policy applies to:</p>
+                <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {["Employees & Contractors", "Personal & Financial Data", "Network & Systems", "Cloud Platforms"].map((item, i) => (
+                    <li key={i} className="flex items-center gap-3 p-4 bg-gray-50 rounded-2xl border border-gray-100 text-sm font-bold text-gray-700">
+                      <FaLock className="text-[#FF7819] text-xs" /> {item}
+                    </li>
+                  ))}
                 </ul>
-              </li>
-              <li>Eradication & Recovery – <span className="font-normal text-gray-600 text-sm">Remove threats, restore systems from backups, and validate security.</span></li>
-              <li>Post-Incident Review – <span className="font-normal text-gray-600 text-sm">Analyze root cause, document lessons learned, and strengthen controls.</span></li>
-            </ol>
-          </div>
+              </div>
+            </div>
 
-          {/* 6. Data Breach Notification */}
-          <div>
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">6. Data Breach Notification</h2>
-            <ul className="list-disc pl-6 text-gray-700 leading-relaxed space-y-2">
-              <li>Customers will be informed transparently if their personal or financial data is affected.</li>
-              <li>Notifications will include nature of breach, type of data compromised, corrective steps taken, and recommended customer actions.</li>
-              <li>All notifications will be clear, timely, and compliant with applicable data protection and regulatory requirements.</li>
-            </ul>
-          </div>
+            {/* 3. Definition */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="w-10 h-10 rounded-xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center font-black shadow-sm group-hover:scale-110 transition-transform">3</span>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">Definition of a Data Breach</h2>
+              </div>
+              <div className="pl-14">
+                <p className="text-gray-600 leading-relaxed font-medium mb-6">
+                  A data breach is any confirmed or suspected incident that leads to
+                  authorized access, disclosure, alteration, destruction, or loss of sensitive data assets.
+                </p>
+                <div className="bg-red-50 border-l-4 border-red-500 p-6 rounded-r-2xl">
+                  <h4 className="flex items-center gap-2 text-red-700 font-black uppercase text-xs tracking-widest mb-4">
+                    <FaExclamationTriangle /> Critical Examples:
+                  </h4>
+                  <ul className="space-y-2 text-sm text-red-900/70 font-bold">
+                    <li>• Unauthorized access to systems or databases.</li>
+                    <li>• Loss or theft of devices containing sensitive data.</li>
+                    <li>• Accidental disclosure of customer information.</li>
+                    <li>• Malware, ransomware, or cyberattacks.</li>
+                  </ul>
+                </div>
+              </div>
+            </div>
 
-          {/* 7. Prevention & Preparedness */}
-          <div>
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">7. Prevention & Preparedness</h2>
-            <ul className="list-disc pl-6 text-gray-700 leading-relaxed space-y-2">
-              <li>Regular security audits and penetration testing.</li>
-              <li>Ongoing employee awareness training on phishing, social engineering, and data handling.</li>
-              <li>Strong encryption, access controls, and monitoring tools to detect anomalies.</li>
-              <li>Business Continuity & Disaster Recovery (BC/DR) plans tested periodically.</li>
-            </ul>
-          </div>
+            {/* 4. Roles */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="w-10 h-10 rounded-xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center font-black shadow-sm group-hover:scale-110 transition-transform">4</span>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">Roles & Responsibilities</h2>
+              </div>
+              <div className="pl-14 grid grid-cols-1 md:grid-cols-2 gap-4">
+                {[
+                  { role: "Employees", desc: "Immediate reporting of suspected breaches." },
+                  { role: "ISO", desc: "Lead investigation and coordinate response." },
+                  { role: "IRT", desc: "Containment, forensics, and recovery." },
+                  { role: "Vendors", desc: "Notify company immediately of shared data breaches." }
+                ].map((item, i) => (
+                  <div key={i} className="p-5 bg-white border border-gray-100 rounded-2xl shadow-sm hover:border-[#FF7819]/30 transition-colors">
+                    <p className="text-[#FF7819] font-black uppercase text-[10px] tracking-widest mb-1">{item.role}</p>
+                    <p className="text-gray-600 text-sm font-medium">{item.desc}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          {/* 8. Policy Review */}
-          <div>
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">8. Policy Review & Updates</h2>
-            <p className="text-gray-700 leading-relaxed">
-              This policy will be reviewed annually or upon major changes in
-              technology, regulations, or business operations.
-            </p>
-          </div>
+            {/* 5. Breach Response Procedure */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="w-10 h-10 rounded-xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center font-black shadow-sm group-hover:scale-110 transition-transform">5</span>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">Response Procedure</h2>
+              </div>
+              <div className="pl-14 space-y-6">
+                {[
+                  { step: "Identification", text: "Detect or report a potential breach." },
+                  { step: "Containment", text: "Isolate systems and stop unauthorized access." },
+                  { step: "Assessment", text: "Determine scope, data type, and impact." },
+                  { step: "Notification", text: "Inform senior management, regulators, and customers." },
+                  { step: "Recovery", text: "Remove threats and restore from secure backups." },
+                  { step: "Review", text: "Analyze root cause and document lessons learned." }
+                ].map((item, i) => (
+                  <div key={i} className="flex gap-4 items-start group/step">
+                    <div className="w-1.5 h-1.5 rounded-full bg-[#FF7819] mt-2 group-hover/step:scale-150 transition-transform" />
+                    <div>
+                      <p className="text-[#08101E] font-black text-sm uppercase tracking-tight">{item.step}</p>
+                      <p className="text-gray-500 text-sm font-medium">{item.text}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
 
-          {/* 9. Contact */}
-          <div className="bg-green-50 p-6 rounded-xl border border-green-100">
-            <h2 className="text-2xl font-semibold text-green-700 mb-3">9. Contact Information</h2>
-            <p className="text-gray-700 mb-4">
-              For reporting incidents or raising concerns regarding data security, contact:
-            </p>
-            <ul className="list-none text-gray-700 space-y-1">
-              <li className="font-bold text-green-800 uppercase text-sm tracking-wide mb-2">Data Protection Officer (DPO)</li>
-              <li><strong>Company:</strong> CoverMantra Services Pvt. Ltd</li>
-              <li><strong>Email:</strong> <span className="text-green-700 font-medium">info@covermantra.in</span></li>
-              <li><strong>Phone:</strong> <span className="text-green-700 font-medium">9729509967</span></li>
-            </ul>
+            {/* 6. Notification */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="w-10 h-10 rounded-xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center font-black shadow-sm group-hover:scale-110 transition-transform">6</span>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">Data Breach Notification</h2>
+              </div>
+              <p className="text-gray-600 leading-relaxed font-medium pl-14">
+                Customers will be informed transparently if their personal or financial data is affected. 
+                Notifications will include nature of breach, type of data compromised, and recommended protective measures.
+              </p>
+            </div>
+
+            {/* 7. Prevention */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="w-10 h-10 rounded-xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center font-black shadow-sm group-hover:scale-110 transition-transform">7</span>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">Prevention & Preparedness</h2>
+              </div>
+              <div className="pl-14 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {["Regular Security Audits", "Employee Phishing Training", "Strong Access Controls", "Tested BC/DR Plans"].map((item, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 bg-gray-50 rounded-xl text-xs font-black text-gray-500 uppercase tracking-widest">
+                    <FaSyncAlt className="text-[#FF7819]" /> {item}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* 8. Review */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-4">
+                <span className="w-10 h-10 rounded-xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center font-black shadow-sm group-hover:scale-110 transition-transform">8</span>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">Policy Review</h2>
+              </div>
+              <p className="text-gray-600 leading-relaxed font-medium pl-14">
+                This policy will be reviewed annually or upon major changes in
+                technology, regulations, or business operations.
+              </p>
+            </div>
+
+            {/* 9. Contact */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-6">
+                <span className="w-10 h-10 rounded-xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center font-black shadow-sm group-hover:scale-110 transition-transform">9</span>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">Contact Information</h2>
+              </div>
+              <div className="pl-14">
+                <div className="bg-[#08101E] p-8 rounded-[2rem] text-white shadow-2xl relative overflow-hidden">
+                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF7819]/20 rounded-full -mr-16 -mt-16 blur-2xl" />
+                  <p className="text-[#FF7819] font-black uppercase text-xs tracking-[0.2em] mb-4">Data Protection Officer (DPO)</p>
+                  <div className="space-y-2 font-bold text-sm">
+                    <p className="text-white/60">Company: <span className="text-white">CoverMantra Services Pvt. Ltd</span></p>
+                    <p className="text-white/60">Email: <span className="text-[#FF7819]">info@covermantra.in</span></p>
+                    <p className="text-white/60">Phone: <span className="text-white tracking-widest">9729509967</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </main>
   );
 };
 

@@ -2,6 +2,12 @@
 import React, { useState, useEffect } from "react";
 import { BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer, Cell } from "recharts";
 
+// Define a type for the breakdown to ensure consistency
+interface BreakdownItem {
+  name: string;
+  value: number;
+}
+
 const TravelInsuranceCalculator = () => {
   const [formData, setFormData] = useState({
     age: 30,
@@ -17,7 +23,7 @@ const TravelInsuranceCalculator = () => {
   });
 
   const [premium, setPremium] = useState(0);
-  const [breakdown, setBreakdown] = useState<{ name: string; value: number }[]>([]);
+  const [breakdown, setBreakdown] = useState<BreakdownItem[]>([]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, type, value } = e.target;
@@ -161,7 +167,8 @@ const TravelInsuranceCalculator = () => {
             <BarChart data={breakdown}>
               <XAxis dataKey="name" />
               <YAxis />
-              <Tooltip formatter={(value: number) => `₹${value}`} />
+              {/* ✅ FIXED: Handled potential undefined or non-number values for TypeScript build */}
+              <Tooltip formatter={(value: any) => `₹${value}`} />
               <Legend />
               <Bar dataKey="value" barSize={40}>
                 {breakdown.map((entry, index) => (

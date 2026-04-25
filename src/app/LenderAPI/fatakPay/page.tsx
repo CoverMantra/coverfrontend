@@ -1,20 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Cookies from "js-cookie";
+import { motion, AnimatePresence } from "framer-motion";
+import api from "../../../lib/axios";
 
-const BASE_URL = "https://www.covermantra.com";
-
-// Fetch User Data API
+// Logic as it is
 const fetchUserData = async (storedPhone: string) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/user/profile`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone: storedPhone }),
-    });
-    if (!response.ok) throw new Error(`API error: ${response.statusText}`);
-    const data = await response.json();
+    const { data } = await api.post("/api/user/profile", { phone: storedPhone });
     return data.user;
   } catch (error) {
     console.error("Fetch User API Error:", error);
@@ -23,7 +16,6 @@ const fetchUserData = async (storedPhone: string) => {
 };
 
 export default function LendersPage() {
-  // State to manage form data
   const [formData, setFormData] = useState({
     mobile: "",
     first_name: "",
@@ -43,66 +35,36 @@ export default function LendersPage() {
     null | { type: "success" | "error" | "info"; message: string }
   >(null);
 
-  // Show modal card with message
-  const showModal = (
-    message: string,
-    type: "success" | "error" | "info" = "info"
-  ) => {
+  const showModal = (message: string, type: "success" | "error" | "info" = "info") => {
     setResponseMessage({ type, message });
   };
-  // Lender API Submission
 
   const submitLenderAPI = async (payload: typeof formData) => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${BASE_URL}/api/fatakPay/register/Pl`,
-        payload,
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      const resData = response.data;
-
-      // unwrap actual response
-      const apiData = resData?.data;
+      const response = await api.post("/api/fatakPay/register/Pl", payload);
+      const apiData = response.data?.data;
 
       if (apiData?.success && apiData?.message === "You are eligible.") {
-        // ✅ Eligible case → redirect
         showModal("✅ You are eligible! Redirecting...", "success");
-        setTimeout(() => {
-          window.location.href = "https://fatakpay.com/";
-        }, 2000);
+        setTimeout(() => { window.location.href = "https://fatakpay.com/"; }, 2000);
       } else {
-        // ❌ Not eligible
         showModal(apiData?.message || "Not eligible, redirecting...", "error");
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 3000);
+        setTimeout(() => { window.location.href = "/"; }, 3000);
       }
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        console.error("Lender API Error:", err.response?.data || err.message);
-        const errorMessage =
-          err.response?.data?.data?.message ||
-          "Something went wrong. Please try again.";
-        showModal(errorMessage, "error");
-      } else {
-        console.error("Lender API Error:", err);
-        showModal("Something went wrong. Please try again.");
-      }
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 3000);
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.data?.message || "Something went wrong. Please try again.";
+      showModal(errorMessage, "error");
+      setTimeout(() => { window.location.href = "/"; }, 3000);
     } finally {
       setLoading(false);
     }
   };
-  // Prefill user data if available
+
   useEffect(() => {
     const fetchAndSetUser = async () => {
       setIsLoading(true);
-      const storedPhone =
-        Cookies.get("co_phone") || localStorage.getItem("co_phone");
+      const storedPhone = Cookies.get("co_phone") || localStorage.getItem("co_phone");
       if (!storedPhone) {
         setIsLoading(false);
         return;
@@ -114,9 +76,6 @@ export default function LendersPage() {
           "Self-Employed": "Self-Employed",
           "Salaried Employee": "Salaried",
         };
-        const mappedEmployment =
-          employmentMap[user.employment as keyof typeof employmentMap] || "";
-
         setFormData((prev) => ({
           ...prev,
           mobile: user.phone || "",
@@ -125,32 +84,25 @@ export default function LendersPage() {
           email: user.email || "",
           pincode: user.pincode || "",
           pan: user.pan || "",
-          employment_type_id: mappedEmployment,
+          employment_type_id: employmentMap[user.employment as keyof typeof employmentMap] || "",
         }));
-        // showToast("Existing user data pre-filled. Please review and submit.");
       } else {
-        showModal("User data not found");
+        showModal("User data not found", "error");
       }
       setIsLoading(false);
     };
-
     fetchAndSetUser();
   }, []);
 
-  // Handle input change
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     }));
   };
 
-  // Submit form
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
       ...formData,
@@ -162,184 +114,123 @@ export default function LendersPage() {
   };
 
   return (
-    <>
-      {responseMessage && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-60 p-4"
-          role="alert"
-          aria-live="assertive"
-        >
-          <div
-            className={`flex flex-col items-center max-w-md w-full p-8 rounded-3xl shadow-2xl bg-white select-none space-y-4 ${responseMessage.type === "success"
-                ? "border-4 border-green-500 text-green-900"
-                : "border-4 border-red-600 text-red-900"
-              } animate-fadeInUp`}
+    <div className="min-h-screen bg-[#FFF4E5] font-sans overflow-x-hidden">
+      
+      {/* 3D Animated Modal */}
+      <AnimatePresence>
+        {responseMessage && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 flex items-center justify-center bg-[#08101E]/60 backdrop-blur-sm z-[100] p-4"
           >
-            <div>
-              {responseMessage.type === "success" ? (
-                <svg
-                  className="mx-auto mb-4 h-16 w-16 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 12l2 2 4-4m5 4a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="mx-auto mb-4 h-16 w-16 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              )}
-            </div>
-            <h3 className="text-3xl font-semibold">
-              {responseMessage.type === "success"
-                ? "Success"
-                : responseMessage.type === "error"
-                  ? "Error"
-                  : "Information"}
-            </h3>
-            <p className="whitespace-pre-line text-lg leading-relaxed text-center">
-              {responseMessage.message}
-            </p>
-            {(responseMessage.type === "success" ||
-              responseMessage.type === "error") && (
-                <p
-                  className={`mt-6 text-sm ${responseMessage.type === "success" ? "text-green-600 animate-pulse" : "text-red-600"
-                    }`}
-                >
-                  {responseMessage.type === "success"
-                    ? "Redirecting shortly…"
-                    : "Redirecting to Home…"}
-                </p>
-              )}
-          </div>
-        </div>
-      )}
-
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <form
-          onSubmit={handleSubmit}
-          className="max-w-2xl w-full mx-auto p-8 mt-20 border rounded-2xl shadow-xl bg-gradient-to-br from-white to-gray-100"
-        >
-          <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">FatakPay Application</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              name="mobile"
-              value={formData.mobile}
-              onChange={handleChange}
-              placeholder="Mobile Number"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-
-            />
-            <input
-              name="first_name"
-              value={formData.first_name}
-              onChange={handleChange}
-              placeholder="First Name"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="last_name"
-              value={formData.last_name}
-              onChange={handleChange}
-              placeholder="Last Name"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="dob"
-              value={formData.dob}
-              onChange={handleChange}
-              type="date"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              type="email"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="pan"
-              value={formData.pan}
-              onChange={handleChange}
-              placeholder="PAN Number"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="pincode"
-              value={formData.pincode}
-              onChange={handleChange}
-              placeholder="Pincode"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <select
-              name="employment_type_id"
-              value={formData.employment_type_id}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
+            <motion.div
+              initial={{ scale: 0.8, y: 20 }} animate={{ scale: 1, y: 0 }}
+              className={`flex flex-col items-center max-w-sm w-full p-8 rounded-[2.5rem] shadow-2xl bg-white border-b-8 ${
+                responseMessage.type === "success" ? "border-green-500" : "border-red-600"
+              }`}
             >
-              <option value="">Select Employment Type</option>
-              <option value="Salaried">Salaried</option>
-              <option value="Self-Employed">Self-Employed</option>
-            </select>
+              <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${
+                responseMessage.type === "success" ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
+              }`}>
+                {responseMessage.type === "success" ? (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                ) : (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
+                )}
+              </div>
+              <h3 className="text-2xl font-black text-[#08101E] tracking-tight">{responseMessage.type.toUpperCase()}</h3>
+              <p className="text-center text-gray-500 font-medium mt-2">{responseMessage.message}</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Decorative Header */}
+      <div className="h-64 bg-[#08101E] relative flex flex-col items-center justify-center text-center px-4">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+        <h1 className="relative text-3xl md:text-4xl font-black text-white italic tracking-tighter">
+          FATAK<span className="text-[#FF7819]">PAY</span>
+        </h1>
+        <p className="relative text-gray-400 text-xs md:text-sm tracking-widest uppercase mt-2">Personal Loan Application</p>
+      </div>
+
+      {/* Form Section */}
+      <div className="relative z-10 flex justify-center px-4 -mt-16 pb-20">
+        <motion.form
+          initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
+          onSubmit={handleSubmit}
+          className="max-w-2xl w-full bg-white/95 backdrop-blur-md p-6 md:p-10 rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <InputField label="Mobile Number" name="mobile" value={formData.mobile} onChange={handleChange} placeholder="9876543210" required />
+            <InputField label="First Name" name="first_name" value={formData.first_name} onChange={handleChange} placeholder="Aarav" required />
+            <InputField label="Last Name" name="last_name" value={formData.last_name} onChange={handleChange} placeholder="Sharma" required />
+            <InputField label="Date of Birth" name="dob" value={formData.dob} onChange={handleChange} type="date" required />
+            <InputField label="Email Address" name="email" value={formData.email} onChange={handleChange} placeholder="aarav@example.com" type="email" required />
+            <InputField label="PAN Card" name="pan" value={formData.pan} onChange={handleChange} placeholder="ABCDE1234F" className="uppercase font-mono tracking-widest" maxLength={10} required />
+            <InputField label="Pincode" name="pincode" value={formData.pincode} onChange={handleChange} placeholder="110001" maxLength={6} required />
+            
+            <div className="flex flex-col gap-1.5">
+              <label className="text-[10px] uppercase font-black text-gray-400 ml-3 tracking-widest">Employment</label>
+              <select
+                name="employment_type_id"
+                value={formData.employment_type_id}
+                onChange={handleChange}
+                className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:border-[#FF7819] outline-none transition-all font-bold text-sm text-[#08101E]"
+                required
+              >
+                <option value="">Select Type</option>
+                <option value="Salaried">Salaried</option>
+                <option value="Self-Employed">Self-Employed</option>
+              </select>
+            </div>
           </div>
 
-          <label className="flex items-center mt-4 mb-4 text-gray-700">
+          <div className="mt-8 flex items-center gap-3 p-4 bg-[#FFF4E5] rounded-2xl border border-[#FF7819]/10">
             <input
               type="checkbox"
               name="consent"
               checked={formData.consent}
               onChange={handleChange}
-              className="mr-2"
+              className="w-5 h-5 accent-[#FF7819] cursor-pointer"
               required
             />
-            I consent to provide my details.
-          </label>
+            <p className="text-[10px] md:text-xs text-gray-600 leading-tight">
+              I authorize <b>CoverMantra</b> to share my details with <b>FatakPay</b> for loan eligibility check.
+            </p>
+          </div>
 
           <button
             type="submit"
-            className={`w-full p-3 text-white rounded-lg transition duration-200 shadow 
-              ${formData.consent ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-300 cursor-not-allowed"}
-              disabled:cursor-not-allowed`}
             disabled={!formData.consent || loading || isLoading}
+            className={`w-full mt-8 py-5 rounded-[1.5rem] font-black text-white text-lg tracking-tighter shadow-xl transition-all active:scale-95 ${
+              !formData.consent || loading || isLoading 
+                ? "bg-gray-300 cursor-not-allowed" 
+                : "bg-[#FF7819] hover:bg-[#e66a15] shadow-[#FF7819]/20"
+            }`}
           >
-            {loading || isLoading ? "Loading..." : "Submit"}
+            {loading || isLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <div className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin"></div>
+                PROCESSING...
+              </span>
+            ) : "SUBMIT APPLICATION"}
           </button>
-        </form>
+        </motion.form>
       </div>
-    </>
+    </div>
+  );
+}
+
+// Reusable Input Component for cleaner code
+function InputField({ label, className = "", ...props }: any) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-[10px] uppercase font-black text-gray-400 ml-3 tracking-widest">{label}</label>
+      <input
+        {...props}
+        className={`w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl focus:border-[#FF7819] focus:bg-white outline-none transition-all font-bold text-sm text-[#08101E] placeholder:text-gray-300 ${className}`}
+      />
+    </div>
   );
 }

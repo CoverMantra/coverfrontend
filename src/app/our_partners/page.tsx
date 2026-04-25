@@ -8,7 +8,7 @@ export default function OurPartners() {
       logo: "https://moneyview.in/images/mv-green-logo-v3Compressed.svg",
       link: "https://moneyview.in/"
     },
-     {
+    {
       name: "FDPL Finance",
       logo: "https://www.fdplfinance.com/assets/images/logo/Logo.svg",
       link: "https://fatakpay.com/"
@@ -24,43 +24,110 @@ export default function OurPartners() {
       link: "https://www.vivifin.com/"
     },
   ];
-// https://www.vivifin.com/images/vivifi-logo.png
+
   return (
-    <section className="bg-gradient-to-r from-green-100 to-green-300 py-20">
-      <div className="max-w-6xl mx-auto text-center px-6">
-        <motion.h2
-          className="text-4xl md:text-5xl font-extrabold mb-12 text-green-800 drop-shadow-sm"
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-        >
-          Our Trusted Partners
-        </motion.h2>
+    <section className="relative bg-[#FFF4E5] py-20 md:py-28 overflow-hidden">
+      {/* Premium Decorative Accents */}
+      <div className="absolute top-0 right-0 w-64 h-64 bg-[#FF7819]/5 rounded-full blur-[100px] -mr-32 -mt-32" />
+      <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#08101E]/5 rounded-full blur-[120px] -ml-40 -mb-40" />
+
+      <div className="max-w-7xl mx-auto px-6 relative z-10">
         
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {/* Header Section */}
+        <div className="text-center max-w-3xl mx-auto mb-16 md:mb-24">
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-block px-4 py-1.5 mb-6 border border-[#FF7819]/20 bg-[#FF7819]/10 rounded-full"
+          >
+            <span className="text-[#FF7819] font-bold text-[10px] md:text-xs uppercase tracking-[0.3em]">
+              Strategic Alliances
+            </span>
+          </motion.div>
+          
+          <motion.h2
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl md:text-6xl font-black text-[#08101E] mb-6 tracking-tight"
+          >
+            Our Trusted <span className="text-[#FF7819]">Lending Partners</span>
+          </motion.h2>
+          
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ delay: 0.2 }}
+            className="text-[#08101E]/60 text-base md:text-lg leading-relaxed font-medium"
+          >
+            Empowering your financial journey through our network of India's most 
+            reliable and RBI-regulated financial institutions.
+          </motion.p>
+        </div>
+
+        {/* Partners Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-8">
           {partners.map((partner, index) => (
             <motion.a
               key={index}
               href={partner.link}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-6 bg-white rounded-2xl shadow-md hover:shadow-2xl transition-transform duration-300 flex flex-col items-center transform hover:scale-105 border border-gray-100 hover:bg-green-50"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.2, duration: 0.5 }}
-              whileHover={{ boxShadow: "0px 4px 20px rgba(16, 185, 129, 0.4)" }}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: index * 0.1, duration: 0.5 }}
+              whileHover={{ y: -12 }}
+              className="group relative bg-white p-10 rounded-[3rem] shadow-[0_20px_50px_rgba(8,16,30,0.04)] border border-white hover:border-[#FF7819]/30 transition-all duration-500 flex flex-col items-center justify-center overflow-hidden"
             >
-              <img
-                src={partner.logo}
-                alt={partner.name}
-                className="h-20 mb-4 object-contain transition-transform duration-300 hover:scale-110"
-              />
-              <span className="text-lg font-semibold text-gray-700">
-                {partner.name}
-              </span>
+              {/* Hover Background Gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-white to-[#FFF4E5] opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+
+              {/* Logo Container */}
+              <div className="relative h-20 w-full flex items-center justify-center mb-8">
+                <img
+                  src={partner.logo}
+                  alt={partner.name}
+                  className="max-h-full max-w-[85%] object-contain filter grayscale group-hover:grayscale-0 group-hover:scale-110 transition-all duration-700 ease-out"
+                />
+              </div>
+
+              {/* Partner Name & UI Decoration */}
+              <div className="relative flex flex-col items-center">
+                <span className="text-[#08101E] font-bold text-sm tracking-widest uppercase transition-colors duration-300">
+                  {partner.name}
+                </span>
+                <div className="w-8 h-1 bg-[#FF7819] mt-3 scale-x-0 group-hover:scale-x-100 transition-transform duration-500 rounded-full" />
+              </div>
+
+              {/* Decorative Corner Icon */}
+              <div className="absolute top-6 right-6 opacity-0 group-hover:opacity-20 transition-opacity">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#FF7819" strokeWidth="3">
+                  <path d="M7 17L17 7M17 7H7M17 7V17" />
+                </svg>
+              </div>
             </motion.a>
           ))}
         </div>
+
+        {/* Bottom Verification Badge */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+          className="mt-20 flex flex-col items-center gap-4"
+        >
+          <div className="flex items-center gap-3 px-6 py-3 bg-[#08101E] rounded-full shadow-xl">
+            <div className="w-2 h-2 bg-[#FF7819] rounded-full animate-pulse" />
+            <span className="text-white text-[10px] md:text-xs font-bold uppercase tracking-[0.2em]">
+              100% Secure & Regulated Entities
+            </span>
+          </div>
+        </motion.div>
       </div>
     </section>
   );

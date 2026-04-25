@@ -1,9 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
-import axios from "axios";
+import api from "../../../lib/axios";
 import Cookies from "js-cookie";
+import { motion } from "framer-motion";
 
-const BASE_URL = "https://www.covermantra.com";
 const VIVIFI_REDIRECT_URL = "https://online.flexsalary.com/CustomerLogin/Index?CampaignID=9192300#x";
 
 export default function VivifiLeadPage() {
@@ -23,14 +23,13 @@ export default function VivifiLeadPage() {
   const [loading, setLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState<null | { type: "success" | "error"; message: string }>(null);
 
-  // 1. Fetch User Data to Pre-fill
   useEffect(() => {
     const fetchUser = async () => {
       const storedPhone = Cookies.get("co_phone") || localStorage.getItem("co_phone");
       if (!storedPhone) return;
 
       try {
-        const res = await axios.post(`${BASE_URL}/api/user/profile`, { phone: storedPhone });
+        const res = await api.post("/api/user/profile", { phone: storedPhone });
         const user = res.data.user;
         if (user) {
           const names = user.name ? user.name.split(" ") : ["", ""];
@@ -57,19 +56,13 @@ export default function VivifiLeadPage() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 2. Submit Logic
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     try {
-      // NOTE: Make sure this endpoint exists on your backend
-      const response = await axios.post(`${BASE_URL}/api/vivifi/register`, formData);
-
+      await api.post("/api/vivifi/register", formData);
       setResponseMessage({ type: "success", message: "Details Verified! Redirecting to FlexSalary..." });
-      
-      setTimeout(() => {
-        window.location.href = VIVIFI_REDIRECT_URL;
-      }, 2000);
+      setTimeout(() => { window.location.href = VIVIFI_REDIRECT_URL; }, 2000);
     } catch (err: any) {
       setResponseMessage({ 
         type: "error", 
@@ -82,51 +75,92 @@ export default function VivifiLeadPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 pt-20">
-      <div className="max-w-md w-full bg-white rounded-3xl shadow-2xl p-8 border border-gray-100">
-        
-        <div className="text-center mb-8">
-          <img src="https://www.flexsalary.com/assets/images/logo.png" alt="FlexSalary" className="h-10 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-800">FlexSalary Application</h2>
-          <p className="text-gray-500 text-sm">Verify your details to get instant credit line</p>
-        </div>
+    <div className="min-h-screen bg-[#FFF4E5] font-sans">
+      {/* Dark Header Part */}
+      <div className="h-64 bg-[#08101E] w-full absolute top-0 left-0">
+        <div className="absolute inset-0 bg-gradient-to-b from-[#1a2a44] to-transparent opacity-50"></div>
+      </div>
 
-        {responseMessage && (
-          <div className={`mb-6 p-4 rounded-xl text-center font-medium ${responseMessage.type === 'success' ? 'bg-green-50 text-green-700 border border-green-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
-            {responseMessage.message}
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <input type="text" name="first_name" placeholder="First Name" value={formData.first_name} onChange={handleChange} required className="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" />
-            <input type="text" name="last_name" placeholder="Last Name" value={formData.last_name} onChange={handleChange} required className="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" />
-          </div>
-
-          <input type="email" name="email" placeholder="Email Address" value={formData.email} onChange={handleChange} required className="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" />
+      <div className="relative z-10 flex items-center justify-center p-4 pt-24 md:pt-32">
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="max-w-lg w-full bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-8 border border-white"
+        >
           
-          <input type="text" name="pan" placeholder="PAN Card Number" value={formData.pan} onChange={handleChange} required maxLength={10} className="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500 uppercase" />
-
-          <div className="relative">
-            <label className="text-[10px] absolute -top-2 left-3 bg-white px-1 text-gray-400">Monthly Income</label>
-            <input type="number" name="monthly_income" placeholder="Monthly Income" value={formData.monthly_income} onChange={handleChange} required className="w-full p-3 bg-gray-50 border rounded-xl outline-none focus:ring-2 focus:ring-blue-500" />
+          <div className="text-center mb-10">
+            <div className="bg-[#FFF4E5] inline-block p-4 rounded-2xl mb-4 shadow-inner">
+               <img src="/image/flexsalary-color-black.webp" alt="FlexSalary" className="h-8 mx-auto" />
+            </div>
+            <h2 className="text-2xl font-black text-[#08101E] tracking-tight">Complete Application</h2>
+            <p className="text-gray-500 text-sm mt-1">Verify your info for <span className="text-[#FF7819] font-bold">Instant Credit</span></p>
           </div>
 
-          <div className="flex items-start gap-2 py-2">
-            <input type="checkbox" checked={formData.consent} required className="mt-1" onChange={(e) => setFormData({...formData, consent: e.target.checked})} />
-            <p className="text-[10px] text-gray-400 leading-tight">
-              I authorize CoverMantra to share my details with Vivifi India Finance Pvt Ltd for loan processing.
-            </p>
-          </div>
+          {responseMessage && (
+            <motion.div 
+              initial={{ scale: 0.9 }} 
+              animate={{ scale: 1 }}
+              className={`mb-6 p-4 rounded-2xl text-center text-sm font-bold shadow-sm border ${
+                responseMessage.type === 'success' 
+                ? 'bg-green-50 text-green-700 border-green-100' 
+                : 'bg-red-50 text-red-700 border-red-100'
+              }`}
+            >
+              {responseMessage.message}
+            </motion.div>
+          )}
 
-          <button
-            type="submit"
-            disabled={loading || !formData.consent}
-            className={`w-full py-4 text-white font-bold rounded-2xl shadow-lg transition-all ${loading ? "bg-gray-400" : "bg-blue-600 hover:bg-blue-700"}`}
-          >
-            {loading ? "Verifying..." : "Confirm & Apply"}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase font-bold text-gray-400 ml-2">First Name</label>
+                <input type="text" name="first_name" value={formData.first_name} onChange={handleChange} required className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#FF7819] transition-all" />
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] uppercase font-bold text-gray-400 ml-2">Last Name</label>
+                <input type="text" name="last_name" value={formData.last_name} onChange={handleChange} required className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#FF7819] transition-all" />
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-gray-400 ml-2">PAN Card</label>
+              <input type="text" name="pan" value={formData.pan} onChange={handleChange} required maxLength={10} className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#FF7819] uppercase font-mono tracking-widest transition-all" />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-gray-400 ml-2">Monthly Income (₹)</label>
+              <input type="number" name="monthly_income" value={formData.monthly_income} onChange={handleChange} required className="w-full p-4 bg-[#FFF4E5]/50 border border-gray-100 rounded-2xl outline-none focus:border-[#FF7819] font-bold text-[#08101E] transition-all" />
+            </div>
+
+            <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-start gap-3">
+              <input 
+                type="checkbox" 
+                checked={formData.consent} 
+                required 
+                className="mt-1 accent-[#FF7819] w-4 h-4" 
+                onChange={(e) => setFormData({...formData, consent: e.target.checked})} 
+              />
+              <p className="text-[11px] text-gray-500 leading-snug">
+                I authorize <span className="font-bold text-[#08101E]">CoverMantra</span> to share my details with Vivifi India Finance Pvt Ltd (FlexSalary) for secure loan processing and credit assessment.
+              </p>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading || !formData.consent}
+              className={`w-full py-5 text-white font-black rounded-[1.5rem] shadow-xl shadow-[#FF7819]/20 transition-all active:scale-95 ${
+                loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#FF7819] hover:bg-[#e66a15]"
+              }`}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  Verifying...
+                </span>
+              ) : "Confirm & Apply Now"}
+            </button>
+          </form>
+        </motion.div>
       </div>
     </div>
   );

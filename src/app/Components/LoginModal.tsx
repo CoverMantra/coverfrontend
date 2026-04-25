@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
+import { useAuthStore } from "../../store/useAuthStore";
 import { sendOtp, verifyOtp, getUser } from "../APIs/utils";
 import { useRouter } from "next/navigation";
 import { useModal } from "../context/modelcontext";
@@ -25,6 +26,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
   const [errorMsg, setErrorMsg] = useState("");
   const [consent, setConsent] = useState(false);
   const router = useRouter();
+  const { setAuth } = useAuthStore();
   const { openModal } = useModal();
 
   useEffect(() => {
@@ -80,9 +82,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
       const token = response?.token;
 
       if (response?.success || response?.status || response?.message?.toLowerCase().includes("otp verified")) {
-        if (token) Cookies.set("co_token", token, { expires: 7 });
-        Cookies.set("co_phone", phone, { expires: 7 });
-        Cookies.set("co_login", "true", { expires: 7 });
+        if (token) setAuth(phone, token);
         Cookies.set("showRegistrationModal", "true", { expires: 1 });
 
         triggerLoginStatusChange();

@@ -1,173 +1,197 @@
 "use client";
-import React from "react";
 
-export default function Page() {
+import React from "react";
+import { 
+  FaUserShield, 
+  FaCookieBite, 
+  FaLock, 
+  FaBalanceScale, 
+  FaHeadset, 
+  FaShieldVirus,
+  FaFileAlt
+} from "react-icons/fa";
+
+export default function PrivacyPolicyPage() {
   return (
-    <>
-      {/* Hero Section */}
-      <div className="mt-20">
-        <section className="bg-gradient-to-b from-green-100 to-white pt-12 pb-12 px-6 md:px-12">
-          <div className="max-w-6xl mx-auto bg-white rounded-2xl shadow-lg border border-green-100 p-8 md:p-12 transition-all duration-300 hover:shadow-xl">
+    <main className="min-h-screen bg-[#FFF4E5] font-sans">
+      {/* 🌑 Dark Header / Hero Section */}
+      <section className="bg-[#08101E] pt-32 pb-24 px-6 md:px-12 relative overflow-hidden">
+        {/* Decorative 3D Elements */}
+        <div className="absolute top-0 right-0 w-72 h-72 bg-[#FF7819]/10 rounded-full blur-[120px] -z-0" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/10 rounded-full blur-[100px] -z-0" />
+
+        <div className="max-w-6xl mx-auto relative z-10 text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/5 border border-white/10 text-[#FF7819] text-[10px] font-black tracking-[0.2em] uppercase mb-8">
+            <FaUserShield className="animate-pulse" /> Privacy Guard
+          </div>
+          <h1 className="text-4xl md:text-7xl font-black text-white tracking-tighter mb-6 italic uppercase">
+            Data Privacy <span className="text-[#FF7819]">Policy</span>
+          </h1>
+          
+          <div className="flex flex-col items-center space-y-2 mb-8">
+            <p className="text-white/90 font-black text-lg tracking-tight">CoverMantra Services Private Limited</p>
+            <div className="flex items-center gap-4 text-gray-400 font-bold text-[10px] uppercase tracking-widest">
+              <span>Effective: Sept 24, 2025</span>
+              <span className="text-[#FF7819]">|</span>
+              <span>Version: 1.0</span>
+            </div>
+          </div>
+
+          <p className="text-gray-400 text-center text-sm md:text-lg max-w-2xl mx-auto font-medium leading-relaxed italic">
+            "Your privacy matters to us. This policy explains how we collect, use, and protect your information."
+          </p>
+        </div>
+      </section>
+
+      {/* 📄 Policy Content Section */}
+      <section className="py-16 px-4 sm:px-6 md:px-12 -mt-12 relative z-20">
+        <div className="max-w-5xl mx-auto bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.08)] border border-white p-8 md:p-16 transition-all duration-500">
+          
+          <div className="space-y-16">
             
-            {/* Title Section */}
-            <div className="text-center mb-12">
-              <h1 className="text-5xl font-extrabold text-green-800 mb-5 tracking-wide">
-                Data Privacy Policy
-              </h1>
-              <div className="flex flex-col items-center text-gray-600 space-y-1">
-                <p className="font-semibold text-lg text-green-700">CoverMantra Services Private Limited</p>
-                <p>Effective Date: Sept 24, 2025 | Version: 1.0</p>
+            {/* 1. Overview */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center text-xl shadow-sm"><FaFileAlt /></div>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">1. Overview & Applicability</h2>
               </div>
-              <hr className="mt-8 mb-8 border-green-100 w-full" />
-              <p className="text-gray-600 text-center text-lg max-w-2xl mx-auto">
-                Your privacy matters to us. This policy explains how we collect, use, and protect your information.
+              <p className="text-gray-600 leading-relaxed font-medium pl-2 md:pl-16">
+                Last updated: 24 Sept, 2025. This Privacy Policy (“Policy”) explains how CoverMantra, and its affiliates (“we,” “us,” or “our”) collect, use, store, and disclose personal information through our website and mobile application (collectively, the “Platform”). By accessing or using the Platform, you (“you,” your,” or “User”) consent to the practices described herein. If you do not agree, please do not use our services.
               </p>
             </div>
 
-            <div className="space-y-10">
-              {/* 1. Overview */}
-              <div>
-                <h3 className="text-2xl font-semibold text-green-700 mb-3">
-                  1. Overview & Applicability
-                </h3>
-                <p className="text-gray-700 leading-relaxed">
-                  Last updated: 24 Sept, 2025. This Privacy Policy (“Policy”) explains how CoverMantra, and its affiliates (“we,” “us,” or “our”) collect, use, store, and disclose personal information through our website and mobile application (collectively, the “Platform”). By accessing or using the Platform, you (“you,” “your,” or “User”) consent to the practices described herein. If you do not agree, please do not use our services.
-                </p>
+            {/* 2. Services & Data Use */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-8">
+                <div className="w-12 h-12 rounded-2xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center text-xl shadow-sm"><FaLock /></div>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">2. Services & Data Use</h2>
               </div>
+              <div className="pl-2 md:pl-16 space-y-10">
+                
+                {/* Credit Reports */}
+                <div className="p-6 rounded-3xl bg-gray-50 border border-gray-100 hover:border-[#FF7819]/20 transition-colors">
+                  <h4 className="text-[#FF7819] font-black uppercase text-xs tracking-widest mb-4">Credit Reports</h4>
+                  <ul className="space-y-3 text-sm text-gray-700 font-medium">
+                    <li><strong className="text-[#08101E]">Data Collected:</strong> Name, contact details, PAN, gender, age, and DOB.</li>
+                    <li><strong className="text-[#08101E]">Purpose:</strong> To provide insight into your financial profile.</li>
+                    <li><strong className="text-[#08101E]">Sharing:</strong> Reports are NOT shared with third parties unless required by law.</li>
+                  </ul>
+                </div>
 
-              {/* 2. Services & Data Use */}
-              <div>
-                <h3 className="text-2xl font-semibold text-green-700 mb-3">
-                  2. Services & Data Use
-                </h3>
-                <div className="space-y-6">
-                  <div>
-                    <h4 className="font-semibold text-green-600">Credit Reports</h4>
-                    <ul className="list-disc pl-6 text-gray-700 leading-relaxed space-y-1">
-                      <li>
-                        <strong>Data Collected:</strong> Name, contact details, PAN, gender, age, and date of birth—collected with your explicit consent to fetch credit information.
-                      </li>
-                      <li>
-                        <strong>Purpose:</strong> To provide insight into your financial profile.
-                      </li>
-                      <li>
-                        <strong>Sharing:</strong> These reports are not shared with any third parties, unless required by law.
-                      </li>
-                    </ul>
+                {/* Loans */}
+                <div className="p-6 rounded-3xl bg-gray-50 border border-gray-100 hover:border-[#FF7819]/20 transition-colors">
+                  <h4 className="text-[#FF7819] font-black uppercase text-xs tracking-widest mb-4">Loans & Credit Cards</h4>
+                  <ul className="space-y-3 text-sm text-gray-700 font-medium">
+                    <li><strong className="text-[#08101E]">What We Do:</strong> Connect you with RBI-registered NBFCs and banks.</li>
+                    <li><strong className="text-[#08101E]">Information:</strong> KYC documents, income details, and banking info (with consent).</li>
+                    <li><strong className="text-[#08101E]">Sharing:</strong> Shared strictly with lending partners to process your application.</li>
+                  </ul>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="p-6 rounded-3xl border border-dashed border-gray-200">
+                    <h4 className="text-[#08101E] font-black uppercase text-[10px] tracking-widest mb-2">Marketing</h4>
+                    <p className="text-gray-500 text-xs leading-relaxed">Consent to receive communications via SMS, Email, WhatsApp. Opt-out available anytime.</p>
                   </div>
-
-                  <div>
-                    <h4 className="font-semibold text-green-600">Loans & Credit Card Applications</h4>
-                    <ul className="list-disc pl-6 text-gray-700 leading-relaxed space-y-1">
-                      <li>
-                        <strong>What We Do:</strong> We connect you with RBI-registered NBFCs and banks that match your eligibility.
-                      </li>
-                      <li>
-                        <strong>Information Obtained:</strong> Aadhaar, income details, KYC documents, and banking information—collected only with your consent.
-                      </li>
-                      <li>
-                        <strong>Sharing:</strong> Your data is shared with lending partners strictly to process your application.
-                      </li>
-                    </ul>
-                  </div>
-
-                  <div>
-                    <h4 className="font-semibold text-green-600">Marketing & Notifications</h4>
-                    <p className="text-gray-700 leading-relaxed">
-                      By providing your information, you consent to receiving communications via SMS, email, WhatsApp, or calls for promotional offers from us and our lending partners. You can opt out at any time.
-                    </p>
-                  </div>
-
-                  <div>
-                    <h4 className="font-semibold text-green-600">Customer Support</h4>
-                    <p className="text-gray-700 leading-relaxed">
-                      We may collect information, including recorded calls, when you reach out to customer support to help us improve our services.
-                    </p>
+                  <div className="p-6 rounded-3xl border border-dashed border-gray-200">
+                    <h4 className="text-[#08101E] font-black uppercase text-[10px] tracking-widest mb-2">Support</h4>
+                    <p className="text-gray-500 text-xs leading-relaxed">Recorded calls and info collected during support interactions to improve services.</p>
                   </div>
                 </div>
               </div>
+            </div>
 
-              {/* 3. Cookies */}
-              <div>
-                <h3 className="text-2xl font-semibold text-green-700 mb-3">
-                  3. Cookies & Tracking
-                </h3>
-                <p className="text-gray-700 leading-relaxed">
-                  We use cookies and similar tools to identify users, improve your experience, and serve relevant ads. You may disable cookies via your browser settings, though this could affect functionality.
-                </p>
+            {/* 3. Cookies */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center text-xl shadow-sm"><FaCookieBite /></div>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">3. Cookies & Tracking</h2>
               </div>
+              <p className="text-gray-600 leading-relaxed font-medium pl-2 md:pl-16">
+                We use cookies and similar tools to identify users, improve your experience, and serve relevant ads. You may disable cookies via your browser settings, though this could affect functionality.
+              </p>
+            </div>
 
-              {/* 4. Your Rights */}
-              <div>
-                <h3 className="text-2xl font-semibold text-green-700 mb-3">
-                  4. Your Rights
-                </h3>
-                <ul className="list-disc pl-6 text-gray-700 leading-relaxed space-y-1">
-                  <li>You may refuse or withdraw consent, though features may become unavailable.</li>
-                  <li>Request correction, access, or deletion of your data (subject to legal retention requirements).</li>
-                </ul>
+            {/* 4. Your Rights */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center text-xl shadow-sm"><FaBalanceScale /></div>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">4. Your Rights</h2>
               </div>
+              <ul className="list-disc pl-8 md:pl-20 text-gray-600 font-medium space-y-2">
+                <li>You may refuse or withdraw consent, though features may become unavailable.</li>
+                <li>Request correction, access, or deletion of your data (subject to legal retention).</li>
+              </ul>
+            </div>
 
-              {/* 5. Storage & Security */}
-              <div>
-                <h3 className="text-2xl font-semibold text-green-700 mb-3">
-                  5. Storage & Security
-                </h3>
-                <p className="text-gray-700 leading-relaxed">
-                  Your data is stored securely in India using trusted cloud providers with strong safeguards, but internet transmission cannot be guaranteed completely safe.
-                </p>
+            {/* 5 & 6 Short Sections */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pl-2 md:pl-16">
+               <div>
+                  <h3 className="text-[#08101E] font-black text-sm uppercase mb-3">5. Storage & Security</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">Stored securely in India using trusted cloud providers with strong safeguards.</p>
+               </div>
+               <div>
+                  <h3 className="text-[#08101E] font-black text-sm uppercase mb-3">6. Confidentiality</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">Shared only with trusted third parties under strict confidentiality agreements.</p>
+               </div>
+            </div>
+
+            {/* 7. Grievance Redressal */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center text-xl shadow-sm"><FaHeadset /></div>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">7. Grievance Redressal</h2>
               </div>
-
-              {/* 6. Confidentiality */}
-              <div>
-                <h3 className="text-2xl font-semibold text-green-700 mb-3">
-                  6. Confidentiality & Third-Party Agreements
-                </h3>
-                <p className="text-gray-700 leading-relaxed">
-                  We only share your information with trusted third parties and lending partners under strict confidentiality, ensuring they use it only for agreed purposes.
-                </p>
+              <div className="pl-2 md:pl-16">
+                <div className="bg-[#08101E] p-8 md:p-12 rounded-[2.5rem] text-white relative overflow-hidden shadow-2xl">
+                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF7819]/20 rounded-full -mr-10 -mt-10 blur-2xl" />
+                   <p className="text-[#FF7819] font-black uppercase text-[10px] tracking-widest mb-6">Privacy Officer Details</p>
+                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 font-bold text-sm">
+                      <div className="space-y-2">
+                        <p className="text-white/40">Grievance Officer</p>
+                        <p className="text-lg">Mandeep Phulia</p>
+                        <p className="text-[#FF7819]">info@covermantra.in</p>
+                      </div>
+                      <div className="space-y-2">
+                        <p className="text-white/40">Corporate Address</p>
+                        <p className="text-xs leading-relaxed text-white/80">2nd Floor MK, Flex, Sanyas Ashram Road, Old Fatehabad, Haryana-125050</p>
+                        <p className="text-[#FF7819] tracking-widest">PH: 9996327316</p>
+                      </div>
+                   </div>
+                   <div className="mt-8 pt-6 border-t border-white/10 text-[10px] text-white/40 uppercase tracking-widest">
+                     SLA Response Time: Within 48 Hours
+                   </div>
+                </div>
               </div>
+            </div>
 
-              {/* 7. Grievance */}
-              <div>
-                <h3 className="text-2xl font-semibold text-green-700 mb-3">
-                  7. Grievance Redressal
-                </h3>
-                <p className="text-gray-700 leading-relaxed mb-4">
-                  For any privacy concerns or requests, contact our Grievance Officer:
-                </p>
-                <ul className="list-none pl-6 text-gray-700 space-y-2 border-l-4 border-green-200">
-                  <li><strong>Name:</strong> Mandeep Phulia</li>
-                  <li><strong>Email:</strong> info@covermantra.in</li>
-                  <li><strong>Phone:</strong> 9996327316</li>
-                  <li><strong>Address:</strong> 2nd Floor MK, Flex, Sanyas Ashram Road, Old Fatehabad, Haryana-125050</li>
-                  <li><strong>Response time:</strong> Within 48 hours.</li>
-                </ul>
+            {/* 8. Anti-Phishing */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-6">
+                <div className="w-12 h-12 rounded-2xl bg-red-50 text-red-500 flex items-center justify-center text-xl shadow-sm"><FaShieldVirus /></div>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">8. Anti-Phishing Notice</h2>
               </div>
-
-              {/* 8. Anti-Phishing */}
-              <div>
-                <h3 className="text-2xl font-semibold text-green-700 mb-3">
-                  8. Anti-Phishing Notice
-                </h3>
-                <p className="text-gray-700 leading-relaxed">
-                  We will never ask for passwords, bank details, or OTPs via email or message. If you receive such a request, do not respond and reach out to us.
-                </p>
-              </div>
-
-              {/* 9. Law */}
-              <div>
-                <h3 className="text-2xl font-semibold text-green-700 mb-3">
-                  9. Governing Law
-                </h3>
-                <p className="text-gray-700 leading-relaxed">
-                  This Policy is governed by the laws of India. Any disputes shall be subject to jurisdiction in India.
+              <div className="pl-2 md:pl-16 p-6 rounded-3xl bg-red-50/50 border border-red-100">
+                <p className="text-red-900/70 font-bold text-sm leading-relaxed">
+                  We will <span className="text-red-600 underline">NEVER</span> ask for passwords, bank details, or OTPs via email or message. If you receive such a request, do not respond and report to us immediately.
                 </p>
               </div>
             </div>
+
+            {/* 9. Law */}
+            <div className="relative group">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="w-12 h-12 rounded-2xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center text-xl shadow-sm">⚖️</div>
+                <h2 className="text-2xl font-black text-[#08101E] uppercase tracking-tighter italic">9. Governing Law</h2>
+              </div>
+              <p className="text-gray-600 leading-relaxed font-medium pl-2 md:pl-16">
+                This Policy is governed by the laws of India. Any disputes shall be subject to jurisdiction in India.
+              </p>
+            </div>
+
           </div>
-        </section>
-      </div>
-    </>
+        </div>
+      </section>
+    </main>
   );
 }

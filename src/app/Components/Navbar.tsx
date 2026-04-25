@@ -3,11 +3,10 @@
 import React, { useEffect, useState, useRef } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Menu, X, LogOut, LayoutDashboard } from "lucide-react"; // Added icons for better UX
+import { Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 import LoginModal from "./LoginModal";
 import Cookies from "js-cookie";
 import GlobalModal from "./globalmodel";
-import { useModal } from "../context/modelcontext";
 import Image from "next/image";
 
 export const triggerLoginStatusChange = () => {
@@ -25,7 +24,6 @@ export default function Navbar() {
 
   const pathname = usePathname();
   const router = useRouter();
-  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setIsClient(true);
@@ -43,7 +41,6 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close menu on route change
   useEffect(() => {
     setMobileMenuOpen(false);
   }, [pathname]);
@@ -81,7 +78,7 @@ export default function Navbar() {
       <nav
         className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ${
           scrolled 
-          ? "py-3 bg-[#08101E]/80 backdrop-blur-xl border-b border-white/10 shadow-2xl" 
+          ? "py-3 bg-[#08101E]/90 backdrop-blur-xl border-b border-white/10 shadow-2xl" 
           : "py-5 bg-transparent"
         }`}
       >
@@ -89,10 +86,10 @@ export default function Navbar() {
           
           {/* Logo Section */}
           <Link href="/" className="flex items-center gap-2 sm:gap-3 group relative z-[110]">
-            <div className="relative w-10 h-10 sm:w-12 sm:h-12 flex-shrink-0">
+            <div className="relative w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0">
               <div className="absolute inset-0 bg-gradient-to-br from-[#FF690B] to-[#FFB900] rounded-xl rotate-6 group-hover:rotate-0 transition-transform duration-300" />
               <div className="absolute inset-0 bg-[#08101E] rounded-xl flex items-center justify-center border border-white/10 shadow-lg">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFB900] font-black text-2xl sm:text-3xl">C</span>
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFB900] font-black text-xl sm:text-2xl">C</span>
               </div>
             </div>
             <div className="flex flex-col">
@@ -100,43 +97,52 @@ export default function Navbar() {
                 <span className="text-white">Cover</span>
                 <span className="text-[#FF690B]">Mantra</span>
               </span>
-              <span className="text-[9px] sm:text-[10px] text-white/50 tracking-[2px] uppercase font-bold mt-1">Smart Cover</span>
+              <span className={`text-[9px] sm:text-[10px] tracking-[2px] uppercase font-bold mt-1 transition-colors ${scrolled ? 'text-white/40' : 'text-white/60'}`}>Smart Cover</span>
             </div>
           </Link>
 
-          {/* Desktop & Tablet Menu (lg:flex for laptops, md:flex for tabs) */}
-          <div className="hidden md:flex items-center bg-white/5 border border-white/10 p-1.5 rounded-2xl backdrop-blur-md">
-            {navItems.map((item) => (
-              <button
-                key={item.name}
-                onClick={() => handleMenuClick(item)}
-                className={`px-4 lg:px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
-                  pathname === item.path 
-                  ? "bg-gradient-to-r from-[#FF690B] to-[#FFB900] text-[#08101E] shadow-lg shadow-orange-600/20" 
-                  : "text-white/70 hover:text-white hover:bg-white/5"
-                }`}
-              >
-                {item.name}
-              </button>
-            ))}
+          {/* Desktop Menu */}
+          <div className={`hidden md:flex items-center p-1 rounded-2xl transition-all duration-300 ${scrolled ? 'bg-white/5 border border-white/10' : 'bg-transparent'}`}>
+            {navItems.map((item) => {
+              const isActive = pathname === item.path;
+              return (
+                <button
+                  key={item.name}
+                  onClick={() => handleMenuClick(item)}
+                  className={`px-4 lg:px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
+                    isActive 
+                    ? "bg-gradient-to-r from-[#FF690B] to-[#FFB900] text-[#08101E] shadow-lg shadow-orange-600/20" 
+                    : scrolled 
+                      ? "text-white/70 hover:text-white hover:bg-white/10" // Color when navbar is dark
+                      : "text-white/90 hover:text-[#FF690B]" // Color when navbar is transparent
+                  }`}
+                >
+                  {item.name}
+                </button>
+              );
+            })}
           </div>
 
           {/* Right Side: Login/Profile */}
           <div className="hidden md:flex items-center gap-3">
             {isLoggedIn ? (
-              <div className="flex items-center gap-2 bg-[#1A2332] p-1 pr-4 rounded-full border border-white/10">
+              <div className={`flex items-center gap-2 p-1 pr-4 rounded-full border transition-all ${scrolled ? 'bg-[#1A2332] border-white/10' : 'bg-white/10 border-white/20 backdrop-blur-sm'}`}>
                 <div 
-                  className="w-9 h-9 rounded-full overflow-hidden border-2 border-[#FF690B] cursor-pointer"
-                  onClick={() => router.push("/dashboard")}
+                  className="w-8 h-8 rounded-full overflow-hidden border-2 border-[#FF690B] cursor-pointer"
+                  onClick={() => router.push("/profile")}
                 >
-                  <Image src="/image/user.png" alt="User" width={36} height={36} className="object-cover" />
+                  <Image src="/image/user.png" alt="User" width={32} height={32} className="object-cover" />
                 </div>
-                <button onClick={handleLogout} className="text-white/60 hover:text-white text-xs font-black uppercase tracking-wider">Logout</button>
+                <button onClick={handleLogout} className="text-white/60 hover:text-white text-[10px] font-black uppercase tracking-wider">Logout</button>
               </div>
             ) : (
               <button
                 onClick={() => setLoginOpen(true)}
-                className="bg-white text-[#08101E] px-6 py-2.5 rounded-xl font-black text-sm hover:bg-[#FF690B] hover:text-white transition-all shadow-xl active:scale-95"
+                className={`px-6 py-2.5 rounded-xl font-black text-sm transition-all shadow-xl active:scale-95 ${
+                  scrolled 
+                  ? "bg-[#FF690B] text-white hover:bg-white hover:text-[#08101E]" 
+                  : "bg-white text-[#08101E] hover:bg-[#FF690B] hover:text-white"
+                }`}
               >
                 LOGIN
               </button>
@@ -146,7 +152,7 @@ export default function Navbar() {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden relative z-[110] p-2 bg-white/5 rounded-xl border border-white/10 text-white"
+            className="md:hidden relative z-[110] p-2 bg-white/5 rounded-xl border border-white/10 text-white active:scale-90 transition-transform"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -156,18 +162,15 @@ export default function Navbar() {
       {/* Mobile Menu Overlay */}
       <div
         className={`fixed inset-0 bg-[#08101E] z-[100] transition-all duration-500 ease-in-out md:hidden ${
-          mobileMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+          mobileMenuOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-full"
         }`}
       >
-        <div className="flex flex-col h-full pt-32 px-6 gap-4">
+        <div className="flex flex-col h-full pt-28 px-6 gap-3">
           {navItems.map((item, i) => (
             <button
               key={item.name}
               onClick={() => handleMenuClick(item)}
-              style={{ transitionDelay: `${i * 50}ms` }}
-              className={`w-full text-left p-5 rounded-2xl text-2xl font-black border transition-all ${
-                mobileMenuOpen ? "translate-x-0 opacity-100" : "-translate-x-10 opacity-0"
-              } ${
+              className={`w-full text-left p-4 rounded-2xl text-xl font-black border transition-all duration-300 ${
                 pathname === item.path 
                 ? "bg-gradient-to-r from-[#FF690B] to-[#FFB900] text-[#08101E] border-transparent" 
                 : "bg-white/5 text-white border-white/10"
@@ -178,20 +181,20 @@ export default function Navbar() {
           ))}
 
           {isLoggedIn ? (
-            <div className="mt-auto mb-10 grid grid-cols-2 gap-4">
-               <button onClick={() => router.push("/dashboard")} className="p-5 bg-white/5 rounded-2xl border border-white/10 text-white flex flex-col items-center gap-2">
-                  <LayoutDashboard size={24} />
-                  <span className="text-xs font-bold uppercase">Dashboard</span>
+            <div className="mt-auto mb-8 grid grid-cols-2 gap-3">
+               <button onClick={() => router.push("/profile")} className="p-4 bg-white/5 rounded-2xl border border-white/10 text-white flex flex-col items-center gap-2">
+                  <LayoutDashboard size={20} />
+                  <span className="text-[10px] font-bold uppercase">Profile</span>
                </button>
-               <button onClick={handleLogout} className="p-5 bg-red-500/10 rounded-2xl border border-red-500/20 text-red-500 flex flex-col items-center gap-2">
-                  <LogOut size={24} />
-                  <span className="text-xs font-bold uppercase">Logout</span>
+               <button onClick={handleLogout} className="p-4 bg-red-500/10 rounded-2xl border border-red-500/20 text-red-500 flex flex-col items-center gap-2">
+                  <LogOut size={20} />
+                  <span className="text-[10px] font-bold uppercase">Logout</span>
                </button>
             </div>
           ) : (
             <button
               onClick={() => { setMobileMenuOpen(false); setLoginOpen(true); }}
-              className="mt-auto mb-10 w-full bg-white text-[#08101E] p-6 rounded-2xl font-black text-xl shadow-2xl"
+              className="mt-auto mb-8 w-full bg-gradient-to-r from-[#FF690B] to-[#FFB900] text-[#08101E] p-5 rounded-2xl font-black text-lg shadow-2xl active:scale-95 transition-transform"
             >
               LOGIN TO ACCOUNT
             </button>

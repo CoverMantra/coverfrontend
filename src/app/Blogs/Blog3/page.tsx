@@ -1,90 +1,167 @@
 "use client";
-import React from "react";
+
+import React, { useEffect } from "react";
+import { motion, useScroll, useSpring } from "framer-motion";
+import { Sparkles, Target, Zap, Heart, ShieldCheck, Compass, Quote } from "lucide-react";
+import AOS from "aos";
+import "aos/dist/aos.css";
+
 export default function LivingAloneBlog() {
+  // Progress Bar Logic
+  const { scrollYProgress } = useScroll();
+  const scaleX = useSpring(scrollYProgress, {
+    stiffness: 100,
+    damping: 30,
+    restDelta: 0.001
+  });
+
+  useEffect(() => {
+    AOS.init({ duration: 1000, once: true });
+  }, []);
+
   const articleData = {
-    headline: "The Quiet Revolution: Why Living Alone Is Your Greatest Opportunity for Personal Growth",
-    subhead: "Beyond the initial apprehension, finding yourself in solitude can unlock unmatched independence, focus, and inner peace.",
-    image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQBqho4ZBZFyIKSBn2B06gty0vP-U5EZoNRAA&s",
+    headline: "The Quiet Revolution: Why Living Alone Is Your Greatest Opportunity",
+    subhead: "Solitude can unlock unmatched independence, focus, and inner peace.",
     sections: [
       {
         title: "Discover Yourself",
-        content: "Living alone provides the crucial headspace needed to reflect and truly understand your own **priorities, values, and long-term goals**. It removes external noise, allowing you to develop a clear sense of direction and make decisions based purely on what matters to you, not others."
+        icon: <Compass className="w-8 h-8 text-[#FF7819]" />,
+        content: "Living alone provides the headspace to truly understand your own priorities and values. It removes external noise, allowing you to develop a clear sense of direction."
       },
       {
-        title: "Build Unshakeable Independence",
-        content: "From fixing a leaky faucet to managing a budget, taking ownership of your home and daily tasks builds profound **self-reliance**. Every small challenge overcome on your own is a win that compounds, strengthening your confidence and problem-solving skills for life."
+        title: "Unshakeable Independence",
+        icon: <ShieldCheck className="w-8 h-8 text-[#FF7819]" />,
+        content: "From fixing a leaky faucet to managing a budget, taking ownership builds self-reliance. Every small challenge overcome compounds into profound confidence."
       },
       {
-        title: "Elevate Focus and Productivity",
-        content: "A major benefit of solitude is the ability to minimize distractions. This means you can dedicate undisturbed time and energy to important pursuits—whether it's professional work, learning a new skill, or **deep creative thinking**. This focused environment dramatically increases efficiency."
+        title: "Elevate Productivity",
+        icon: <Zap className="w-8 h-8 text-[#FF7819]" />,
+        content: "Solitude minimizes distractions. Dedicate undisturbed energy to professional work or deep creative thinking in a focused environment."
       },
       {
-        title: "Embrace Peaceful Solitude",
-        content: "Being alone teaches you to genuinely enjoy your own company. You learn to find comfort and calm in the quiet moments of the day. This cultivated inner peace is a powerful tool against stress and contributes significantly to **better mental and emotional well-being**."
+        title: "Peaceful Solitude",
+        icon: <Heart className="w-8 h-8 text-[#FF7819]" />,
+        content: "Being alone teaches you to genuinely enjoy your own company. This cultivated inner peace is a powerful tool against modern-day stress."
       },
       {
-        title: "Develop Emotional Resilience",
-        content: "When challenges arise, living solo forces you to process emotions independently. You develop **resilience and coping mechanisms** without the immediate crutch of a roommate or partner. This ability to navigate setbacks with patience and clarity is invaluable."
+        title: "Emotional Resilience",
+        icon: <Target className="w-8 h-8 text-[#FF7819]" />,
+        content: "You develop coping mechanisms without an immediate crutch. Navigating setbacks with patience and clarity is an invaluable life skill."
       },
       {
-        title: "Shape Your Own Authentic Lifestyle",
-        content: "The freedom to design your space, routines, and habits exactly how you want them is the **ultimate luxury of living alone**. You can eat when you want, decorate as you please, and set a schedule that serves your highest self, leading to a truly authentic and intentional life."
+        title: "Authentic Lifestyle",
+        icon: <Sparkles className="w-8 h-8 text-[#FF7819]" />,
+        content: "The freedom to design your routines and space is the ultimate luxury. Set a schedule that serves your highest self for a truly intentional life."
       }
     ]
   };
-return (
-    <main className="bg-white min-h-screen py-8 px-4 md:px-12 flex justify-center font-serif text-gray-800">
-      <article className="max-w-3xl border-x border-gray-300 p-4 md:p-8 space-y-6">
-        <header className="text-center space-y-2 mb-8 border-b-2 border-gray-900 pb-4">
-          <h1 className="text-4xl md:text-4xl mt-10 font-extrabold tracking-tight text-gray-900 leading-tight">
-            {articleData.headline}
-          </h1>
-          <h2 className="text-lg italic text-gray-600 border-t border-gray-300 pt-2 mt-2">
-            {articleData.subhead}
-          </h2>
-      </header>
-        <div className="flex flex-col gap-4">
-          <img
-            src={articleData.image}
-            alt="Person enjoying quiet time alone"
-            className="w-full h-90 object-cover rounded-md border border-gray-200"
-            onError={(e: React.SyntheticEvent<HTMLImageElement>) => {
-              e.currentTarget.onerror = null;
-              e.currentTarget.src = "https://placehold.co/1200x600/555/white?text=Reflective+Living";
-            }}
+
+  return (
+    <div className="bg-[#FFF4E5] text-gray-900 min-h-screen font-sans selection:bg-[#FF7819] selection:text-white">
+      
+      {/* 🚀 TOP PROGRESS BAR */}
+      <motion.div className="fixed top-0 left-0 right-0 h-1.5 bg-[#FF7819] z-50 origin-left" style={{ scaleX }} />
+
+      {/* 🏔 HERO SECTION */}
+      <header className="relative h-[85vh] flex items-center justify-center overflow-hidden">
+        <div className="absolute inset-0 z-0">
+          <img 
+            src="https://images.unsplash.com/photo-1516062423079-7ca13cdc7f5a?q=80&w=2083&auto=format&fit=crop" 
+            className="w-full h-full object-cover opacity-40 grayscale"
+            alt="Solitude"
           />
-          <blockquote className="border-l-4 border-purple-500 pl-4 italic text-xl text-gray-700">
-            <span className="text-3xl text-purple-400 font-bold mr-2 align-middle">“</span>
-            Loneliness is the poverty of self; solitude is the richness of self.
-          </blockquote>
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#FFF4E5]/50 to-[#FFF4E5]" />
         </div>
-        <section className="text-lg leading-relaxed space-y-4">
-          <p>
-            For many, the thought of living alone brings an immediate sense of dread or isolation. Yet, the current reality for millions is that independent living is rapidly becoming the norm. Far from being a marker of loneliness, this lifestyle is actually one of the most powerful catalysts for **personal transformation and deep self-discovery**.
+
+        <div className="relative z-10 max-w-5xl px-6 text-center" data-aos="zoom-out">
+          <span className="inline-block px-4 py-1.5 rounded-full bg-[#FF7819]/10 border border-[#FF7819]/20 text-[#FF7819] text-[10px] font-black uppercase tracking-[0.4em] mb-8">
+            Personal Evolution
+          </span>
+          <h1 className="text-5xl md:text-8xl font-black tracking-tighter leading-none mb-8 italic uppercase text-[#08101E]">
+            The <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF7819] to-[#FF690B]">Quiet</span> <br /> 
+            Revolution
+          </h1>
+          <p className="text-xl md:text-2xl font-medium text-gray-600 max-w-3xl mx-auto leading-relaxed italic">
+            {articleData.subhead}
           </p>
-          <p>
-            It is a unique opportunity to shed the expectations of others and truly step into your own identity. The path to thriving solo is paved with six essential benefits that redefine what it means to live alone.
-          </p>
-          {articleData.sections.map((section, index) => (
-            <div key={index} className="section-block">
-              <h3 className="text-2xl font-bold text-gray-900 mt-6 mb-2">
-                {section.title}
-              </h3>
-              <p>
-                {section.content}
+        </div>
+      </header>
+
+      {/* 📖 CONTENT BODY */}
+      <main className="max-w-7xl mx-auto px-6 py-10">
+        
+        {/* QUOTE SECTION */}
+        <div className="mb-24" data-aos="fade-up">
+          <div className="bg-white/60 backdrop-blur-xl border border-white p-10 md:p-16 rounded-[4rem] relative overflow-hidden group shadow-xl">
+             <Quote className="absolute -top-10 -left-10 w-48 h-48 text-[#FF7819]/5 group-hover:rotate-12 transition-transform" />
+             <p className="text-3xl md:text-5xl font-serif italic text-center relative z-10 leading-snug text-gray-800">
+               "Loneliness is the poverty of self; <span className="text-[#FF7819]">solitude</span> is the richness of self."
+             </p>
+          </div>
+        </div>
+
+        {/* 3D GLASS CARDS GRID */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {articleData.sections.map((item, idx) => (
+            <motion.div
+              key={idx}
+              whileHover={{ rotateY: 8, rotateX: 4, translateZ: 10 }}
+              className="group p-8 rounded-[2.5rem] bg-white/50 backdrop-blur-sm border border-white shadow-lg hover:shadow-[#FF7819]/10 transition-all cursor-default"
+              data-aos="fade-up"
+              data-aos-delay={idx * 100}
+            >
+              <div className="mb-6 p-4 inline-block rounded-2xl bg-[#FF7819]/10 group-hover:bg-[#FF7819] transition-colors duration-500">
+{React.cloneElement(item.icon as React.ReactElement<any>, { 
+  className: "w-8 h-8 text-[#FF7819] group-hover:text-white transition-colors" 
+})}              </div>
+              <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-4 text-[#08101E]">{item.title}</h3>
+              <p className="text-gray-600 leading-relaxed font-medium">
+                {item.content}
               </p>
-            </div>
+            </motion.div>
           ))}
+        </div>
+
+        {/* 🖼 CALL TO ACTION SECTION */}
+        <section className="mt-32 relative rounded-[4rem] overflow-hidden h-[450px] shadow-2xl" data-aos="fade-up">
+           <img 
+            src="https://images.unsplash.com/photo-1499209974431-9dac3adaf471?q=80&w=2070&auto=format&fit=crop" 
+            className="w-full h-full object-cover scale-105 hover:scale-100 transition-transform duration-[4s]"
+            alt="Calmness"
+           />
+           <div className="absolute inset-0 bg-gradient-to-r from-[#08101E]/90 via-[#08101E]/40 to-transparent flex items-center p-8 md:p-20">
+             <div className="max-w-md space-y-6">
+                <h2 className="text-4xl md:text-5xl font-black text-white italic tracking-tighter uppercase leading-none">
+                  Embrace <br /> <span className="text-[#FF7819]">The Silence</span>
+                </h2>
+                <p className="text-gray-300 font-medium italic">Living alone is an active creation of a sanctuary where you grow without noise.</p>
+                <button className="px-10 py-4 bg-[#FF7819] text-white font-black rounded-2xl hover:bg-white hover:text-[#FF7819] transition-all transform hover:-translate-y-1 uppercase tracking-widest text-xs">
+                   Start Your Journey
+                </button>
+             </div>
+           </div>
         </section>
-        <footer className="mt-10 pt-4 border-t border-gray-300">
-          <p className="text-xl font-semibold text-gray-800 mb-3 text-center">
-            The Takeaway: Embracing the Solo Journey
+
+      </main>
+
+      {/* 🏁 FOOTER */}
+      <footer className="py-20 border-t border-[#FF7819]/10 text-center">
+        <div className="max-w-2xl mx-auto px-6 space-y-6">
+          <p className="text-3xl font-black italic tracking-tighter uppercase text-[#08101E]">
+            Live <span className="text-[#FF7819]">Authentically</span>
           </p>
-          <p className="text-lg text-gray-700 italic text-center max-w-2xl mx-auto">
-            Living alone is not about simply existing in a space, but about actively creating a sanctuary where you can grow, reflect, and master the art of being yourself. Embrace the silence, champion your independence, and watch your life become intentionally, wonderfully yours.
+          <div className="flex justify-center gap-8 text-[10px] font-black uppercase tracking-[0.4em] text-gray-400">
+            <span>Focus</span>
+            <span>•</span>
+            <span>Freedom</span>
+            <span>•</span>
+            <span>Growth</span>
+          </div>
+          <p className="text-[10px] font-bold opacity-30 mt-10 tracking-widest uppercase">
+            © 2026 Solo Living Perspectives • Master Your Space
           </p>
-        </footer>
-        </article>
-    </main>
+        </div>
+      </footer>
+    </div>
   );
 }

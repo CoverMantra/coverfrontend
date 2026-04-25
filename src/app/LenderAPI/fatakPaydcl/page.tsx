@@ -1,26 +1,20 @@
 "use client";
 import { useState, useEffect } from "react";
-import axios from "axios";
 import Cookies from "js-cookie";
+import { motion, AnimatePresence } from "framer-motion";
+import api from "../../../lib/axios";
 
-const BASE_URL = "https://www.covermantra.com";
-
-// Fetch User Data API
+// Logic as it is
 const fetchUserData = async (storedPhone: string) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/user/profile`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone: storedPhone }),
-    });
-    if (!response.ok) throw new Error(`API error: ${response.statusText}`);
-    const data = await response.json();
+    const { data } = await api.post("/api/user/profile", { phone: storedPhone });
     return data.user;
   } catch (error) {
     console.error("Fetch User API Error:", error);
     return null;
   }
 };
+
 export default function LendersPage() {
   const [formData, setFormData] = useState({
     mobile: "",
@@ -39,13 +33,14 @@ export default function LendersPage() {
     consent: false,
     consent_timestamp: "",
   });
+
   const [loading, setLoading] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [responseMessage, setResponseMessage] = useState<
     null | { type: "success" | "error" | "info"; message: string }
   >(null);
 
-const showModal = (
+  const showModal = (
     message: string,
     type: "success" | "error" | "info" = "info"
   ) => {
@@ -55,46 +50,33 @@ const showModal = (
   const submitLenderAPI = async (payload: typeof formData) => {
     setLoading(true);
     try {
-      const response = await axios.post(
-        `${BASE_URL}/api/fatakPay/register/dcl`,
-        payload,
-        { headers: { "Content-Type": "application/json" } }
-      );
+      const response = await api.post("/api/fatakPay/register/dcl", payload);
       const apiData = response.data?.data;
       if (apiData?.success && apiData?.message === "You are eligible.") {
         showModal("✅ You are eligible!", "success");
         setTimeout(() => {
-          window.location.href =
-            "https://fatakpay.onelink.me/2uSI/652_IUXYC?utm_medium=";
+          window.location.href = "https://fatakpay.onelink.me/2uSI/652_IUXYC?utm_medium=";
         }, 2000);
       } else {
         showModal(apiData?.message || "Submission failed.", "error");
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 2000);
+        setTimeout(() => { window.location.href = "/"; }, 2000);
       }
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        console.error("Lender API Error:", err.response?.data || err.message);
-        showModal(
-          err.response?.data?.message || "Something went wrong. Try again."
-        );
+    } catch (err: any) {
+      if (err.response) {
+        showModal(err.response?.data?.message || "Something went wrong. Try again.", "error");
       } else {
-        console.error("Lender API Error:", err);
-        showModal("Something went wrong. Try again.");
+        showModal("Something went wrong. Try again.", "error");
       }
-      setTimeout(() => {
-        window.location.href = "/";
-      }, 2000);
+      setTimeout(() => { window.location.href = "/"; }, 2000);
     } finally {
       setLoading(false);
     }
   };
+
   useEffect(() => {
     const fetchAndSetUser = async () => {
       setIsLoading(true);
-      const storedPhone =
-        Cookies.get("co_phone") || localStorage.getItem("co_phone");
+      const storedPhone = Cookies.get("co_phone") || localStorage.getItem("co_phone");
       if (!storedPhone) {
         setIsLoading(false);
         return;
@@ -106,8 +88,7 @@ const showModal = (
           "Self-Employed": "Self-Employed",
           "Salaried Employee": "Salaried",
         };
-        const mappedEmployment =
-          employmentMap[user.employment as keyof typeof employmentMap] || "";
+        const mappedEmployment = employmentMap[user.employment as keyof typeof employmentMap] || "";
 
         setFormData((prev) => ({
           ...prev,
@@ -119,29 +100,22 @@ const showModal = (
           pan: user.pan || "",
           employment_type_id: mappedEmployment,
         }));
-
       } else {
-        showModal("User data not found");
+        showModal("User data not found", "error");
       }
       setIsLoading(false);
     };
-
     fetchAndSetUser();
   }, []);
 
-  // Handle input change
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     }));
   };
 
-  // ✅ handleSubmit
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const payload = {
@@ -154,183 +128,158 @@ const showModal = (
   };
 
   return (
-    <>
-      {responseMessage && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-60 p-4"
-          role="alert"
-          aria-live="assertive"
-        >
-          <div
-            className={`flex flex-col items-center max-w-md w-full p-8 rounded-3xl shadow-2xl bg-white select-none space-y-4 ${responseMessage.type === "success"
-                ? "border-4 border-green-500 text-green-900"
-                : "border-4 border-red-600 text-red-900"
-              } animate-fadeInUp`}
-          >
-            <div>
-              {responseMessage.type === "success" ? (
-                <svg
-                  className="mx-auto mb-4 h-16 w-16 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 12l2 2 4-4m5 4a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="mx-auto mb-4 h-16 w-16 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              )}
-            </div>
-            <h3 className="text-3xl font-semibold">
-              {responseMessage.type === "success"
-                ? "Success"
-                : responseMessage.type === "error"
-                  ? "Error"
-                  : "Information"}
-            </h3>
-            <p className="whitespace-pre-line text-lg leading-relaxed text-center">
-              {responseMessage.message}
-            </p>
-            {(responseMessage.type === "success" ||
-              responseMessage.type === "error") && (
-                <p
-                  className={`mt-6 text-sm ${responseMessage.type === "success" ? "text-green-600 animate-pulse" : "text-red-600"
-                    }`}
-                >
-                  {responseMessage.type === "success"
-                    ? "Redirecting shortly…"
-                    : "Redirecting to Home…"}
-                </p>
-              )}
-          </div>
-        </div>
-      )}
-
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <form
-          onSubmit={handleSubmit}
-          className="max-w-2xl w-full mx-auto p-8 mt-20 border rounded-2xl shadow-xl bg-gradient-to-br from-white to-gray-100"
-        >
-          <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">FatakPay Application</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              name="mobile"
-              value={formData.mobile}
-              onChange={handleChange}
-              placeholder="Mobile Number"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="first_name"
-              value={formData.first_name}
-              onChange={handleChange}
-              placeholder="First Name"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="last_name"
-              value={formData.last_name}
-              onChange={handleChange}
-              placeholder="Last Name"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="dob"
-              value={formData.dob}
-              onChange={handleChange}
-              type="date"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              type="email"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="pan"
-              value={formData.pan}
-              onChange={handleChange}
-              placeholder="PAN Number"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="pincode"
-              value={formData.pincode}
-              onChange={handleChange}
-              placeholder="Pincode"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <select
-              name="employment_type_id"
-              value={formData.employment_type_id}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
+    <div className="min-h-screen bg-[#FFF4E5] font-sans">
+      
+      {/* Modal / Feedback Overlay */}
+      <AnimatePresence>
+        {responseMessage && (
+          <div className="fixed inset-0 flex items-center justify-center bg-[#08101E]/80 backdrop-blur-md z-[100] p-4">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              className={`flex flex-col items-center max-w-sm w-full p-8 rounded-[2.5rem] shadow-2xl bg-white border-4 ${
+                responseMessage.type === "success" ? "border-green-500" : "border-red-500"
+              }`}
             >
-              <option value="">Select Employment Type</option>
-              <option value="Salaried">Salaried</option>
-              <option value="Self-Employed">Self-Employed</option>
-            </select>
+              <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${
+                responseMessage.type === "success" ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
+              }`}>
+                {responseMessage.type === "success" ? (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                ) : (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
+                )}
+              </div>
+              <h3 className="text-2xl font-black text-[#08101E] mb-2">
+                {responseMessage.type === "success" ? "Great!" : "Oops!"}
+              </h3>
+              <p className="text-center text-gray-600 font-medium leading-relaxed">
+                {responseMessage.message}
+              </p>
+              <div className="mt-6 flex items-center gap-2 text-sm font-bold text-gray-400">
+                <div className="w-4 h-4 border-2 border-gray-200 border-t-[#FF7819] rounded-full animate-spin"></div>
+                Redirecting...
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Hero Header */}
+      <div className="h-72 bg-[#08101E] w-full absolute top-0 left-0 flex items-center justify-center">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10"></div>
+        <div className="relative text-center px-4">
+          <h1 className="text-3xl md:text-5xl font-black text-white">FatakPay <span className="text-[#FF7819]">Credit Line</span></h1>
+          <p className="text-gray-400 mt-2 text-sm md:text-base">Quick verification for instant credit access</p>
+        </div>
+      </div>
+
+      {/* Form Container */}
+      <div className="relative z-10 flex items-center justify-center p-4 pt-48 md:pt-56 pb-20">
+        <motion.form
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          onSubmit={handleSubmit}
+          className="max-w-2xl w-full bg-white/95 backdrop-blur-xl p-6 md:p-10 rounded-[2.5rem] shadow-[0_30px_60px_rgba(0,0,0,0.12)] border border-white"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+            <FormGroup label="Mobile Number">
+              <input name="mobile" value={formData.mobile} onChange={handleChange} placeholder="98XXXXXXXX" type="text" className="input-style" required />
+            </FormGroup>
+            
+            <FormGroup label="First Name">
+              <input name="first_name" value={formData.first_name} onChange={handleChange} placeholder="John" type="text" className="input-style" required />
+            </FormGroup>
+
+            <FormGroup label="Last Name">
+              <input name="last_name" value={formData.last_name} onChange={handleChange} placeholder="Doe" type="text" className="input-style" required />
+            </FormGroup>
+
+            <FormGroup label="Date of Birth">
+              <input name="dob" value={formData.dob} onChange={handleChange} type="date" className="input-style" required />
+            </FormGroup>
+
+            <FormGroup label="Email Address">
+              <input name="email" value={formData.email} onChange={handleChange} placeholder="john@example.com" type="email" className="input-style" required />
+            </FormGroup>
+
+            <FormGroup label="PAN Card Number">
+              <input name="pan" value={formData.pan} onChange={handleChange} placeholder="ABCDE1234F" type="text" className="input-style uppercase tracking-widest font-mono" required maxLength={10} />
+            </FormGroup>
+
+            <FormGroup label="Area Pincode">
+              <input name="pincode" value={formData.pincode} onChange={handleChange} placeholder="110001" type="text" className="input-style" required maxLength={6} />
+            </FormGroup>
+
+            <FormGroup label="Employment Status">
+              <select name="employment_type_id" value={formData.employment_type_id} onChange={handleChange} className="input-style bg-gray-50" required>
+                <option value="">Select Type</option>
+                <option value="Salaried">Salaried</option>
+                <option value="Self-Employed">Self-Employed</option>
+              </select>
+            </FormGroup>
           </div>
 
-          <label className="flex items-center mt-4 mb-4 text-gray-700">
-            <input
-              type="checkbox"
-              name="consent"
-              checked={formData.consent}
-              onChange={handleChange}
-              className="mr-2"
-              required
+          <div className="mt-8 p-4 bg-[#FFF4E5] rounded-2xl border border-[#FF7819]/10 flex items-start gap-3">
+            <input 
+              type="checkbox" 
+              name="consent" 
+              checked={formData.consent} 
+              onChange={handleChange} 
+              className="mt-1 w-5 h-5 accent-[#FF7819]" 
+              required 
             />
-            I consent to provide my details.
-          </label>
+            <p className="text-[11px] md:text-xs text-gray-600 leading-relaxed">
+              I authorize <span className="font-bold text-[#08101E]">CoverMantra</span> and its partner <span className="font-bold text-[#08101E]">FatakPay</span> to verify my details and check my credit eligibility for financial products.
+            </p>
+          </div>
 
           <button
             type="submit"
-            className={`w-full p-3 text-white rounded-lg transition duration-200 shadow 
-              ${formData.consent ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-300 cursor-not-allowed"}
-              disabled:cursor-not-allowed`}
             disabled={!formData.consent || loading || isLoading}
+            className={`w-full mt-8 py-5 text-white font-black text-lg rounded-[1.5rem] shadow-xl shadow-[#FF7819]/30 transition-all active:scale-95 ${
+              !formData.consent || loading || isLoading 
+              ? "bg-gray-300 cursor-not-allowed shadow-none" 
+              : "bg-[#FF7819] hover:bg-[#e66a15]"
+            }`}
           >
-            {loading || isLoading ? "Loading..." : "Submit"}
+            {loading || isLoading ? (
+              <span className="flex items-center justify-center gap-2">
+                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                Processing...
+              </span>
+            ) : "Check Eligibility"}
           </button>
-        </form>
+        </motion.form>
       </div>
-    </>
+
+      <style jsx>{`
+        .input-style {
+          width: 100%;
+          padding: 1rem;
+          background-color: #f9fafb;
+          border: 1px solid #f3f4f6;
+          border-radius: 1rem;
+          outline: none;
+          transition: all 0.2s;
+          color: #08101E;
+          font-weight: 500;
+        }
+        .input-style:focus {
+          border-color: #FF7819;
+          background-color: white;
+          box-shadow: 0 0 0 4px rgba(255, 120, 25, 0.1);
+        }
+      `}</style>
+    </div>
+  );
+}
+
+function FormGroup({ label, children }: { label: string; children: React.ReactNode }) {
+  return (
+    <div className="space-y-1.5">
+      <label className="text-[10px] uppercase font-black text-gray-400 ml-2 tracking-wider">{label}</label>
+      {children}
+    </div>
   );
 }

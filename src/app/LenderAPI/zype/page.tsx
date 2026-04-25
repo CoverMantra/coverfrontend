@@ -1,25 +1,20 @@
 "use client";
 import { useState, useEffect } from "react";
 import Cookies from "js-cookie";
+import { motion, AnimatePresence } from "framer-motion";
+import api from "../../../lib/axios";
 
-const BASE_URL = "https://www.covermantra.com";
-
-// Fetch User Data API
+// Logic remains identical to your provided code
 const fetchUserData = async (storedPhone: string) => {
   try {
-    const response = await fetch(`${BASE_URL}/api/user/profile`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ phone: storedPhone }),
-    });
-    if (!response.ok) throw new Error(`API error: ${response.statusText}`);
-    const data = await response.json();
+    const { data } = await api.post("/api/user/profile", { phone: storedPhone });
     return data.user;
   } catch (error) {
     console.error("Fetch User API Error:", error);
     return null;
   }
 };
+
 export default function LendersPage() {
   const [formData, setFormData] = useState({
     mobile: "",
@@ -39,19 +34,14 @@ export default function LendersPage() {
     null | { type: "success" | "error" | "info"; message: string }
   >(null);
 
-  const showModal = (
-    message: string,
-    type: "success" | "error" | "info" = "info"
-  ) => {
+  const showModal = (message: string, type: "success" | "error" | "info" = "info") => {
     setResponseMessage({ type, message });
   };
 
-  // Fetch user data on load
   useEffect(() => {
     const fetchAndSetUser = async () => {
       setIsLoading(true);
-      const storedPhone =
-        Cookies.get("co_phone") || localStorage.getItem("co_phone");
+      const storedPhone = Cookies.get("co_phone") || localStorage.getItem("co_phone");
       if (!storedPhone) {
         setIsLoading(false);
         return;
@@ -63,9 +53,6 @@ export default function LendersPage() {
           "Self-Employed": "Self-Employed",
           "Salaried Employee": "Salaried",
         };
-        const mappedEmployment =
-          employmentMap[user.employment as keyof typeof employmentMap] || "";
-
         setFormData((prev) => ({
           ...prev,
           mobile: user.phone || "",
@@ -73,243 +60,187 @@ export default function LendersPage() {
           dob: user.dob || "",
           email: user.email || "",
           pan: user.pan || "",
-          employment_type_id: mappedEmployment,
+          employment_type_id: employmentMap[user.employment as keyof typeof employmentMap] || "",
         }));
-        // showModal("Existing user data pre-filled. Please review and submit.");
       } else {
-        showModal("User data not found");
+        showModal("User data not found", "error");
       }
       setIsLoading(false);
     };
-
     fetchAndSetUser();
   }, []);
 
-  // Handle input changes
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]:
-        type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
+      [name]: type === "checkbox" ? (e.target as HTMLInputElement).checked : value,
     }));
   };
 
-  const handleSubmit = async (e: { preventDefault: () => void }) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     if (!formData.consent) {
-      showModal("⚠️ Please provide consent before submitting.");
+      showModal("⚠️ Please provide consent before submitting.", "info");
       return;
     }
     setLoading(true);
-
     try {
-      const response = await fetch(`${BASE_URL}/api/zype/register`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          phone: formData.mobile,
-          name: formData.name,
-          dob: formData.dob,
-          email: formData.email,
-          employmentType: formData.employment_type_id.toLowerCase(),
-          pan: formData.pan,
-          income: Number(formData.income),
-        }),
+      const { data } = await api.post("/api/zype/register", {
+        phone: formData.mobile,
+        name: formData.name,
+        dob: formData.dob,
+        email: formData.email,
+        employmentType: formData.employment_type_id.toLowerCase(),
+        pan: formData.pan,
+        income: Number(formData.income),
       });
-      if (!response.ok) throw new Error(`API error: ${response.statusText}`);
-      const data = await response.json();
       if (
         data?.totalresponse?.deduperesponse?.status === "ACCEPT" &&
         data?.totalresponse?.apires?.status === "ACCEPT"
       ) {
         const offer = data.totalresponse.apires.offer;
-        showModal(`✅ Registration processed successfully! Offer: ₹${offer}`, "success");
+        showModal(`✅ Application Success! Your Offer: ₹${offer}`, "success");
         setTimeout(() => {
-          window.location.href =
-            "https://zype.onelink.me/vx8a?af_xp=custom&pid=CustomerSource&af_dp=com.zype.mobile%3A%2F%2F&deep_link_value=myZype&af_click_lookback=30d&c=Spiraea";
+          window.location.href = "https://zype.onelink.me/vx8a?af_xp=custom&pid=CustomerSource&af_dp=com.zype.mobile%3A%2F%2F&deep_link_value=myZype&af_click_lookback=30d&c=Spiraea";
         }, 2000);
       } else {
         showModal("Sorry, your application was rejected", "error");
-        setTimeout(() => {
-          window.location.href = "/";
-        }, 3000);
+        setTimeout(() => { window.location.href = "/"; }, 3000);
       }
     } catch (error: any) {
-      console.error("Zype API Error:", error);
-      showModal("Something went wrong while submitting the form.", "error");
+      showModal("Something went wrong while submitting.", "error");
     } finally {
       setLoading(false);
     }
   };
 
-
   return (
-    <>
-      {responseMessage && (
-        <div
-          className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-60 p-4"
-          role="alert"
-          aria-live="assertive"
-        >
-          <div
-            className={`flex flex-col items-center max-w-md w-full p-8 rounded-3xl shadow-2xl bg-white select-none space-y-4 ${responseMessage.type === "success"
-                ? "border-4 border-green-500 text-green-900"
-                : "border-4 border-red-600 text-red-900"
-              } animate-fadeInUp`}
+    <div className="min-h-screen bg-[#FFF4E5] font-sans">
+      
+      {/* Premium 3D Modal */}
+      <AnimatePresence>
+        {responseMessage && (
+          <motion.div 
+            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            className="fixed inset-0 flex items-center justify-center bg-[#08101E]/70 backdrop-blur-md z-[100] p-4"
           >
-            <div>
-              {responseMessage.type === "success" ? (
-                <svg
-                  className="mx-auto mb-4 h-16 w-16 text-green-500"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M9 12l2 2 4-4m5 4a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              ) : (
-                <svg
-                  className="mx-auto mb-4 h-16 w-16 text-red-600"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth={2}
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              )}
-            </div>
-            <h3 className="text-3xl font-semibold">
-              {responseMessage.type === "success"
-                ? "Success"
-                : responseMessage.type === "error"
-                  ? "Error"
-                  : "Information"}
-            </h3>
-            <p className="whitespace-pre-line text-lg leading-relaxed text-center">
-              {responseMessage.message}
-            </p>
-            {(responseMessage.type === "success" || responseMessage.type === "error") && (
-              <p className={`mt-6 text-sm ${responseMessage.type === "success" ? "text-green-600 animate-pulse" : "text-red-600"}`}>
-                {responseMessage.type === "success" ? "Redirecting shortly…" : "Redirecting to Home…"}
-              </p>
-            )}
-          </div>
-        </div>
-      )}
-
-      <div className="min-h-screen bg-gray-100 flex items-center justify-center p-4">
-        <form
-          onSubmit={handleSubmit}
-          className="max-w-2xl w-full mx-auto p-8 mt-20 border rounded-2xl shadow-xl bg-gradient-to-br from-white to-gray-100"
-        >
-          <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">Zype Application</h2>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <input
-              name="mobile"
-              value={formData.mobile}
-              onChange={handleChange}
-              placeholder="Mobile Number"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Name"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="dob"
-              value={formData.dob}
-              onChange={handleChange}
-              type="date"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="Email"
-              type="email"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <input
-              name="pan"
-              value={formData.pan}
-              onChange={handleChange}
-              placeholder="PAN Number"
-              type="text"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
-            <select
-              name="employment_type_id"
-              value={formData.employment_type_id}
-              onChange={handleChange}
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
+            <motion.div
+              initial={{ scale: 0.9, y: 20 }} animate={{ scale: 1, y: 0 }}
+              className={`flex flex-col items-center max-w-sm w-full p-8 rounded-[3rem] shadow-2xl bg-white border-b-[10px] ${
+                responseMessage.type === "success" ? "border-green-500" : "border-red-600"
+              }`}
             >
-              <option value="">Select Employment Type</option>
-              <option value="Salaried">Salaried</option>
-              <option value="Self-Employed">Self-Employed</option>
-            </select>
-            <input
-              name="income"
-              value={formData.income}
-              onChange={handleChange}
-              placeholder="Monthly Income"
-              type="number"
-              className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-blue-400 outline-none"
-              required
-            />
+              <div className={`w-20 h-20 rounded-full flex items-center justify-center mb-4 ${
+                responseMessage.type === "success" ? "bg-green-100 text-green-600" : "bg-red-100 text-red-600"
+              }`}>
+                {responseMessage.type === "success" ? (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" /></svg>
+                ) : (
+                  <svg className="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M6 18L18 6M6 6l12 12" /></svg>
+                )}
+              </div>
+              <h3 className="text-2xl font-black text-[#08101E] tracking-tight">{responseMessage.type.toUpperCase()}</h3>
+              <p className="text-center text-gray-500 font-bold mt-2 leading-tight">{responseMessage.message}</p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Header Section */}
+      <div className="h-72 bg-[#08101E] relative flex flex-col items-center justify-center text-center px-4 overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-30"></div>
+        <div className="absolute -top-24 -left-24 w-64 h-64 bg-[#FF7819] rounded-full blur-[120px] opacity-20"></div>
+        <motion.h1 
+          initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
+          className="relative text-4xl md:text-5xl font-black text-white italic tracking-tighter"
+        >
+          ZYPE<span className="text-[#FF7819]">LOAN</span>
+        </motion.h1>
+        <p className="relative text-gray-400 text-xs md:text-sm tracking-[0.3em] uppercase mt-3 font-bold">Fast-Track Your Credit</p>
+      </div>
+
+      {/* Glassmorphism Form */}
+      <div className="relative z-10 flex justify-center px-4 -mt-20 pb-20">
+        <motion.form
+          initial={{ opacity: 0, y: 50 }} animate={{ opacity: 1, y: 0 }}
+          onSubmit={handleSubmit}
+          className="max-w-2xl w-full bg-white/95 backdrop-blur-xl p-8 md:p-12 rounded-[3.5rem] shadow-[0_25px_60px_rgba(0,0,0,0.15)] border border-white"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <InputField label="Mobile Number" name="mobile" value={formData.mobile} onChange={handleChange} placeholder="Enter phone" required />
+            <InputField label="Full Name" name="name" value={formData.name} onChange={handleChange} placeholder="As per PAN" required />
+            <InputField label="Date of Birth" name="dob" value={formData.dob} onChange={handleChange} type="date" required />
+            <InputField label="Email Address" name="email" value={formData.email} onChange={handleChange} placeholder="email@example.com" type="email" required />
+            <InputField label="PAN Card" name="pan" value={formData.pan} onChange={handleChange} placeholder="ABCDE1234F" className="uppercase tracking-[0.2em] font-mono" maxLength={10} required />
+            <InputField label="Monthly Income" name="income" value={formData.income} onChange={handleChange} placeholder="e.g. 25000" type="number" required />
+            
+            <div className="flex flex-col gap-2">
+              <label className="text-[11px] uppercase font-black text-[#FF7819] ml-4 tracking-widest">Employment Type</label>
+              <select
+                name="employment_type_id"
+                value={formData.employment_type_id}
+                onChange={handleChange}
+                className="w-full p-4.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#FF7819] focus:bg-white outline-none transition-all font-bold text-sm text-[#08101E]"
+                required
+              >
+                <option value="">Select Type</option>
+                <option value="Salaried">Salaried</option>
+                <option value="Self-Employed">Self-Employed</option>
+              </select>
+            </div>
           </div>
 
-          <label className="flex items-center mt-4 mb-4 text-gray-700">
+          {/* Consent Checkbox */}
+          <motion.label 
+            whileTap={{ scale: 0.98 }}
+            className="mt-10 flex items-center gap-4 p-5 bg-[#08101E]/5 rounded-3xl border-2 border-transparent hover:border-[#FF7819]/20 transition-all cursor-pointer"
+          >
             <input
               type="checkbox"
               name="consent"
               checked={formData.consent}
               onChange={handleChange}
-              className="mr-2"
+              className="w-6 h-6 accent-[#FF7819] shrink-0"
               required
             />
-            I consent to provide my details.
-          </label>
+            <span className="text-[11px] md:text-xs text-gray-600 font-bold leading-snug">
+              I certify that the information provided is accurate and I authorize <b>CoverMantra</b> to process my <b>Zype</b> credit application.
+            </span>
+          </motion.label>
 
+          {/* Submit Button */}
           <button
             type="submit"
-            className={`w-full p-3 text-white rounded-lg transition duration-200 shadow 
-              ${formData.consent ? "bg-blue-600 hover:bg-blue-700" : "bg-blue-300 cursor-not-allowed"}
-              disabled:cursor-not-allowed`}
             disabled={!formData.consent || loading || isLoading}
+            className={`w-full mt-10 py-6 rounded-[2rem] font-black text-white text-xl tracking-tighter shadow-2xl transition-all active:scale-95 ${
+              !formData.consent || loading || isLoading 
+                ? "bg-gray-300 cursor-not-allowed shadow-none" 
+                : "bg-[#FF7819] hover:bg-[#08101E] shadow-[#FF7819]/30"
+            }`}
           >
-            {loading || isLoading ? "Loading..." : "Submit"}
+            {loading || isLoading ? (
+              <span className="flex items-center justify-center gap-3">
+                <div className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+                VERIFYING...
+              </span>
+            ) : "SUBMIT APPLICATION"}
           </button>
-        </form>
+        </motion.form>
       </div>
-    </>
+    </div>
+  );
+}
+
+// Reusable 3D-styled Input
+function InputField({ label, className = "", ...props }: any) {
+  return (
+    <div className="flex flex-col gap-2">
+      <label className="text-[11px] uppercase font-black text-[#FF7819] ml-4 tracking-widest">{label}</label>
+      <input
+        {...props}
+        className={`w-full p-4.5 bg-gray-50 border-2 border-transparent rounded-2xl focus:border-[#FF7819] focus:bg-white outline-none transition-all font-bold text-sm text-[#08101E] placeholder:text-gray-300 ${className}`}
+      />
+    </div>
   );
 }

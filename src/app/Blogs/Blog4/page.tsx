@@ -237,7 +237,7 @@ export default function BlogPage() {
                 
                 {/* Section Title with Tech-Accent */}
                 <div className="flex items-center gap-4 mb-10">
-                   <span className="text-cyan-400 font-mono text-sm tracking-tighter">0{idx + 1} //</span>
+                   <span className="text-cyan-400 font-mono text-sm tracking-tighter">0{idx + 1} </span>
                    <h2 className="text-3xl md:text-5xl font-black uppercase italic tracking-tighter border-b border-white/10 pb-4 w-full">
                     {section.title}
                    </h2>

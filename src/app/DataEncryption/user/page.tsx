@@ -10,38 +10,46 @@ import {
   ThumbsUp, 
   Globe, 
   ChevronRight,
-  ShieldAlert
+  ShieldAlert,
+  LucideIcon // Type import for TS
 } from "lucide-react";
 
+// interface for type safety
+interface TrustStatement {
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+}
+
 export default function UserTrustPage() {
-  const trustStatements = [
+  const trustStatements: TrustStatement[] = [
     {
-      icon: <ShieldCheck />,
+      icon: ShieldCheck,
       title: "Data Security First",
       desc: "We prioritize your personal and financial information with enterprise-grade protection protocols.",
     },
     {
-      icon: <Lock />,
+      icon: Lock,
       title: "End-to-End Encryption",
       desc: "Advanced encryption at rest and in transit, ensuring total privacy at every stage of communication.",
     },
     {
-      icon: <Users />,
+      icon: Users,
       title: "Trusted by Millions",
       desc: "Our ecosystem is powered by thousands of daily users and organizations worldwide.",
     },
     {
-      icon: <Star />,
+      icon: Star,
       title: "Proven Track Record",
       desc: "Industry-leading uptime and compliance standards backed by consistent user satisfaction.",
     },
     {
-      icon: <ThumbsUp />,
+      icon: ThumbsUp,
       title: "Pure Transparency",
       desc: "No hidden agendas. We follow clear, ethical policies to build lasting digital partnerships.",
     },
     {
-      icon: <Globe />,
+      icon: Globe,
       title: "Global Compliance",
       desc: "Fully aligned with RBI, PCI DSS, GDPR, and international data protection regulations.",
     },
@@ -50,9 +58,8 @@ export default function UserTrustPage() {
   return (
     <div className="min-h-screen bg-[#FFF4E5] text-[#08101E] font-sans selection:bg-[#FF7819]/30">
       
-      {/* Hero Section - Dark & Sleek */}
+      {/* Hero Section - Dark & Premium */}
       <section className="relative pt-32 pb-24 px-6 bg-[#08101E] overflow-hidden text-center">
-        {/* Abstract Glow Background */}
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#FF7819]/10 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-[#FF7819]/5 rounded-full blur-[100px] pointer-events-none"></div>
 
@@ -86,30 +93,37 @@ export default function UserTrustPage() {
         </div>
       </section>
 
-      {/* Trust Statements - Modern 3-3 Grid */}
+      {/* Trust Grid - Fixed Icon Rendering */}
       <section className="max-w-7xl mx-auto py-24 px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {trustStatements.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ y: -10, boxShadow: "0 30px 60px -15px rgba(255,120,25,0.1)" }}
-              className="group p-10 bg-white rounded-[3rem] border border-[#FF7819]/5 hover:border-[#FF7819]/20 transition-all duration-500 cursor-pointer flex flex-col items-center text-center"
-            >
-              <div className="w-20 h-20 rounded-[2rem] bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center mb-8 group-hover:bg-[#FF7819] group-hover:text-white group-hover:rotate-[10deg] transition-all duration-500 shadow-inner">
-                {React.cloneElement(item.icon as React.ReactElement, { size: 36 })}
-              </div>
-              <h3 className="text-2xl font-black mb-4 tracking-tight group-hover:text-[#FF7819] transition-colors">{item.title}</h3>
-              <p className="text-gray-500 leading-relaxed font-medium">{item.desc}</p>
-            </motion.div>
-          ))}
+          {trustStatements.map((item, i) => {
+            const IconComponent = item.icon; // Assigned for TS safety
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -10, boxShadow: "0 30px 60px -15px rgba(255,120,25,0.1)" }}
+                className="group p-10 bg-white rounded-[3rem] border border-[#FF7819]/5 hover:border-[#FF7819]/20 transition-all duration-500 cursor-pointer flex flex-col items-center text-center"
+              >
+                <div className="w-20 h-20 rounded-[2rem] bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center mb-8 group-hover:bg-[#FF7819] group-hover:text-white group-hover:rotate-[10deg] transition-all duration-500 shadow-inner">
+                  <IconComponent size={36} />
+                </div>
+                <h3 className="text-2xl font-black mb-4 tracking-tight group-hover:text-[#FF7819] transition-colors">
+                  {item.title}
+                </h3>
+                <p className="text-gray-500 leading-relaxed font-medium">
+                  {item.desc}
+                </p>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
-      {/* Philosophy Section - Floating Card Look */}
+      {/* Philosophy Section */}
       <section className="max-w-6xl mx-auto py-24 px-6">
         <motion.div 
           initial={{ opacity: 0, scale: 0.95 }}
@@ -118,7 +132,6 @@ export default function UserTrustPage() {
           className="relative group p-1 bg-gradient-to-br from-[#FF7819]/20 to-transparent rounded-[4rem]"
         >
           <div className="relative bg-[#08101E] rounded-[3.9rem] p-12 md:p-24 overflow-hidden shadow-2xl text-center">
-            {/* Background Branding Watermark */}
             <ShieldAlert size={400} className="absolute -right-20 -bottom-20 text-[#FF7819] opacity-[0.03] rotate-12 pointer-events-none" />
             
             <div className="relative z-10">

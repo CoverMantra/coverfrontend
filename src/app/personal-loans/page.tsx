@@ -1,24 +1,12 @@
 "use client";
+
 import Head from "next/head";
 import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
 
 const cardsData = [
-  // {
-  //   provider: "MoneyView",
-  //   approval: "Good",
-  //   loanAmount: "Up to ₹10,00,000",
-  //   interestRate: "Starting from 1.33% per month",
-  //   processingFee: "Starting from 2% of the approved loan amount",
-  //   support: "24/7 customer support",
-  //   ratings: 4.8,
-  //   logo: "/image/MNView.png",
-  //   applyLink: "/LenderAPI/moneyView",
-  //   features: [
-  //     "Quick disbursement", "Paperless process", "Low processing fee", "Instant approval", "No hidden charges", "24/7 customer support"
-  //   ]
-  // },
   {
     provider: "FlexSalary (Vivifi)",
     approval: "Good",
@@ -27,7 +15,7 @@ const cardsData = [
     processingFee: "Starting from 2% of the approved loan amount",
     support: "24/7 customer support",
     ratings: 4.2,
-    logo: "/public/image/flexsalary-color-black.webp", 
+    logo: "/image/flexsalary-color-black.webp", 
     applyLink: "/LenderAPI/vivifi", 
     features: [
       "Credit Line Facility", "Instant Disbursal", "Flexible Repayment", "No Fixed EMI", "Minimal Documentation", "24/7 support"
@@ -47,7 +35,7 @@ const cardsData = [
       "Quick disbursement", "Paperless process", "Low processing fee", "Instant approval", "No hidden charges", "24/7 customer support"
     ]
   },
- {
+  {
     provider: "FatakPay Short Term Loans",
     approval: "Good",
     loanAmount: "Up to ₹2,00,000",
@@ -61,7 +49,6 @@ const cardsData = [
       "Quick disbursement", "Paperless process", "Low processing fee", "Instant approval", "No hidden charges", "24/7 customer support"
     ]
   },
-
   {
     provider: "Zype",
     approval: "Good",
@@ -76,30 +63,22 @@ const cardsData = [
       "Quick disbursement", "Paperless process", "Low processing fee", "Instant approval", "No hidden charges", "24/7 customer support"
     ]
   },
-
 ];
 
 function StarRating({ value }: { value: number }) {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
     stars.push(
-      <span
-        key={i}
-        className={i <= Math.round(value) ? "text-yellow-400" : "text-gray-300"}
-      >
+      <span key={i} className={i <= Math.round(value) ? "text-[#FF7819]" : "text-gray-300"}>
         ★
       </span>
     );
   }
-  return <div className="flex items-center">{stars}</div>;
+  return <div className="flex items-center gap-0.5">{stars}</div>;
 }
 
 export default function PersonalLoansPage() {
-  const [isLoginOpen, setLoginOpen] = useState(false);
   const [openFeatures, setOpenFeatures] = useState<number | null>(null);
-
-  const openLoginModal = () => setLoginOpen(true);
-  const closeLoginModal = () => setLoginOpen(false);
 
   const toggleFeatures = (idx: number) => {
     setOpenFeatures(openFeatures === idx ? null : idx);
@@ -108,140 +87,128 @@ export default function PersonalLoansPage() {
   return (
     <>
       <Head>
-        <title>Personal Loans | YourBank</title>
+        <title>Personal Loans | CoverMantra</title>
       </Head>
 
-      <main className="min-h-screen bg-gray-100 text-gray-900 font-sans">
-        {/* Hero Section */}
-        <div className="bg-gradient-to-r from-green-900 to-green-700 text-white py-14 md:py-20 px-4 text-center relative overflow-hidden">
-          <div className="max-w-6xl mx-auto mt-6 md:mt-18 relative z-10">
-            <h1 className="mt-5 md:mt-0 text-3xl sm:text-3xl md:text-5xl font-extrabold mb-4 text-green-400 tracking-wide drop-shadow-md">
-              Get Personal Loans at Low Interest Rates
-            </h1>
-
-            <p className="text-base sm:text-lg md:text-xl mb-4 text-gray-200 leading-relaxed">
-              Flexible repayment terms. Quick approval. Trusted by thousands.
-            </p>
-          </div>
-        </div>
-
-
-        {/* Lenders Section */}
-        <section className="py-18 md:py-18 px-4 w-full max-w-screen-xl mx-auto">
-          <div className="flex flex-col gap-6">
-            {cardsData.map((card, idx) => (
-              <div
-                key={idx}
-                className=" bg-gradient-to-r from-pink-200 to-blue-300 text-green-900 rounded-2xl shadow-xl p-6 flex flex-col transition-all duration-300 hover:shadow-2xl hover:bg-gradient-to-br hover:from-green-100 hover:to-green-800 transform hover:-translate-y-1 relative min-h-[180px]"
-              >
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center">
-                    <div className="w-20 h-20 rounded-full overflow-hidden mr-4 shadow-lg flex-shrink-0">
-                      <Image
-                        src={card.logo}
-                        alt={`${card.provider} logo`}
-                        width={100}
-                        height={100}
-                        className="object-cover w-full h-full"
-                      />
-                    </div>
-                    <div>
-                      <h3 className="text-xl sm:text-xl font-bold text-black">
-                        {card.provider}
-                      </h3>
-                      <p className="text-sm text-gray-800 mt-1 font-bold ">
-                        {card.approval} Approval
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex items-center bg-green-100 text-green-800 rounded-full px-2 sm:px-3 md:px-4 py-1 sm:py-1.5 text-xs sm:text-sm md:text-base font-semibold">
-                    <span className="mr-1 sm:mr-2">{card.ratings}</span>
-                    <StarRating value={card.ratings} />
-                  </div>
-                </div>
-
-                {/* Loan Details */}
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-4 text-sm text-gray-700 mt-4">
-                  <div>
-                    <p className="font-semibold text-gray-900 md:pl-8">Loan Amount</p>
-                    <p className="text-sm md:pl-8">{card.loanAmount}</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">Interest Rate</p>
-                    <p className="text-sm">{card.interestRate}</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">Processing Fee</p>
-                    <p className="text-sm">{card.processingFee}</p>
-                  </div>
-                  <div>
-                    <p className="font-semibold text-gray-900">Support</p>
-                    <p className="text-sm">{card.support}</p>
-                  </div>
-                </div>
-
-
-                {/* Key Features Dropdown */}
-                <div className="w-full pt-4 border-t border-black mt-4">
-                  <div
-                    className="flex items-center justify-between cursor-pointer sm:cursor-default"
-                    onClick={() => toggleFeatures(idx)}
-                  >
-                    <p className="text-md sm:text-base font-semibold text-gray-900">
-                      Key Features
-                    </p>
-                    <span className="sm:hidden">
-                      {openFeatures === idx ? "▲" : "▼"}
-                    </span>
-                  </div>
-
-                  {/* Mobile View: Collapsible */}
-                  {openFeatures === idx && (
-                    <ul className="flex flex-col gap-2 mt-2 sm:hidden">
-                      {card.features.map((feature, featureIdx) => (
-                        <li key={featureIdx} className="flex items-start">
-                          <span className="text-green-700 font-bold mr-2 text-xl leading-none">
-                            ✓
-                          </span>
-                          <p className="text-sm">{feature}</p>
-                        </li>
-                      ))}
-                    </ul>
-                  )}
-
-                  {/* Desktop View: Always visible */}
-                  <ul className="hidden sm:flex flex-wrap gap-2 mt-2">
-                    {card.features.map((feature, featureIdx) => (
-                      <li
-                        key={featureIdx}
-                        className="flex items-start w-full sm:w-auto"
-                      >
-                        <span className="text-green-700 font-bold mr-2 text-xl leading-none">
-                          ✓
-                        </span>
-                        <p className="text-sm sm:text-base">{feature}</p>
-                      </li>
-                    ))}
-                  </ul>
-
-                  <div className="text-right align-items-end justify-end">
-                    <Link href={card.applyLink}>
-                      <button
-                        onClick={openLoginModal}
-                        className="bg-green-500 text-white font-semibold py-2 px-6 rounded-full shadow-lg hover:bg-green-600 transition-all duration-300 transform hover:scale-105 mt-3"
-                      >
-                        Apply Now
-                      </button>
-                    </Link>
-                  </div>
-
-                </div>
-              </div>
-            ))}
+      <main className="min-h-screen bg-[#FFF4E5] text-gray-800 font-sans">
+        
+        {/* DARK HERO SECTION */}
+        <section className="relative pt-28 pb-20 md:pt-40 md:pb-32 px-4 bg-[#08101E] overflow-hidden">
+          {/* Saffron Glow Effect */}
+          <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-[#FF7819] opacity-20 blur-[150px] rounded-full"></div>
+          
+          <div className="max-w-6xl mx-auto relative z-10 text-center">
+            <motion.h1 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              className="text-4xl md:text-6xl font-extrabold mb-6 text-white"
+            >
+              Smart Loans. <span className="text-[#FF7819]">Faster Approval.</span>
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto"
+            >
+              Find the best personal loan offers with low interest rates and flexible terms tailored for you.
+            </motion.p>
           </div>
         </section>
 
+        {/* LIGHT BODY SECTION */}
+        <section className="py-16 px-4 w-full max-w-5xl mx-auto">
+          <div className="space-y-8 mt-[-80px] relative z-20"> {/* Negative margin to overlap hero slightly */}
+            {cardsData.map((card, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                className="bg-white rounded-3xl p-6 md:p-8 shadow-[0_10px_40px_rgba(0,0,0,0.08)] border border-white hover:border-[#FF7819]/30 transition-all hover:shadow-[0_20px_50px_rgba(255,120,25,0.1)] group"
+              >
+                {/* Provider Info */}
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-[#FFF4E5] p-2 flex-shrink-0 shadow-inner">
+                      <Image
+                        src={card.logo}
+                        alt={card.provider}
+                        width={80}
+                        height={80}
+                        className="object-contain w-full h-full"
+                      />
+                    </div>
+                    <div>
+                      <h3 className="text-xl md:text-2xl font-bold text-[#08101E]">{card.provider}</h3>
+                      <div className="flex items-center gap-3 mt-1">
+                        <span className="text-[10px] font-bold uppercase bg-green-100 text-green-700 px-2 py-0.5 rounded">
+                          {card.approval} Approval
+                        </span>
+                        <div className="flex items-center gap-1">
+                          <span className="text-xs font-bold text-gray-600">{card.ratings}</span>
+                          <StarRating value={card.ratings} />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <Link href={card.applyLink} className="w-full md:w-auto">
+                    <button className="w-full md:w-auto bg-[#FF7819] hover:bg-[#e66a15] text-white font-bold py-3 px-10 rounded-2xl shadow-lg shadow-[#FF7819]/30 transition-all active:scale-95">
+                      Apply Now
+                    </button>
+                  </Link>
+                </div>
+
+                {/* Details Grid - Responsive 2x2 or 4x1 */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 p-5 bg-[#F9FAFB] rounded-2xl border border-gray-100">
+                  <DetailBox label="Loan Amount" value={card.loanAmount} />
+                  <DetailBox label="Interest Rate" value={card.interestRate} />
+                  <DetailBox label="Processing Fee" value={card.processingFee} />
+                  <DetailBox label="Support" value={card.support} />
+                </div>
+
+                {/* Collapsible Features */}
+                <div className="mt-6">
+                  <button 
+                    onClick={() => toggleFeatures(idx)}
+                    className="text-sm font-bold text-[#3C8291] hover:text-[#FF7819] transition-colors flex items-center gap-2"
+                  >
+                    {openFeatures === idx ? "Hide Details ↑" : "Key Features ↓"}
+                  </button>
+
+                  <AnimatePresence>
+                    {openFeatures === idx && (
+                      <motion.div
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        className="overflow-hidden"
+                      >
+                        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-100">
+                          {card.features.map((f, i) => (
+                            <li key={i} className="flex items-center gap-2 text-sm text-gray-600">
+                              <span className="text-[#FF7819] text-lg leading-none">✓</span> {f}
+                            </li>
+                          ))}
+                        </ul>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              </motion.div>
+            ))}
+          </div>
+        </section>
       </main>
     </>
+  );
+}
+
+function DetailBox({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="space-y-1">
+      <p className="text-[10px] uppercase font-black text-gray-400 tracking-wider">{label}</p>
+      <p className="text-sm font-bold text-[#08101E]">{value}</p>
+    </div>
   );
 }

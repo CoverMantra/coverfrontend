@@ -11,7 +11,15 @@ import {
   TrendingUp,
   ArrowRight,
   ShieldAlert,
+  LucideIcon, // Icon type import kiya
 } from "lucide-react";
+
+// Icon definition ko update kiya taaki props pass ho sakein
+interface Feature {
+  icon: LucideIcon;
+  title: string;
+  desc: string;
+}
 
 export default function RBICompliancePage() {
   const banks = [
@@ -23,19 +31,19 @@ export default function RBICompliancePage() {
     { name: "Bank of Baroda", logo: "https://1000logos.net/wp-content/uploads/2021/06/Bank-of-Baroda-logo.jpg", h: "h-10 md:h-12" },
   ];
 
-  const features = [
-    { icon: <Landmark />, title: "Regulation", desc: "RBI sets policies to ensure smooth banking operations and fair practices." },
-    { icon: <ShieldCheck />, title: "Supervision", desc: "RBI supervises banks and NBFCs to ensure compliance with laws." },
-    { icon: <FileText />, title: "Guidelines", desc: "It issues IT & cybersecurity guidelines to protect customer data." },
-    { icon: <Users />, title: "Customer Protection", desc: "Safeguards customer rights and ensures secure transactions." },
-    { icon: <Banknote />, title: "Monetary Stability", desc: "Ensures financial stability and secure monetary transactions." },
-    { icon: <TrendingUp />, title: "Growth", desc: "Encourages digital banking & financial inclusion in India." },
+  const features: Feature[] = [
+    { icon: Landmark, title: "Regulation", desc: "RBI sets policies to ensure smooth banking operations and fair practices." },
+    { icon: ShieldCheck, title: "Supervision", desc: "RBI supervises banks and NBFCs to ensure compliance with laws." },
+    { icon: FileText, title: "Guidelines", desc: "It issues IT & cybersecurity guidelines to protect customer data." },
+    { icon: Users, title: "Customer Protection", desc: "Safeguards customer rights and ensures secure transactions." },
+    { icon: Banknote, title: "Monetary Stability", desc: "Ensures financial stability and secure monetary transactions." },
+    { icon: TrendingUp, title: "Growth", desc: "Encourages digital banking & financial inclusion in India." },
   ];
 
   return (
     <div className="min-h-screen bg-[#FFF4E5] text-[#08101E] font-sans selection:bg-[#FF7819]/30">
       
-      {/* Hero Section - Dark Premium Style */}
+      {/* Hero Section */}
       <section className="relative pt-32 pb-24 px-6 bg-[#08101E] overflow-hidden text-center">
         <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#FF7819]/10 rounded-full blur-[120px] pointer-events-none"></div>
         <div className="absolute -bottom-20 -left-20 w-[400px] h-[400px] bg-[#FF7819]/5 rounded-full blur-[100px] pointer-events-none"></div>
@@ -70,30 +78,34 @@ export default function RBICompliancePage() {
         </div>
       </section>
 
-      {/* Core Functions - Grid Section */}
+      {/* Core Functions - Fixed Error Part */}
       <section className="max-w-7xl mx-auto py-24 px-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {features.map((item, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1 }}
-              whileHover={{ y: -10 }}
-              className="p-8 bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-[#FF7819]/5 group hover:border-[#FF7819]/20 transition-all duration-300"
-            >
-              <div className="w-16 h-16 rounded-2xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center mb-6 group-hover:bg-[#FF7819] group-hover:text-white transition-all duration-500 shadow-inner">
-                {React.cloneElement(item.icon as React.ReactElement, { size: 32 })}
-              </div>
-              <h3 className="text-2xl font-black mb-4 tracking-tight">{item.title}</h3>
-              <p className="text-gray-500 leading-relaxed font-medium">{item.desc}</p>
-            </motion.div>
-          ))}
+          {features.map((item, i) => {
+            const IconComponent = item.icon; // Assigned to a local variable
+            return (
+              <motion.div
+                key={i}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: i * 0.1 }}
+                whileHover={{ y: -10 }}
+                className="p-8 bg-white rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-[#FF7819]/5 group hover:border-[#FF7819]/20 transition-all duration-300"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-[#FFF4E5] text-[#FF7819] flex items-center justify-center mb-6 group-hover:bg-[#FF7819] group-hover:text-white transition-all duration-500 shadow-inner">
+                  {/* Fixed size passing */}
+                  <IconComponent size={32} />
+                </div>
+                <h3 className="text-2xl font-black mb-4 tracking-tight">{item.title}</h3>
+                <p className="text-gray-500 leading-relaxed font-medium">{item.desc}</p>
+              </motion.div>
+            );
+          })}
         </div>
       </section>
 
-      {/* Banks Showcase Section - FIXED 3-3 GRID */}
+      {/* Banks Showcase Section */}
       <section className="bg-white py-24 border-y border-[#FF7819]/10">
         <div className="max-w-6xl mx-auto px-6">
           <div className="text-center mb-20">
@@ -116,7 +128,8 @@ export default function RBICompliancePage() {
                   <img 
                     src={bank.logo} 
                     alt={bank.name} 
-className={`${bank.h} w-auto object-contain transition-all duration-500 group-hover:scale-110 group-hover:opacity-100`}                  />
+                    className={`${bank.h} w-auto object-contain transition-all duration-500 group-hover:scale-110 group-hover:opacity-100`}
+                  />
                 </div>
                 <span className="text-xs font-bold text-[#08101E]/40 group-hover:text-[#FF7819] uppercase tracking-widest transition-colors">
                   Verified Partner
@@ -127,7 +140,7 @@ className={`${bank.h} w-auto object-contain transition-all duration-500 group-ho
         </div>
       </section>
 
-      {/* Compliance Box - Floating Glass Style */}
+      {/* Compliance Box */}
       <section className="max-w-6xl mx-auto py-24 px-6">
         <motion.div 
           initial={{ opacity: 0, y: 50 }}
