@@ -15,6 +15,17 @@ import {
 } from "react-icons/fa";
 
 const lenders = [
+   {
+    id: 1,
+    name: "Money View",
+    logo: "https://moneyview.in/images/mv-green-logo-v3Compressed.svg",
+    approval: "95%",
+    amount: "Upto 10L",
+    rate: "8% / mo",
+    tenure: "6-18 months",
+    features: ["Quick Approval", "Low Interest", "No Hidden Fees"],
+    url: "https://moneyview.in/personal-loan?utm_source=covermantra",
+  },
   {
     id: 2,
     name: "Zype",
@@ -24,29 +35,7 @@ const lenders = [
     rate: "1.5% / mo",
     tenure: "6-18 months",
     features: ["Quick Approval", "Low Interest", "No Hidden Fees"],
-    url: "https://zype.onelink.me/vx8a?...",
-  },
-  {
-    id: 3,
-    name: "FatakPay Personal Loans",
-    logo: "https://web.fatakpay.com/assets/images/logo/Logo.svg",
-    approval: "90%",
-    amount: "Upto 5L",
-    rate: "12% - 35.95% p.a",
-    tenure: "3-24 months",
-    features: ["Instant Cash", "Digital KYC", "Flexible EMI"],
-    url: "https://web.fatakpay.com/...",
-  },
-  {
-    id: 4,
-    name: "FatakPay Short Term",
-    logo: "https://web.fatakpay.com/assets/images/logo/Logo.svg",
-    approval: "90%",
-    amount: "Upto 5000",
-    rate: "12% - 35.95% p.a",
-    tenure: "3-24 months",
-    features: ["Zero Paperwork", "Small Credit", "Instant Disbursal"],
-    url: "https://fatakpay.onelink.me/...",
+    url: "https://zype.onelink.me/vx8a?af_xp=custom&pid=CustomerSource&af_dp=com.zype.mobile%3A%2F%2F&deep_link_value=myZype&af_click_lookback=30d&c=Spiraea",
   },
   {
     id: 5,
@@ -57,8 +46,31 @@ const lenders = [
     rate: "1.5% / mo",
     tenure: "Flexible",
     features: ["Credit Line", "Instant Transfer", "No Fixed EMI"],
-    url: "https://online.flexsalary.com/...",
+    url: "https://online.flexsalary.com/CustomerLogin/Index?CampaignID=9192300#x",
+  },
+  {
+    id: 3,
+    name: "FatakPay Personal Loans",
+    logo: "https://web.fatakpay.com/assets/images/logo/Logo.svg",
+    approval: "90%",
+    amount: "Upto 5L",
+    rate: "12% - 35.95% p.a",
+    tenure: "3-24 months",
+    features: ["Instant Cash", "Digital KYC", "Flexible EMI"],
+    url: "https://web.fatakpay.com/authentication/login?utm_source=651_TT83W?utm_medium=",
+  },
+  {
+    id: 4,
+    name: "FatakPay Short Term",
+    logo: "https://web.fatakpay.com/assets/images/logo/Logo.svg",
+    approval: "90%",
+    amount: "Upto 5000",
+    rate: "12% - 35.95% p.a",
+    tenure: "3-24 months",
+    features: ["Zero Paperwork", "Small Credit", "Instant Disbursal"],
+    url: "https://web.fatakpay.com/authentication/login?utm_source=651_TT83W?utm_medium=",
   }
+  
 ];
 
 const emptyForm = {

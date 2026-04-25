@@ -157,11 +157,26 @@ export default function Bot() {
           setFormData(fetchedData);
           hasFormData = true;
         }
+      } else {
+        setFormData({
+          name: "", phone: "", email: "", pan: "", pincode: "",
+          loanAmount: "", income: "", dob: "", city: "",
+          state: "", gender: "", employment: "",
+        });
       }
       handleInitialPrompt(userIsFullyLoggedIn, hasFormData);
     };
     checkUserStatus();
   }, [handleInitialPrompt, isInitialPromptDisplayed]);
+
+  // Listen to global login status changes to update the bot dynamically
+  useEffect(() => {
+    const handleLoginChange = () => {
+      setIsInitialPromptDisplayed(false);
+    };
+    window.addEventListener("loginStatusChanged", handleLoginChange);
+    return () => window.removeEventListener("loginStatusChanged", handleLoginChange);
+  }, []);
 
   const handleUserMessage = (message: string) => {
     const trimmed = message.trim();

@@ -40,7 +40,8 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
   }, [isOpen]);
 
   const login = ({ phone, token }: { phone: string; token: string }) => {
-    router.push("/");
+    // Just update auth state, don't force redirect
+    setAuth(phone, token);
   };
 
   const handleSendOtp = async () => {

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Cookies from "js-cookie";
 import { useAuthStore } from "../../store/useAuthStore";
 import LoginModal from "./LoginModal";
 import GlobalModal from "./globalmodel";
@@ -11,7 +10,7 @@ import { Autoplay, EffectFade, Pagination } from "swiper/modules";
 import { motion } from "framer-motion";
 import Image from "next/image";
 
-// Swiper Essential Styles
+// Swiper CSS (Next.js 13+ standard)
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/pagination";
@@ -30,46 +29,40 @@ export default function HeroSection() {
   };
 
   const images = [
-    "/image/man1img.png",
-    "/image/Woman.png",
-    "/image/manimage.png",
+    "/image/Hero_section1.png",
+    "/image/Hero_section2.png",
+    "/image/Hero_section3.png",
   ];
 
   return (
-    <section className="relative bg-[#08101E] overflow-hidden min-h-screen flex flex-col pt-24 sm:pt-28 md:pt-32 text-white">
+    <section className="relative bg-[#08101E] min-h-screen flex flex-col pt-24 sm:pt-28 md:pt-32 text-white overflow-hidden">
       
-     <div className="absolute top-24 left-1/2 -translate-x-1/2 z-10 opacity-100 pointer-events-none hidden lg:block">
-  <div className="flex items-center gap-4 text-white font-serif tracking-[0.4em] uppercase text-xs font-bold">
-    {/* Left Line - Pure White Gradient */}
-    <span className="h-[1px] w-16 bg-gradient-to-r from-transparent via-white/50 to-white" />
-    
-    <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">
-      सत्यम शिवम सुंदरम
-    </span>
-    
-    {/* Right Line - Pure White Gradient */}
-    <span className="h-[1px] w-16 bg-gradient-to-l from-transparent via-white/50 to-white" />
-  </div>
-</div>
+      {/* 🔱 Mantra Strip */}
+      <div className="absolute top-24 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
+        <div className="flex items-center gap-4 text-white font-serif tracking-[0.4em] uppercase text-xs font-bold">
+          <span className="h-[1px] w-16 bg-gradient-to-r from-transparent via-white/50 to-white" />
+          <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">सत्यम शिवम सुंदरम</span>
+          <span className="h-[1px] w-16 bg-gradient-to-l from-transparent via-white/50 to-white" />
+        </div>
+      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 pb-24 md:pb-48 flex flex-col md:flex-row items-center gap-10 md:gap-12 relative z-20 w-full">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 pb-24 md:pb-48 flex flex-col md:flex-row items-center gap-10 md:gap-12 relative z-20 w-full flex-1">
         
-        {/* Right Side Image Slider - Mobile Order 1 */}
-        <div className="w-full md:w-1/2 flex justify-center relative order-1 md:order-2 h-[320px] sm:h-[450px] md:h-[550px] lg:h-[650px]">
-          {/* Main Glow Effect */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-[#FF690B]/20 rounded-full blur-[80px] md:blur-[120px] -z-10" />
+        {/* RIGHT SIDE IMAGE SLIDER - Fixed Stack Issue */}
+        <div className="w-full md:w-1/2 flex justify-center relative order-1 md:order-2 h-[350px] sm:h-[450px] md:h-[600px]">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-[#FF690B]/10 rounded-full blur-[100px] -z-10" />
           
           <Swiper
             modules={[Autoplay, EffectFade, Pagination]}
             effect="fade"
-            fadeEffect={{ crossFade: true }}
+            fadeEffect={{ crossFade: true }} // Isse images ek ke peeche ek nahi rahengi
             autoplay={{ delay: 3500, disableOnInteraction: false }}
             pagination={{ clickable: true, dynamicBullets: true }}
             loop={true}
-            className="h-full w-full custom-swiper"
+            className="h-full w-full"
           >
             {images.map((src, i) => (
-              <SwiperSlide key={i} className="flex items-center justify-center">
+              <SwiperSlide key={i} className="flex items-center justify-center bg-transparent">
                 <motion.div 
                   animate={{ y: [0, -15, 0] }}
                   transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
@@ -80,7 +73,7 @@ export default function HeroSection() {
                     alt="CoverMantra Hero"
                     fill
                     sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-contain drop-shadow-[0_20px_80px_rgba(255,105,11,0.2)]"
+                    className="object-contain drop-shadow-[0_20px_60px_rgba(255,105,11,0.2)]"
                     priority={i === 0}
                   />
                 </motion.div>
@@ -88,94 +81,79 @@ export default function HeroSection() {
             ))}
           </Swiper>
 
-          {/* Floating RBI Badge - Dark Version */}
-          <div className="absolute top-4 right-2 md:top-10 md:-right-5 bg-[#1A2332]/80 p-2.5 md:p-4 rounded-xl md:rounded-2xl shadow-2xl border border-white/10 z-40 flex items-center gap-2 md:gap-3 backdrop-blur-md">
-            <div className="w-6 h-6 md:w-8 md:h-8 bg-green-500/20 rounded-lg md:rounded-xl flex items-center justify-center text-green-400 font-bold text-xs md:text-base">✓</div>
+          {/* Floating RBI Badge */}
+          <div className="absolute top-4 right-0 bg-[#1A2332]/80 p-3 rounded-2xl border border-white/10 z-40 flex items-center gap-3 backdrop-blur-md shadow-2xl">
+            <div className="w-8 h-8 bg-green-500/20 rounded-xl flex items-center justify-center text-green-400 font-bold">✓</div>
             <div>
-              <p className="text-[8px] md:text-[10px] font-black text-white/40 uppercase leading-none">Status</p>
-              <p className="text-[10px] md:text-sm font-black text-white">RBI Registered</p>
+              <p className="text-[8px] font-black text-white/40 uppercase leading-none">Status</p>
+              <p className="text-xs font-black text-white">RBI Registered</p>
             </div>
           </div>
         </div>
 
-        {/* Left Content Section - Mobile Order 2 */}
+        {/* LEFT CONTENT SECTION */}
         <div className="w-full md:w-1/2 text-center md:text-left z-30 order-2 md:order-1">
-          <motion.div 
-            initial={{ opacity: 0, y: -10 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-3 py-1 md:px-4 md:py-1.5 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-4 md:mb-6"
-          >
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-6">
             <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#FF690B] opacity-75"></span>
+              <span className="animate-ping absolute h-full w-full rounded-full bg-[#FF690B] opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF690B]"></span>
             </span>
-            <span className="text-[9px] md:text-xs font-bold uppercase tracking-widest text-white/60 font-sans">India's Trusted Finance Partner</span>
-          </motion.div>
+            <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-white/60">India's Trusted Finance Partner</span>
+          </div>
 
-          <motion.h1 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="text-4xl sm:text-6xl lg:text-7xl xl:text-8xl font-black leading-[1.1] tracking-tight"
-          >
+          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight">
             Finance ka <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] via-[#FF8C00] to-[#FFD700] drop-shadow-[0_0_30px_rgba(255,105,11,0.3)]">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFD700]">
               Smart Mantra
             </span>
-          </motion.h1>
+          </h1>
 
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.3 }}
-            className="mt-4 md:mt-6 text-sm sm:text-base md:text-xl text-white/70 max-w-lg mx-auto md:mx-0 font-medium leading-relaxed"
-          >
+          <p className="mt-6 text-sm md:text-lg text-white/70 max-w-lg mx-auto md:mx-0 font-medium">
             Experience seamless personal loans, instant insurance covers, and 
             tailored financial growth — all in one secure platform.
-          </motion.p>
+          </p>
 
-          {/* 3D Stats Grid - Glassmorphism Style */}
-          <div className="mt-8 md:mt-10 grid grid-cols-3 gap-3 md:gap-4 max-w-md mx-auto md:mx-0">
-            {[
-              { val: "50M+", lbl: "Users" },
-              { val: "4.8★", lbl: "Rating" },
-              { val: "2Cr+", lbl: "Disbursed" }
-            ].map((stat, i) => (
-              <div key={i} className="bg-white/5 backdrop-blur-xl rounded-xl md:rounded-2xl p-2.5 md:p-4 border border-white/10 shadow-2xl group hover:scale-105 hover:bg-white/10 transition-all duration-300">
-                <p className="text-lg md:text-2xl font-black text-[#FF690B]">{stat.val}</p>
-                <p className="text-[8px] md:text-[10px] font-bold text-white/40 uppercase tracking-tighter mt-0.5 md:mt-1">{stat.lbl}</p>
+          {/* 3D Stats Grid */}
+          <div className="mt-10 grid grid-cols-3 gap-4 max-w-md mx-auto md:mx-0">
+            {[{ val: "50M+", lbl: "Users" }, { val: "4.8★", lbl: "Rating" }, { val: "2Cr+", lbl: "Disbursed" }].map((stat, i) => (
+              <div key={i} className="bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10 shadow-2xl">
+                <p className="text-xl font-black text-[#FF690B]">{stat.val}</p>
+                <p className="text-[8px] font-bold text-white/40 uppercase tracking-tighter mt-1">{stat.lbl}</p>
               </div>
             ))}
           </div>
 
-          <motion.div className="mt-8 md:mt-12">
+          {/* APPLY NOW BUTTON - CHOTTA TEXT VERSION */}
+          <div className="mt-10">
             <button
               onClick={handleApplyNow}
-              className="w-full sm:w-auto group relative inline-flex items-center justify-center gap-3 md:gap-4 px-8 py-3.5 md:px-10 md:py-4 bg-white text-[#08101E] font-black text-base md:text-lg rounded-xl md:rounded-2xl shadow-[0_20px_50px_rgba(255,255,255,0.1)] hover:scale-105 transition-all"
+              className="w-full sm:w-auto group relative inline-flex items-center justify-center gap-4 px-8 py-3.5 bg-white text-[#08101E] font-bold text-base rounded-2xl shadow-xl hover:scale-105 transition-all"
             >
-              <span className="tracking-tight">APPLY NOW</span>
-              <div className="w-6 h-6 md:w-8 md:h-8 bg-[#FF690B] rounded-full flex items-center justify-center group-hover:translate-x-2 transition-transform shadow-lg">
-                <span className="text-white text-sm md:text-base">→</span>
+              <span className="tracking-tight uppercase">Apply Now</span>
+              <div className="w-7 h-7 bg-[#FF690B] rounded-full flex items-center justify-center group-hover:translate-x-1.5 transition-transform shadow-lg">
+                <span className="text-white text-sm">→</span>
               </div>
             </button>
-          </motion.div>
+          </div>
         </div>
       </div>
 
-      {/* Modern Wave Divider - Blends into Next White Section */}
+      {/* Wave Divider */}
       <div className="absolute bottom-0 left-0 w-full leading-[0] z-30">
-        <svg viewBox="0 0 1440 120" fill="none" xmlns="http://www.w3.org/2000/svg" className="w-full h-auto">
+        <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
           <path d="M0 120L1440 120L1440 0C1100 60 700 60 0 0L0 120Z" fill="white" />
         </svg>
       </div>
 
-      <style jsx global>{`
-        .custom-swiper .swiper-pagination-bullet { background: white; opacity: 0.2; }
-        .custom-swiper .swiper-pagination-bullet-active { background: #FF690B !important; opacity: 1; width: 20px; md:width: 24px; border-radius: 10px; }
-        .custom-swiper { padding-bottom: 30px md:padding-bottom: 40px !important; }
-      `}</style>
-
       <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
       <GlobalModal />
+
+      <style jsx global>{`
+        .swiper-fade .swiper-slide { pointer-events: none; transition-property: opacity; }
+        .swiper-fade .swiper-slide-active { pointer-events: auto; }
+        .swiper-pagination-bullet { background: white !important; opacity: 0.3; }
+        .swiper-pagination-bullet-active { background: #FF690B !important; opacity: 1; width: 20px !important; border-radius: 10px; }
+      `}</style>
     </section>
   );
 }

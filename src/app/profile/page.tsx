@@ -15,7 +15,8 @@ import {
   Briefcase, 
   IndianRupee, 
   ShieldCheck, 
-  LogOut 
+  LogOut,
+  X
 } from "lucide-react";
 
 export default function ProfilePage() {
@@ -119,6 +120,14 @@ export default function ProfilePage() {
         >
           Welcome, {userData.name?.split(" ")[0] || "User"}
         </motion.h1>
+
+        {/* Close Button */}
+        <button 
+          onClick={() => router.push("/")}
+          className="absolute top-8 right-8 z-[100] p-3 bg-white/10 hover:bg-white/20 rounded-full text-white backdrop-blur-md transition-all active:scale-90 border border-white/10 shadow-lg cursor-pointer"
+        >
+          <X size={24} />
+        </button>
       </div>
 
       {/* Main Content Area */}

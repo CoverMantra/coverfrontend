@@ -97,6 +97,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
       Cookies.set("loanFormSubmitted", "true", { expires: 7 });
       onFormSubmit?.();
       closeModal();
+      window.location.href = "/profile";
     } catch (err: any) {
       alert("Failed to register. Please check your details.");
     }
