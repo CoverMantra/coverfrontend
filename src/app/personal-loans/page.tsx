@@ -94,6 +94,14 @@ export default function PersonalLoansPage() {
         
         {/* DARK HERO SECTION */}
         <section className="relative pt-28 pb-20 md:pt-40 md:pb-32 px-4 bg-[#08101E] overflow-hidden">
+          {/* 🔱 Mantra Strip */}
+          <div className="absolute top-28 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
+            <div className="flex items-center gap-4 text-white font-serif tracking-[0.4em] uppercase text-xs font-bold">
+              <span className="h-[1px] w-16 bg-gradient-to-r from-transparent via-white/50 to-white" />
+              <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">सत्यम शिवम सुंदरम</span>
+              <span className="h-[1px] w-16 bg-gradient-to-l from-transparent via-white/50 to-white" />
+            </div>
+          </div>
           {/* Saffron Glow Effect */}
           <div className="absolute top-[-20%] right-[-10%] w-[500px] h-[500px] bg-[#FF7819] opacity-20 blur-[150px] rounded-full"></div>
           

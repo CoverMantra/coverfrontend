@@ -84,6 +84,18 @@ export default function Page() {
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const router = useRouter();
 
+  const filteredLenders = React.useMemo(() => {
+    if (!form.income || isNaN(Number(form.income))) return lenders;
+    const income = Number(form.income);
+    return lenders.filter(l => {
+       if (l.name.includes("Money View")) return income >= 25000;
+       if (l.name.includes("Zype")) return income >= 15000;
+       if (l.name.includes("FlexSalary")) return income >= 12000;
+       if (l.name.includes("FatakPay Personal")) return income >= 20000;
+       return true; 
+    });
+  }, [form.income]);
+
   useEffect(() => {
     const savedPhone = Cookies.get("co_phone");
     if (savedPhone) setForm(prev => ({ ...prev, phone: savedPhone }));
@@ -111,6 +123,14 @@ export default function Page() {
 
   return (
     <main className="min-h-screen bg-[#FFF4E5] pt-28 pb-20 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#FF7819] selection:text-white relative overflow-hidden">
+      {/* 🔱 Mantra Strip */}
+      <div className="absolute top-28 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
+        <div className="flex items-center gap-4 text-[#08101E]/80 font-serif tracking-[0.4em] uppercase text-xs font-bold">
+          <span className="h-[1px] w-16 bg-gradient-to-r from-transparent via-[#08101E]/40 to-[#08101E]/80" />
+          <span className="drop-shadow-[0_0_8px_rgba(8,16,30,0.1)]">सत्यम शिवम सुंदरम</span>
+          <span className="h-[1px] w-16 bg-gradient-to-l from-transparent via-[#08101E]/40 to-[#08101E]/80" />
+        </div>
+      </div>
       
       {/* 🔮 Background 3D Glows */}
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#FF7819]/5 rounded-full blur-[120px] -z-10 animate-pulse"></div>
@@ -139,13 +159,32 @@ export default function Page() {
           
           {/* 🚀 LENDERS LIST SECTION */}
           <div className="lg:col-span-7 space-y-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {lenders.map((lender, index) => (
-                <motion.div 
-                  key={lender.id}
-                  initial={{ opacity: 0, x: -30 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: index * 0.1 }}
+            <div className="flex items-center justify-between bg-white/40 p-4 rounded-2xl border border-white backdrop-blur-sm mb-4 shadow-sm">
+               <h3 className="text-sm font-black text-[#08101E] uppercase tracking-widest">
+                 {form.income && !isNaN(Number(form.income)) ? `Eligible Lenders (${filteredLenders.length})` : "All Top Lenders"}
+               </h3>
+               {form.income && !isNaN(Number(form.income)) && (
+                 <span className="text-[10px] font-bold text-green-600 bg-green-100 px-3 py-1 rounded-full uppercase tracking-wider">
+                   Based on ₹{form.income}/mo
+                 </span>
+               )}
+            </div>
+
+            {filteredLenders.length === 0 ? (
+               <div className="bg-white p-10 rounded-[3rem] text-center border border-white shadow-sm">
+                 <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">No lenders match your current profile.</p>
+               </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <AnimatePresence>
+                {filteredLenders.map((lender, index) => (
+                  <motion.div 
+                    key={lender.id}
+                    layout
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.3, delay: index * 0.05 }}
                   whileHover={{ rotateY: -3, rotateX: 3, scale: 1.02 }}
                   style={{ transformStyle: "preserve-3d" }}
                   className="group bg-white p-8 rounded-[3rem] border border-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(255,120,25,0.15)] transition-all duration-500 relative overflow-hidden"
@@ -194,8 +233,10 @@ export default function Page() {
                     </motion.button>
                   </a>
                 </motion.div>
-              ))}
-            </div>
+                ))}
+                </AnimatePresence>
+              </div>
+            )}
           </div>
 
           {/* 📝 ELIGIBILITY FORM SECTION (Glass Sticky) */}

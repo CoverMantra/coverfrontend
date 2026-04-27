@@ -161,7 +161,7 @@ export default function InsuranceBlogPage() {
             </p>
             <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
               <a
-                href="/contact-us" 
+                href="/contact" 
                 className="inline-flex items-center gap-4 px-12 py-6 text-xl md:text-2xl font-black text-white bg-red-600 rounded-full shadow-[0_20px_50px_rgba(220,38,38,0.3)] hover:bg-[#08101E] transition-all duration-500 group"
               > 
                 Fortify Your Future Today <ArrowRight className="group-hover:translate-x-2 transition-transform" />

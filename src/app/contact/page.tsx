@@ -65,6 +65,14 @@ function Contact() {
 
   return (
     <section id="contact" className="min-h-screen bg-[#FFF4E5] py-12 md:py-24 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#FF7819] selection:text-white overflow-hidden relative">
+      {/* 🔱 Mantra Strip */}
+      <div className="absolute top-24 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
+        <div className="flex items-center gap-4 text-[#08101E]/80 font-serif tracking-[0.4em] uppercase text-xs font-bold">
+          <span className="h-[1px] w-16 bg-gradient-to-r from-transparent via-[#08101E]/40 to-[#08101E]/80" />
+          <span className="drop-shadow-[0_0_8px_rgba(8,16,30,0.1)]">सत्यम शिवम सुंदरम</span>
+          <span className="h-[1px] w-16 bg-gradient-to-l from-transparent via-[#08101E]/40 to-[#08101E]/80" />
+        </div>
+      </div>
       <Toaster />
       
       {/* 🔮 Background 3D Elements */}

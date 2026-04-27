@@ -50,6 +50,14 @@ export default function AboutPage() {
       
       {/* HERO SECTION */}
       <section className="relative text-center pt-24 pb-16 md:pt-32 md:pb-24 px-4 sm:px-6 bg-[#08101E] overflow-hidden">
+        {/* 🔱 Mantra Strip */}
+        <div className="absolute top-24 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
+          <div className="flex items-center gap-4 text-white font-serif tracking-[0.4em] uppercase text-xs font-bold">
+            <span className="h-[1px] w-16 bg-gradient-to-r from-transparent via-white/50 to-white" />
+            <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">सत्यम शिवम सुंदरम</span>
+            <span className="h-[1px] w-16 bg-gradient-to-l from-transparent via-white/50 to-white" />
+          </div>
+        </div>
         <div className="absolute top-0 right-0 w-[300px] md:w-[600px] h-[300px] md:h-[600px] bg-[#FF7819]/10 rounded-full blur-[100px] md:blur-[150px] pointer-events-none"></div>
         <div className="absolute -bottom-20 -left-20 w-[200px] md:w-[400px] h-[200px] md:h-[400px] bg-[#FF7819]/5 rounded-full blur-[70px] md:blur-[100px] pointer-events-none"></div>
 

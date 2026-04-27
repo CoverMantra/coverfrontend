@@ -1,10 +1,10 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../store/useAuthStore";
-import { fetchUserData } from "../APIs/utils";
+import { fetchUserData, updateUserProfile } from "../APIs/utils";
 import Cookies from "js-cookie";
 import { 
   User, 
@@ -16,7 +16,11 @@ import {
   IndianRupee, 
   ShieldCheck, 
   LogOut,
-  X
+  X,
+  Edit,
+  Save,
+  XCircle,
+  CheckCircle
 } from "lucide-react";
 
 export default function ProfilePage() {
@@ -25,6 +29,10 @@ export default function ProfilePage() {
   
   const [userData, setUserData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editData, setEditData] = useState<any>({});
+  const [isSaving, setIsSaving] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
 
   useEffect(() => {
     // If not authenticated, check cookies before redirecting
@@ -43,6 +51,7 @@ export default function ProfilePage() {
         const data = await fetchUserData(currentPhone!);
         if (data) {
           setUserData(data);
+          setEditData(data);
         } else {
           // Fallback if user data fails to load
           setUserData(null);
@@ -99,6 +108,26 @@ export default function ProfilePage() {
     show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 120 } }
   };
 
+  const handleEditChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setEditData({ ...editData, [e.target.name]: e.target.value });
+  };
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    setSuccessMessage("");
+    try {
+      await updateUserProfile(editData);
+      setUserData(editData);
+      setIsEditing(false);
+      setSuccessMessage("Profile saved successfully!");
+      setTimeout(() => setSuccessMessage(""), 3000);
+    } catch (err) {
+      console.error("Failed to save profile", err);
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-[#FFF4E5] font-sans pb-20 overflow-x-hidden">
       {/* Decorative Header */}
@@ -128,6 +157,19 @@ export default function ProfilePage() {
         >
           <X size={24} />
         </button>
+
+        <AnimatePresence>
+          {successMessage && (
+            <motion.div 
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              className="absolute top-24 z-50 flex items-center gap-2 bg-green-500 text-white px-6 py-3 rounded-full font-bold shadow-2xl shadow-green-500/50"
+            >
+              <CheckCircle size={20} /> {successMessage}
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       {/* Main Content Area */}
@@ -160,6 +202,30 @@ export default function ProfilePage() {
                 >
                   <Briefcase size={18} /> Apply for New Loan
                 </button>
+                {isEditing ? (
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={handleSave}
+                      disabled={isSaving}
+                      className="flex-1 py-4 bg-green-500 text-white font-bold rounded-2xl shadow-lg hover:bg-green-600 transition-all flex items-center justify-center gap-2"
+                    >
+                      {isSaving ? <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div> : <Save size={18} />} {isSaving ? "Saving..." : "Save"}
+                    </button>
+                    <button 
+                      onClick={() => { setIsEditing(false); setEditData(userData); }}
+                      className="flex-1 py-4 bg-gray-100 text-gray-500 font-bold rounded-2xl border border-gray-200 hover:bg-gray-200 transition-all flex items-center justify-center gap-2"
+                    >
+                      <XCircle size={18} /> Cancel
+                    </button>
+                  </div>
+                ) : (
+                  <button 
+                    onClick={() => setIsEditing(true)}
+                    className="w-full py-4 bg-[#FFF4E5] text-[#FF7819] font-bold rounded-2xl border border-[#FF7819]/20 hover:bg-[#FF7819] hover:text-white transition-all flex items-center justify-center gap-2"
+                  >
+                    <Edit size={18} /> Edit Profile
+                  </button>
+                )}
                 <button 
                   onClick={() => { 
                     logout(); 
@@ -185,22 +251,22 @@ export default function ProfilePage() {
             <h3 className="text-sm font-black text-[#FF7819] uppercase tracking-widest mb-8 border-b border-gray-100 pb-4">Personal Details</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <ProfileField icon={<User />} label="Full Name" value={userData.name} />
-              <ProfileField icon={<Phone />} label="Phone Number" value={`+91 ${userData.phone}`} />
-              <ProfileField icon={<Mail />} label="Email Address" value={userData.email} />
-              <ProfileField icon={<Calendar />} label="Date of Birth" value={userData.dob} />
-              <ProfileField icon={<User />} label="Gender" value={userData.gender} className="capitalize" />
-              <ProfileField icon={<ShieldCheck />} label="PAN Card" value={userData.pan} className="uppercase font-mono tracking-widest" />
+              <ProfileField icon={<User />} label="Full Name" name="name" value={isEditing ? editData.name : userData.name} isEditing={isEditing} onChange={handleEditChange} />
+              <ProfileField icon={<Phone />} label="Phone Number" name="phone" value={`+91 ${userData.phone}`} isEditing={false} />
+              <ProfileField icon={<Mail />} label="Email Address" name="email" value={isEditing ? editData.email : userData.email} isEditing={isEditing} onChange={handleEditChange} />
+              <ProfileField icon={<Calendar />} label="Date of Birth" name="dob" value={isEditing ? editData.dob : userData.dob} isEditing={isEditing} onChange={handleEditChange} />
+              <ProfileField icon={<User />} label="Gender" name="gender" options={["male", "female", "other"]} value={isEditing ? editData.gender : userData.gender} className="capitalize" isEditing={isEditing} onChange={handleEditChange} />
+              <ProfileField icon={<ShieldCheck />} label="PAN Card" name="pan" value={isEditing ? editData.pan : userData.pan} className="uppercase font-mono tracking-widest" isEditing={isEditing} onChange={handleEditChange} />
             </div>
 
             <h3 className="text-sm font-black text-[#FF7819] uppercase tracking-widest mt-12 mb-8 border-b border-gray-100 pb-4">Professional & Location</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <ProfileField icon={<Briefcase />} label="Employment Type" value={userData.employment} className="capitalize" />
-              <ProfileField icon={<IndianRupee />} label="Monthly Income" value={`₹ ${Number(userData.income).toLocaleString('en-IN')}`} />
-              <ProfileField icon={<MapPin />} label="City" value={userData.city} className="capitalize" />
-              <ProfileField icon={<MapPin />} label="State" value={userData.state} className="capitalize" />
-              <ProfileField icon={<MapPin />} label="Pincode" value={userData.pincode} />
+              <ProfileField icon={<Briefcase />} label="Employment Type" name="employment" options={["salaried", "self-employed"]} value={isEditing ? editData.employment : userData.employment} className="capitalize" isEditing={isEditing} onChange={handleEditChange} />
+              <ProfileField icon={<IndianRupee />} label="Monthly Income" name="income" type="number" value={isEditing ? editData.income : `₹ ${Number(userData.income).toLocaleString('en-IN')}`} isEditing={isEditing} onChange={handleEditChange} />
+              <ProfileField icon={<MapPin />} label="City" name="city" value={isEditing ? editData.city : userData.city} className="capitalize" isEditing={isEditing} onChange={handleEditChange} />
+              <ProfileField icon={<MapPin />} label="State" name="state" value={isEditing ? editData.state : userData.state} className="capitalize" isEditing={isEditing} onChange={handleEditChange} />
+              <ProfileField icon={<MapPin />} label="Pincode" name="pincode" value={isEditing ? editData.pincode : userData.pincode} isEditing={isEditing} onChange={handleEditChange} />
             </div>
 
           </motion.div>
@@ -212,15 +278,26 @@ export default function ProfilePage() {
 }
 
 // Helper component for uniform data display
-function ProfileField({ icon, label, value, className = "" }: any) {
+function ProfileField({ icon, label, value, name, type = "text", options, isEditing, onChange, className = "" }: any) {
   return (
     <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }} className="flex items-start gap-4">
       <div className="mt-1 w-10 h-10 rounded-xl bg-[#FFF4E5] flex items-center justify-center text-[#FF7819] border border-[#FF7819]/20 shrink-0">
         {React.cloneElement(icon, { size: 18 })}
       </div>
-      <div>
+      <div className="w-full">
         <p className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-1">{label}</p>
-        <p className={`text-sm font-bold text-[#08101E] ${className}`}>{value || "Not Provided"}</p>
+        {isEditing && name ? (
+          options ? (
+            <select name={name} value={value || ""} onChange={onChange} className={`w-full bg-[#FFF4E5] border border-[#FF7819]/30 rounded-lg px-3 py-2 text-sm font-bold text-[#08101E] outline-none focus:border-[#FF7819] ${className}`}>
+              <option value="">Select</option>
+              {options.map((opt: string) => <option key={opt} value={opt}>{opt}</option>)}
+            </select>
+          ) : (
+            <input type={type} name={name} value={value || ""} onChange={onChange} className={`w-full bg-[#FFF4E5] border border-[#FF7819]/30 rounded-lg px-3 py-2 text-sm font-bold text-[#08101E] outline-none focus:border-[#FF7819] ${className}`} />
+          )
+        ) : (
+          <p className={`text-sm font-bold text-[#08101E] ${className}`}>{value || "Not Provided"}</p>
+        )}
       </div>
     </motion.div>
   );

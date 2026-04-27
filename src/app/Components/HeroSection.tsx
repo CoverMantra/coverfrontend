@@ -29,13 +29,13 @@ export default function HeroSection() {
   };
 
   const images = [
-    "/image/Hero_section1.png",
-    "/image/Hero_section2.png",
-    "/image/Hero_section3.png",
+    "/image/Home1.png",
+    "/image/Home2.png",
+    "/image/Home3.png"
   ];
 
   return (
-    <section className="relative bg-[#08101E] min-h-screen flex flex-col pt-24 sm:pt-28 md:pt-32 text-white overflow-hidden">
+    <section className="relative bg-[#08101E] min-h-[100svh] flex flex-col pt-20 sm:pt-24 md:pt-32 text-white overflow-hidden">
       
       {/* 🔱 Mantra Strip */}
       <div className="absolute top-24 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
@@ -46,10 +46,10 @@ export default function HeroSection() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 pb-24 md:pb-48 flex flex-col md:flex-row items-center gap-10 md:gap-12 relative z-20 w-full flex-1">
+      <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 pb-16 md:pb-48 flex flex-col md:flex-row items-center gap-6 md:gap-12 relative z-20 w-full flex-1 mt-4 md:mt-0">
         
         {/* RIGHT SIDE IMAGE SLIDER - Fixed Stack Issue */}
-        <div className="w-full md:w-1/2 flex justify-center relative order-1 md:order-2 h-[350px] sm:h-[450px] md:h-[600px]">
+        <div className="w-full md:w-1/2 flex justify-center relative order-2 h-[280px] sm:h-[350px] md:h-[600px] mt-4 md:mt-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-[#FF690B]/10 rounded-full blur-[100px] -z-10" />
           
           <Swiper
@@ -92,7 +92,7 @@ export default function HeroSection() {
         </div>
 
         {/* LEFT CONTENT SECTION */}
-        <div className="w-full md:w-1/2 text-center md:text-left z-30 order-2 md:order-1">
+        <div className="w-full md:w-1/2 text-center md:text-left z-30 order-1">
           <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-6">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute h-full w-full rounded-full bg-[#FF690B] opacity-75"></span>
@@ -114,7 +114,7 @@ export default function HeroSection() {
           </p>
 
           {/* 3D Stats Grid */}
-          <div className="mt-10 grid grid-cols-3 gap-4 max-w-md mx-auto md:mx-0">
+          <div className="mt-8 md:mt-10 grid grid-cols-3 gap-3 md:gap-4 max-w-md mx-auto md:mx-0">
             {[{ val: "50M+", lbl: "Users" }, { val: "4.8★", lbl: "Rating" }, { val: "2Cr+", lbl: "Disbursed" }].map((stat, i) => (
               <div key={i} className="bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10 shadow-2xl">
                 <p className="text-xl font-black text-[#FF690B]">{stat.val}</p>
@@ -124,7 +124,7 @@ export default function HeroSection() {
           </div>
 
           {/* APPLY NOW BUTTON - CHOTTA TEXT VERSION */}
-          <div className="mt-10">
+          <div className="mt-8 md:mt-10">
             <button
               onClick={handleApplyNow}
               className="w-full sm:w-auto group relative inline-flex items-center justify-center gap-4 px-8 py-3.5 bg-white text-[#08101E] font-bold text-base rounded-2xl shadow-xl hover:scale-105 transition-all"

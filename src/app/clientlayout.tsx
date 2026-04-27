@@ -4,8 +4,10 @@ import { useEffect } from "react";
 import { ModalProvider } from "./context/modelcontext";
 import Navbar from "./Components/Navbar";
 import Footer from "./Components/Footer";
-import GlobalModal from "./Components/globalmodel";
-import ChatBot from "./Components/chatbot";
+import dynamic from 'next/dynamic';
+
+const GlobalModal = dynamic(() => import("./Components/globalmodel"), { ssr: false });
+const ChatBot = dynamic(() => import("./Components/chatbot"), { ssr: false });
 import { useAuthStore } from "../store/useAuthStore";
 
 export default function ClientLayout({ children }: { children: React.ReactNode }) {

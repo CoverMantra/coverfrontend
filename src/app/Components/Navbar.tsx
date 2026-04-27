@@ -86,23 +86,24 @@ export default function Navbar() {
           
           {/* Logo Section */}
           <Link href="/" className="flex items-center gap-2 sm:gap-3 group relative z-[110]">
-            <div className="relative w-10 h-10 sm:w-11 sm:h-11 flex-shrink-0">
-              <div className="absolute inset-0 bg-gradient-to-br from-[#FF690B] to-[#FFB900] rounded-xl rotate-6 group-hover:rotate-0 transition-transform duration-300" />
-              <div className="absolute inset-0 bg-[#08101E] rounded-xl flex items-center justify-center border border-white/10 shadow-lg">
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFB900] font-black text-xl sm:text-2xl">C</span>
-              </div>
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+               <img src="/image/logo.png" alt="CoverMantra Logo" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="font-black text-xl sm:text-2xl leading-none tracking-tight">
+              <span className="font-black text-lg sm:text-xl lg:text-2xl leading-none tracking-tight">
                 <span className="text-white">Cover</span>
                 <span className="text-[#FF690B]">Mantra</span>
               </span>
-              <span className={`text-[9px] sm:text-[10px] tracking-[2px] uppercase font-bold mt-1 transition-colors ${scrolled ? 'text-white/40' : 'text-white/60'}`}>Smart Cover</span>
+              <span className="flex items-center gap-1.5 text-[7px] sm:text-[8px] lg:text-[9px] tracking-[0.2em] uppercase font-black mt-1">
+                <span className="text-[#FF690B]">Smart Cover</span>
+                <span className="w-1 h-1 rounded-full bg-white/30"></span>
+                <span className="text-white/60">Sure Trust</span>
+              </span>
             </div>
           </Link>
 
           {/* Desktop Menu */}
-          <div className={`hidden md:flex items-center p-1 rounded-2xl transition-all duration-300 ${scrolled ? 'bg-white/5 border border-white/10' : 'bg-transparent'}`}>
+          <div className={`hidden lg:flex items-center p-1 rounded-2xl transition-all duration-300 ${scrolled ? 'bg-white/5 border border-white/10' : 'bg-transparent'}`}>
             {navItems.map((item) => {
               const isActive = pathname === item.path;
               return (
@@ -124,7 +125,7 @@ export default function Navbar() {
           </div>
 
           {/* Right Side: Login/Profile */}
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3">
             {isLoggedIn ? (
               <div className={`flex items-center gap-2 p-1 pr-4 rounded-full border transition-all ${scrolled ? 'bg-[#1A2332] border-white/10' : 'bg-white/10 border-white/20 backdrop-blur-sm'}`}>
                 <div 
@@ -152,7 +153,7 @@ export default function Navbar() {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden relative z-[110] p-2 bg-white/5 rounded-xl border border-white/10 text-white active:scale-90 transition-transform"
+            className="lg:hidden relative z-[110] p-2 bg-white/5 rounded-xl border border-white/10 text-white active:scale-90 transition-transform"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -161,7 +162,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 bg-[#08101E] z-[100] transition-all duration-500 ease-in-out md:hidden ${
+        className={`fixed inset-0 bg-[#08101E] z-[100] transition-all duration-500 ease-in-out lg:hidden ${
           mobileMenuOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-full"
         }`}
       >
