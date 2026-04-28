@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import api from "../../lib/axios";
+import api from "@/lib/axios";
 import Cookies from "js-cookie";
 import { toast } from "react-hot-toast";
 
@@ -114,13 +114,30 @@ const VivifiLeadForm = () => {
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-gray-500 uppercase">Date of Birth</label>
-          <input type="date" name="dob" value={formData.dob} required onChange={handleChange} className="w-full p-3 bg-gray-50 border rounded-lg" />
+          <label className="block text-xs font-bold text-gray-500 uppercase">Email</label>
+          <input type="email" name="email" value={formData.email} required onChange={handleChange} className="w-full p-3 bg-gray-50 border rounded-lg" />
         </div>
 
         <div>
-          <label className="block text-xs font-bold text-gray-500 uppercase">Monthly Income</label>
-          <input type="number" name="income" value={formData.income} required onChange={handleChange} className="w-full p-3 bg-gray-50 border rounded-lg" />
+          <label className="block text-xs font-bold text-gray-500 uppercase">Pincode</label>
+          <input type="text" name="pincode" value={formData.pincode} maxLength={6} required onChange={handleChange} className="w-full p-3 bg-gray-50 border rounded-lg" />
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-gray-500 uppercase">Gender</label>
+          <select name="gender" value={formData.gender} onChange={handleChange} className="w-full p-3 bg-gray-50 border rounded-lg">
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-xs font-bold text-gray-500 uppercase">Employment Type</label>
+          <select name="employmentType" value={formData.employmentType} onChange={handleChange} className="w-full p-3 bg-gray-50 border rounded-lg">
+            <option value="salaried">Salaried</option>
+            <option value="self-employed">Self-Employed</option>
+          </select>
         </div>
 
         <div className="md:col-span-2 flex items-start gap-2 py-2">

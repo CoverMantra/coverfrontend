@@ -35,21 +35,21 @@ export default function HeroSection() {
   ];
 
   return (
-    <section className="relative bg-[#08101E] min-h-[100svh] flex flex-col pt-20 sm:pt-24 md:pt-32 text-white overflow-hidden">
+    <section className="relative bg-[#08101E] min-h-svh flex flex-col pt-20 sm:pt-24 md:pt-32 text-white overflow-hidden">
       
       {/* 🔱 Mantra Strip */}
       <div className="absolute top-24 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
         <div className="flex items-center gap-4 text-white font-serif tracking-[0.4em] uppercase text-xs font-bold">
-          <span className="h-[1px] w-16 bg-gradient-to-r from-transparent via-white/50 to-white" />
+          <span className="h-px w-16 bg-linear-to-r from-transparent via-white/50 to-white" />
           <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">सत्यम शिवम सुंदरम</span>
-          <span className="h-[1px] w-16 bg-gradient-to-l from-transparent via-white/50 to-white" />
+          <span className="h-px w-16 bg-linear-to-l from-transparent via-white/50 to-white" />
         </div>
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 pb-16 md:pb-48 flex flex-col md:flex-row items-center gap-6 md:gap-12 relative z-20 w-full flex-1 mt-4 md:mt-0">
         
         {/* RIGHT SIDE IMAGE SLIDER - Fixed Stack Issue */}
-        <div className="w-full md:w-1/2 flex justify-center relative order-2 h-[280px] sm:h-[350px] md:h-[600px] mt-4 md:mt-0">
+        <div className="w-full md:w-1/2 flex justify-center relative order-2 h-70 sm:h-87.5 md:h-150 mt-4 md:mt-0">
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-[#FF690B]/10 rounded-full blur-[100px] -z-10" />
           
           <Swiper
@@ -103,7 +103,7 @@ export default function HeroSection() {
 
           <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight">
             Finance ka <br />
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFD700]">
+            <span className="text-transparent bg-clip-text bg-linear-to-r from-[#FF690B] to-[#FFD700]">
               Smart Mantra
             </span>
           </h1>
@@ -127,6 +127,7 @@ export default function HeroSection() {
           <div className="mt-8 md:mt-10">
             <button
               onClick={handleApplyNow}
+              suppressHydrationWarning={true}
               className="w-full sm:w-auto group relative inline-flex items-center justify-center gap-4 px-8 py-3.5 bg-white text-[#08101E] font-bold text-base rounded-2xl shadow-xl hover:scale-105 transition-all"
             >
               <span className="tracking-tight uppercase">Apply Now</span>
@@ -139,7 +140,7 @@ export default function HeroSection() {
       </div>
 
       {/* Wave Divider */}
-      <div className="absolute bottom-0 left-0 w-full leading-[0] z-30">
+      <div className="absolute bottom-0 left-0 w-full leading-0 z-30">
         <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
           <path d="M0 120L1440 120L1440 0C1100 60 700 60 0 0L0 120Z" fill="white" />
         </svg>

@@ -60,7 +60,19 @@ export default function VivifiLeadPage() {
     e.preventDefault();
     setLoading(true);
     try {
-      await api.post("/api/vivifi/register", formData);
+      const payload = {
+        firstName: formData.first_name,
+        lastName: formData.last_name,
+        phone: formData.mobile,
+        email: formData.email,
+        pan: formData.pan,
+        dob: formData.dob,
+        pincode: formData.pincode,
+        income: formData.monthly_income,
+        employmentType: formData.employment_type,
+        gender: 'male', // default
+      };
+      await api.post("/api/vivifi/register", payload);
       setResponseMessage({ type: "success", message: "Details Verified! Redirecting to FlexSalary..." });
       setTimeout(() => { window.location.href = VIVIFI_REDIRECT_URL; }, 2000);
     } catch (err: any) {
@@ -78,14 +90,14 @@ export default function VivifiLeadPage() {
     <div className="min-h-screen bg-[#FFF4E5] font-sans">
       {/* Dark Header Part */}
       <div className="h-64 bg-[#08101E] w-full absolute top-0 left-0">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#1a2a44] to-transparent opacity-50"></div>
+        <div className="absolute inset-0 bg-linear-to-b from-[#1a2a44] to-transparent opacity-50"></div>
       </div>
 
       <div className="relative z-10 flex items-center justify-center p-4 pt-24 md:pt-32">
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="max-w-lg w-full bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-8 border border-white"
+          className="max-w-lg w-full bg-white/90 backdrop-blur-xl rounded-3xl shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-8 border border-white"
         >
           
           <div className="text-center mb-10">
@@ -123,13 +135,32 @@ export default function VivifiLeadPage() {
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] uppercase font-bold text-gray-400 ml-2">PAN Card</label>
-              <input type="text" name="pan" value={formData.pan} onChange={handleChange} required maxLength={10} className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#FF7819] uppercase font-mono tracking-widest transition-all" />
+              <label className="text-[10px] uppercase font-bold text-gray-400 ml-2">Mobile Number</label>
+              <input type="tel" name="mobile" value={formData.mobile} onChange={handleChange} required maxLength={10} className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#FF7819] transition-all" />
             </div>
 
             <div className="space-y-1">
-              <label className="text-[10px] uppercase font-bold text-gray-400 ml-2">Monthly Income (₹)</label>
-              <input type="number" name="monthly_income" value={formData.monthly_income} onChange={handleChange} required className="w-full p-4 bg-[#FFF4E5]/50 border border-gray-100 rounded-2xl outline-none focus:border-[#FF7819] font-bold text-[#08101E] transition-all" />
+              <label className="text-[10px] uppercase font-bold text-gray-400 ml-2">Email</label>
+              <input type="email" name="email" value={formData.email} onChange={handleChange} required className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#FF7819] transition-all" />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-gray-400 ml-2">Date of Birth</label>
+              <input type="date" name="dob" value={formData.dob} onChange={handleChange} required className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#FF7819] transition-all" />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-gray-400 ml-2">Pincode</label>
+              <input type="text" name="pincode" value={formData.pincode} onChange={handleChange} required maxLength={6} className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#FF7819] transition-all" />
+            </div>
+
+            <div className="space-y-1">
+              <label className="text-[10px] uppercase font-bold text-gray-400 ml-2">Employment Type</label>
+              <select name="employment_type" value={formData.employment_type} onChange={handleChange} required className="w-full p-4 bg-gray-50 border border-gray-100 rounded-2xl outline-none focus:border-[#FF7819] transition-all">
+                <option value="">Select</option>
+                <option value="salaried">Salaried</option>
+                <option value="self-employed">Self-Employed</option>
+              </select>
             </div>
 
             <div className="bg-gray-50 p-4 rounded-2xl border border-gray-100 flex items-start gap-3">
@@ -148,7 +179,7 @@ export default function VivifiLeadPage() {
             <button
               type="submit"
               disabled={loading || !formData.consent}
-              className={`w-full py-5 text-white font-black rounded-[1.5rem] shadow-xl shadow-[#FF7819]/20 transition-all active:scale-95 ${
+              className={`w-full py-5 text-white font-black rounded-3xl shadow-xl shadow-[#FF7819]/20 transition-all active:scale-95 ${
                 loading ? "bg-gray-400 cursor-not-allowed" : "bg-[#FF7819] hover:bg-[#e66a15]"
               }`}
             >

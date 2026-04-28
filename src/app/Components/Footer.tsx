@@ -30,14 +30,14 @@ function Footer() {
   };
 
   return (
-    <footer className="bg-[#08101E] border-t-4 border-[#FF7819] rounded-t-[2rem] sm:rounded-t-[3rem]">
-      <div className="max-w-screen-xl px-6 pt-12 pb-8 mx-auto lg:px-8 lg:pt-20">
+    <footer className="bg-[#08101E] border-t-4 border-[#FF7819] rounded-t-4xl sm:rounded-t-[3rem]">
+      <div className="max-w-7xl px-6 pt-12 pb-8 mx-auto lg:px-8 lg:pt-20">
         <div className="grid grid-cols-1 gap-12 lg:grid-cols-3">
           
           {/* Company Info + Logo */}
           <div className="flex flex-col items-center sm:items-start text-center sm:text-left">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-gradient-to-br from-[#FF690B] to-[#FF8C00] rounded-xl flex items-center justify-center text-[#08101E] font-black text-2xl shadow-md">
+              <div className="w-10 h-10 bg-linear-to-br from-[#FF690B] to-[#FF8C00] rounded-xl flex items-center justify-center text-[#08101E] font-black text-2xl shadow-md">
                 C
               </div>
               <div>
@@ -101,6 +101,7 @@ function Footer() {
                 <li>
                   <button
                     onClick={() => handleProtectedNavigation("/personal-loans")}
+                    suppressHydrationWarning={true}
                     className="hover:text-[#FF690B] transition text-left"
                   >
                     Personal Loans

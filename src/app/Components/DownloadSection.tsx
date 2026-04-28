@@ -52,8 +52,8 @@ export default function DownloadAppSection() {
                   key={index} 
                   className="flex items-center gap-4 bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-all"
                 >
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#FF690B] to-[#FF8C00] 
-                                rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-linear-to-br from-[#FF690B] to-[#FF8C00] 
+                                rounded-2xl flex items-center justify-center shrink-0">
                     {feature.icon}
                   </div>
                   <span className="font-semibold text-[#08101E] text-[15.5px]">
@@ -67,6 +67,7 @@ export default function DownloadAppSection() {
             <div className="flex flex-col sm:flex-row gap-4 pt-4">
               <button
                 onClick={handleDownloadClick}
+                suppressHydrationWarning={true}
                 className="group flex items-center justify-center gap-4 bg-[#08101E] hover:bg-black 
                          text-white px-8 py-4 rounded-2xl font-semibold transition-all 
                          hover:shadow-xl hover:-translate-y-1 active:scale-95"
@@ -79,6 +80,7 @@ export default function DownloadAppSection() {
               </button>
 
               <button 
+                suppressHydrationWarning={true}
                 className="group flex items-center justify-center gap-4 bg-white border-2 border-gray-300 
                          hover:border-gray-400 text-gray-900 px-8 py-4 rounded-2xl font-semibold 
                          transition-all hover:shadow-xl hover:-translate-y-1 active:scale-95"
@@ -94,9 +96,9 @@ export default function DownloadAppSection() {
 
           {/* Right Side - App Mockup */}
           <div className="relative flex justify-center lg:justify-end">
-            <div className="relative max-w-[280px] sm:max-w-[320px]">
+            <div className="relative max-w-70 sm:max-w-80">
               {/* Glow Effect */}
-              <div className="absolute -inset-8 bg-gradient-to-br from-[#FF690B]/20 to-transparent 
+              <div className="absolute -inset-8 bg-linear-to-br from-[#FF690B]/20 to-transparent 
                             rounded-[4rem] blur-3xl -z-10" />
               
               {/* Phone Frame */}
@@ -105,7 +107,7 @@ export default function DownloadAppSection() {
                   <img
                     src="/App.jpg"
                     alt="CoverMantra App Screenshot"
-                    className="w-full h-auto object-cover rounded-[2rem]"
+                    className="w-full h-auto object-cover rounded-4xl"
                   />
                 </div>
               </div>

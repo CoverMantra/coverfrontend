@@ -137,20 +137,20 @@ export default function TestimonialSlider() {
             <SwiperSlide key={index}>
               <div className="bg-white rounded-3xl p-8 md:p-10 shadow-xl border border-white/60 
                             hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 
-                            min-h-[320px] flex flex-col relative">
+                            min-h-80 flex flex-col relative">
                 
                 {/* Quote Icon */}
                 <div className="text-6xl text-[#FF690B]/20 absolute top-6 right-6">“</div>
 
                 {/* Testimonial Text */}
-                <p className="text-[#5b4637] text-[15.5px] leading-relaxed flex-grow mb-8">
+                <p className="text-[#5b4637] text-[15.5px] leading-relaxed grow mb-8">
                   {testimonial.text}
                 </p>
 
                 {/* User Info */}
                 <div className="mt-auto flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-[#FF690B] to-[#FF8C00] 
-                                rounded-2xl flex items-center justify-center flex-shrink-0">
+                  <div className="w-12 h-12 bg-linear-to-br from-[#FF690B] to-[#FF8C00] 
+                                rounded-2xl flex items-center justify-center shrink-0">
                     <span className="text-white text-xl font-bold">
                       {testimonial.name[0]}
                     </span>

@@ -76,7 +76,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ${
+        className={`fixed top-0 left-0 w-full z-100 transition-all duration-500 ${
           scrolled 
           ? "py-3 bg-[#08101E]/90 backdrop-blur-xl border-b border-white/10 shadow-2xl" 
           : "py-5 bg-transparent"
@@ -85,8 +85,8 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           
           {/* Logo Section */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 group relative z-[110]">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 flex-shrink-0 group-hover:scale-105 transition-transform duration-300">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group relative z-110">
+            <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 shrink-0 group-hover:scale-105 transition-transform duration-300">
                <img src="/image/logo.png" alt="CoverMantra Logo" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
@@ -112,7 +112,7 @@ export default function Navbar() {
                   onClick={() => handleMenuClick(item)}
                   className={`px-4 lg:px-5 py-2 rounded-xl text-sm font-bold transition-all duration-300 ${
                     isActive 
-                    ? "bg-gradient-to-r from-[#FF690B] to-[#FFB900] text-[#08101E] shadow-lg shadow-orange-600/20" 
+                    ? "bg-linear-to-r from-[#FF690B] to-[#FFB900] text-[#08101E] shadow-lg shadow-orange-600/20" 
                     : scrolled 
                       ? "text-white/70 hover:text-white hover:bg-white/10" // Color when navbar is dark
                       : "text-white/90 hover:text-[#FF690B]" // Color when navbar is transparent
@@ -153,7 +153,7 @@ export default function Navbar() {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden relative z-[110] p-2 bg-white/5 rounded-xl border border-white/10 text-white active:scale-90 transition-transform"
+            className="lg:hidden relative z-110 p-2 bg-white/5 rounded-xl border border-white/10 text-white active:scale-90 transition-transform"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -162,7 +162,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 bg-[#08101E] z-[100] transition-all duration-500 ease-in-out lg:hidden ${
+        className={`fixed inset-0 bg-[#08101E] z-100 transition-all duration-500 ease-in-out lg:hidden ${
           mobileMenuOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-full"
         }`}
       >
@@ -173,7 +173,7 @@ export default function Navbar() {
               onClick={() => handleMenuClick(item)}
               className={`w-full text-left p-4 rounded-2xl text-xl font-black border transition-all duration-300 ${
                 pathname === item.path 
-                ? "bg-gradient-to-r from-[#FF690B] to-[#FFB900] text-[#08101E] border-transparent" 
+                ? "bg-linear-to-r from-[#FF690B] to-[#FFB900] text-[#08101E] border-transparent" 
                 : "bg-white/5 text-white border-white/10"
               }`}
             >
@@ -195,7 +195,7 @@ export default function Navbar() {
           ) : (
             <button
               onClick={() => { setMobileMenuOpen(false); setLoginOpen(true); }}
-              className="mt-auto mb-8 w-full bg-gradient-to-r from-[#FF690B] to-[#FFB900] text-[#08101E] p-5 rounded-2xl font-black text-lg shadow-2xl active:scale-95 transition-transform"
+              className="mt-auto mb-8 w-full bg-linear-to-r from-[#FF690B] to-[#FFB900] text-[#08101E] p-5 rounded-2xl font-black text-lg shadow-2xl active:scale-95 transition-transform"
             >
               LOGIN TO ACCOUNT
             </button>
