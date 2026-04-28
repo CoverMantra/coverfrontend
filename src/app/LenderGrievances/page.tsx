@@ -26,10 +26,10 @@ const lenders = [
   {
     name: "Vivifi India Finance Pvt Ltd",
     logo: "https://www.vivifin.com/images/vivifi-logo.png",
-    officer: "Mr. Srinath",
+    officer: "Prakash Rajan",
     address: `Unit A, 9th Floor, MJR Magnifique, Survey No 75 & 76, Khajaguda X Roads, Raidurgam, Hyderabad – 500008`,
-    email: "grievance@vivifinance.com",
-    phone: "+91-40-4617-5151",
+    email: "pno@vivifin.com",
+    phone: "+91-91211-96333",
     timings: "10:00 AM - 7:00 PM (Mon - Sat, excluding public holidays)",
   },
   {
