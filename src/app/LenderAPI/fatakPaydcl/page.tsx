@@ -58,16 +58,12 @@ export default function LendersPage() {
           window.location.href = "https://fatakpay.onelink.me/2uSI/652_IUXYC?utm_medium=";
         }, 2000);
       } else {
-        showModal(apiData?.message || "Submission failed.", "error");
-        setTimeout(() => { window.location.href = "/"; }, 2000);
+        showModal("Not eligible for this lender. Try other lenders.", "error");
+        setTimeout(() => { window.location.href = "/personal-loans"; }, 2000);
       }
     } catch (err: any) {
-      if (err.response) {
-        showModal(err.response?.data?.message || "Something went wrong. Try again.", "error");
-      } else {
-        showModal("Something went wrong. Try again.", "error");
-      }
-      setTimeout(() => { window.location.href = "/"; }, 2000);
+      showModal("Not eligible for this lender. Try other lenders.", "error");
+      setTimeout(() => { window.location.href = "/personal-loans"; }, 2000);
     } finally {
       setLoading(false);
     }

@@ -105,11 +105,12 @@ export default function LendersPage() {
           window.location.href = "https://zype.onelink.me/vx8a?af_xp=custom&pid=CustomerSource&af_dp=com.zype.mobile%3A%2F%2F&deep_link_value=myZype&af_click_lookback=30d&c=Spiraea";
         }, 2000);
       } else {
-        showModal("Sorry, your application was rejected", "error");
-        setTimeout(() => { window.location.href = "/"; }, 3000);
+        showModal("Not eligible for this lender. Try other lenders.", "error");
+        setTimeout(() => { window.location.href = "/personal-loans"; }, 3000);
       }
     } catch (error: any) {
-      showModal("Something went wrong while submitting.", "error");
+      showModal("Not eligible for this lender. Try other lenders.", "error");
+      setTimeout(() => { window.location.href = "/personal-loans"; }, 3000);
     } finally {
       setLoading(false);
     }

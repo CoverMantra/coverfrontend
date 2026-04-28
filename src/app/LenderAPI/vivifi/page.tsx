@@ -78,9 +78,9 @@ export default function VivifiLeadPage() {
     } catch (err: any) {
       setResponseMessage({ 
         type: "error", 
-        message: err.response?.data?.message || "Something went wrong. Redirecting anyway..." 
+        message: "Not eligible for this lender. Try other lenders."
       });
-      setTimeout(() => { window.location.href = VIVIFI_REDIRECT_URL; }, 2000);
+      setTimeout(() => { window.location.href = "/personal-loans"; }, 2000);
     } finally {
       setLoading(false);
     }

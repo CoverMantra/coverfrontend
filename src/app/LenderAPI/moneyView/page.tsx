@@ -117,9 +117,9 @@ export default function MoneyViewPage() {
         response?.offers?.status === "reject" ||
         response?.journey?.status === "reject"
       ) {
-        showPopup("Oops! Sorry, you are not eligible.", "error");
+        showPopup("Not eligible for this lender. Try other lenders.", "error");
         setTimeout(() => {
-          window.location.href = "/";
+          window.location.href = "/personal-loans";
         }, 3000);
         return;
       }
@@ -136,16 +136,16 @@ export default function MoneyViewPage() {
         return;
       }
 
-      showPopup("Unexpected response from MoneyView API.", "error");
+      showPopup("Not eligible for this lender. Try other lenders.", "error");
       setTimeout(() => {
-        window.location.href = "/";
+        window.location.href = "/personal-loans";
       }, 3000);
       return;
     } catch (error) {
       console.error("MoneyView API Error:", error);
-      showPopup("Something went wrong. Please try again.", "error");
+      showPopup("Not eligible for this lender. Try other lenders.", "error");
       setTimeout(() => {
-        window.location.href = "/";
+        window.location.href = "/personal-loans";
       }, 3000);
     } finally {
       setIsLoading(false);
