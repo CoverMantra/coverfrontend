@@ -1,16 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthStore } from "../../store/useAuthStore";
 import LoginModal from "./LoginModal";
 import GlobalModal from "./globalmodel";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade, Pagination } from "swiper/modules";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 
-// Swiper CSS (Next.js 13+ standard)
+// Swiper CSS
 import "swiper/css";
 import "swiper/css/effect-fade";
 import "swiper/css/pagination";
@@ -18,143 +18,149 @@ import "swiper/css/pagination";
 export default function HeroSection() {
   const router = useRouter();
   const [loginOpen, setLoginOpen] = useState(false);
+  const [activeSlide, setActiveSlide] = useState(0);
+  const [isMounted, setIsMounted] = useState(false);
+  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+    const authStatus = useAuthStore.getState().isAuthenticated;
+    setIsUserAuthenticated(authStatus);
+  }, []);
 
   const handleApplyNow = () => {
-    const { isAuthenticated } = useAuthStore.getState();
-    if (isAuthenticated) {
+    if (!isMounted) return;
+    if (isUserAuthenticated) {
       router.push("/personal-loans");
     } else {
       setLoginOpen(true);
     }
   };
 
-  const images = [
-    "/image/Home1.png",
-    "/image/Home2.png",
-    "/image/Home3.png"
+  const slides = [
+    {
+      src: "/image/himg.png",
+      tagline: "India's Trusted Applicant-Lender Connector",
+      headline: "Finance ka <br /> <span class='text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFD700]'>Smart Mantra</span>",
+      description: "Seamlessly connecting you to RBI-Registered Lenders for instant loan approvals."
+    },
+    {
+      src: "/image/himg2.png",
+      tagline: "Naye India ka Digital Mantra",
+      headline: "Tractor Loans for <br /> <span class='text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFD700]'>Farmers</span>",
+      description: "Empowering agricultural growth with easy digital applications."
+    },
+    {
+      src: "/image/himg3.png",
+      tagline: "Full-Range Fintech Mantra",
+      headline: "Loans. Insurance. <br /> <span class='text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFD700]'>Growth.</span>",
+      description: "Home, Business, Car Loans, and Instant Insurance Covers."
+    },
   ];
 
+  if (!isMounted) return <div className="min-h-screen bg-[#08101E]" />;
+
   return (
-    <section className="relative bg-[#08101E] min-h-svh flex flex-col pt-20 sm:pt-24 md:pt-32 text-white overflow-hidden">
+    <section className="relative bg-[#08101E] min-h-[100dvh] flex flex-col justify-center text-white overflow-hidden pt-24 md:pt-10">
       
-      {/* 🔱 Mantra Strip */}
-      <div className="absolute top-24 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
-        <div className="flex items-center gap-4 text-white font-serif tracking-[0.4em] uppercase text-xs font-bold">
-          <span className="h-px w-16 bg-linear-to-r from-transparent via-white/50 to-white" />
-          <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">सत्यम शिवम सुंदरम</span>
-          <span className="h-px w-16 bg-linear-to-l from-transparent via-white/50 to-white" />
+      {/* 🔱 Satyam Shivam Sundaram Mantra Strip */}
+       <div className="absolute top-24 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
+          <div className="flex items-center gap-4 text-white font-serif tracking-[0.4em] uppercase text-xs font-bold">
+            <span className="h-[1px] w-16 bg-gradient-to-r from-transparent via-white/50 to-white" />
+            <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">सत्यम शिवम सुंदरम</span>
+            <span className="h-[1px] w-16 bg-gradient-to-l from-transparent via-white/50 to-white" />
+          </div>
         </div>
-      </div>
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-8 md:px-12 pb-16 md:pb-48 flex flex-col md:flex-row items-center gap-6 md:gap-12 relative z-20 w-full flex-1 mt-4 md:mt-0">
+      {/* Dynamic Background Glow */}
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] aspect-square rounded-full blur-[130px] opacity-15 -z-10 transition-colors duration-1000 ${
+        activeSlide === 1 ? "bg-green-500" : "bg-[#FF690B]"
+      }`} />
+
+      <div className="container mx-auto px-4 sm:px-8 lg:px-12 w-full grid grid-cols-1 md:grid-cols-2 items-center gap-8 lg:gap-16 z-20 pb-20 md:pb-24">
         
-        {/* RIGHT SIDE IMAGE SLIDER - Fixed Stack Issue */}
-        <div className="w-full md:w-1/2 flex justify-center relative order-2 h-70 sm:h-87.5 md:h-150 mt-4 md:mt-0">
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80%] h-[80%] bg-[#FF690B]/10 rounded-full blur-[100px] -z-10" />
-          
-          <Swiper
-            modules={[Autoplay, EffectFade, Pagination]}
-            effect="fade"
-            fadeEffect={{ crossFade: true }} // Isse images ek ke peeche ek nahi rahengi
-            autoplay={{ delay: 3500, disableOnInteraction: false }}
-            pagination={{ clickable: true, dynamicBullets: true }}
-            loop={true}
-            className="h-full w-full"
-          >
-            {images.map((src, i) => (
-              <SwiperSlide key={i} className="flex items-center justify-center bg-transparent">
-                <motion.div 
-                  animate={{ y: [0, -15, 0] }}
-                  transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-                  className="relative w-full h-full"
-                >
-                  <Image
-                    src={src}
-                    alt="CoverMantra Hero"
-                    fill
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                    className="object-contain drop-shadow-[0_20px_60px_rgba(255,105,11,0.2)]"
-                    priority={i === 0}
-                  />
-                </motion.div>
-              </SwiperSlide>
-            ))}
-          </Swiper>
-
-          {/* Floating RBI Badge */}
-          <div className="absolute top-4 right-0 bg-[#1A2332]/80 p-3 rounded-2xl border border-white/10 z-40 flex items-center gap-3 backdrop-blur-md shadow-2xl">
-            <div className="w-8 h-8 bg-green-500/20 rounded-xl flex items-center justify-center text-green-400 font-bold">✓</div>
-            <div>
-              <p className="text-[8px] font-black text-white/40 uppercase leading-none">Status</p>
-              <p className="text-xs font-black text-white">RBI Registered</p>
-            </div>
-          </div>
-        </div>
-
-        {/* LEFT CONTENT SECTION */}
-        <div className="w-full md:w-1/2 text-center md:text-left z-30 order-1">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-6">
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute h-full w-full rounded-full bg-[#FF690B] opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-[#FF690B]"></span>
-            </span>
-            <span className="text-[10px] md:text-xs font-bold uppercase tracking-widest text-white/60">India's Trusted Finance Partner</span>
-          </div>
-
-          <h1 className="text-4xl sm:text-6xl lg:text-7xl font-black leading-[1.1] tracking-tight">
-            Finance ka <br />
-            <span className="text-transparent bg-clip-text bg-linear-to-r from-[#FF690B] to-[#FFD700]">
-              Smart Mantra
-            </span>
-          </h1>
-
-          <p className="mt-6 text-sm md:text-lg text-white/70 max-w-lg mx-auto md:mx-0 font-medium">
-            Experience seamless personal loans, instant insurance covers, and 
-            tailored financial growth — all in one secure platform.
-          </p>
-
-          {/* 3D Stats Grid */}
-          <div className="mt-8 md:mt-10 grid grid-cols-3 gap-3 md:gap-4 max-w-md mx-auto md:mx-0">
-            {[{ val: "50M+", lbl: "Users" }, { val: "4.8★", lbl: "Rating" }, { val: "2Cr+", lbl: "Disbursed" }].map((stat, i) => (
-              <div key={i} className="bg-white/5 backdrop-blur-xl rounded-2xl p-4 border border-white/10 shadow-2xl">
-                <p className="text-xl font-black text-[#FF690B]">{stat.val}</p>
-                <p className="text-[8px] font-bold text-white/40 uppercase tracking-tighter mt-1">{stat.lbl}</p>
+        {/* LEFT CONTENT */}
+        <div className="order-2 md:order-1 text-center md:text-left flex flex-col items-center md:items-start">
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={activeSlide}
+              initial={{ opacity: 0, x: -30 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: 30 }}
+              transition={{ duration: 0.6 }}
+            >
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-6">
+                <span className="relative flex h-2 w-2">
+                  <span className={`animate-ping absolute h-full w-full rounded-full ${activeSlide === 1 ? "bg-green-500" : "bg-[#FF690B]"} opacity-75`}></span>
+                  <span className={`relative inline-flex rounded-full h-2 w-2 ${activeSlide === 1 ? "bg-green-500" : "bg-[#FF690B]"}`}></span>
+                </span>
+                <span className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-white/70">
+                  {slides[activeSlide].tagline}
+                </span>
               </div>
-            ))}
-          </div>
 
-          {/* APPLY NOW BUTTON - CHOTTA TEXT VERSION */}
-          <div className="mt-8 md:mt-10">
+              <h1 
+                className="text-4xl sm:text-5xl lg:text-7xl font-black leading-[1.1] mb-6"
+                dangerouslySetInnerHTML={{ __html: slides[activeSlide].headline }}
+              />
+
+              <p className="text-sm sm:text-base lg:text-lg text-white/60 max-w-lg mb-8 leading-relaxed">
+                {slides[activeSlide].description}
+              </p>
+            </motion.div>
+          </AnimatePresence>
+
+          {/* CTA Button */}
+          <div className="w-full sm:w-auto">
             <button
               onClick={handleApplyNow}
-              suppressHydrationWarning={true}
-              className="w-full sm:w-auto group relative inline-flex items-center justify-center gap-4 px-8 py-3.5 bg-white text-[#08101E] font-bold text-base rounded-2xl shadow-xl hover:scale-105 transition-all"
+              className="w-full sm:w-auto group relative inline-flex items-center justify-center gap-6 px-10 py-4 bg-white text-[#08101E] font-black rounded-2xl shadow-xl hover:bg-[#FF690B] hover:text-white transition-all duration-300"
             >
-              <span className="tracking-tight uppercase">Apply Now</span>
-              <div className="w-7 h-7 bg-[#FF690B] rounded-full flex items-center justify-center group-hover:translate-x-1.5 transition-transform shadow-lg">
-                <span className="text-white text-sm">→</span>
+              <span className="tracking-tighter">APPLY NOW</span>
+              <div className={`w-8 h-8 ${activeSlide === 1 ? 'bg-green-600' : 'bg-[#FF690B]'} rounded-full flex items-center justify-center group-hover:bg-white transition-colors`}>
+                <span className="text-white group-hover:text-[#08101E]">→</span>
               </div>
             </button>
           </div>
         </div>
+
+        {/* RIGHT CONTENT: Slider Image */}
+        <div className="order-1 md:order-2 w-full relative h-[300px] sm:h-[450px] lg:h-[600px] flex items-center justify-center">
+          <Swiper
+            modules={[Autoplay, EffectFade, Pagination]}
+            effect="fade"
+            autoplay={{ delay: 5000, disableOnInteraction: false }}
+            pagination={{ clickable: true }}
+            onSlideChange={(swiper) => setActiveSlide(swiper.realIndex)}
+            className="h-full w-full"
+          >
+            {slides.map((slide, i) => (
+              <SwiperSlide key={i} className="flex items-center justify-center">
+                <div className="relative w-full h-full">
+                  <Image
+                    src={slide.src}
+                    alt="Hero Slide"
+                    fill
+                    priority={i === 0}
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
+                    className="object-contain"
+                  />
+                </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
+        </div>
       </div>
 
       {/* Wave Divider */}
-      <div className="absolute bottom-0 left-0 w-full leading-0 z-30">
-        <svg viewBox="0 0 1440 120" fill="none" className="w-full h-auto">
-          <path d="M0 120L1440 120L1440 0C1100 60 700 60 0 0L0 120Z" fill="white" />
+      <div className="absolute bottom-0 left-0 w-full z-30 translate-y-[2px]">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-[50px] sm:h-[80px] lg:h-[120px]">
+          <path d="M0,120 L1440,120 L1440,40 C1320,80 1200,0 1080,40 C960,80 840,0 720,40 C600,80 480,0 360,40 C240,80 120,0 0,40 Z" fill="white" />
         </svg>
       </div>
 
       <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
       <GlobalModal />
-
-      <style jsx global>{`
-        .swiper-fade .swiper-slide { pointer-events: none; transition-property: opacity; }
-        .swiper-fade .swiper-slide-active { pointer-events: auto; }
-        .swiper-pagination-bullet { background: white !important; opacity: 0.3; }
-        .swiper-pagination-bullet-active { background: #FF690B !important; opacity: 1; width: 20px !important; border-radius: 10px; }
-      `}</style>
     </section>
   );
 }

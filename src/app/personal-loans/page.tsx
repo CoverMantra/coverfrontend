@@ -44,7 +44,7 @@ const cardsData = [
     support: "24/7 customer support",
     ratings: 4.0,
     logo: "/image/fatak.webp",
-    applyLink: "/LenderAPI/fatakPaydcl",
+    applyLink: "/LenderAPI/fatakPay/short-term-loans",
     features: [
       "Quick disbursement", "Paperless process", "Low processing fee", "Instant approval", "No hidden charges", "24/7 customer support"
     ]

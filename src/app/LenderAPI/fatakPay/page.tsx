@@ -47,7 +47,7 @@ export default function LendersPage() {
 
       if (apiData?.success && apiData?.message === "You are eligible.") {
         showModal("✅ You are eligible! Redirecting...", "success");
-        setTimeout(() => { window.location.href = "https://fatakpay.com/"; }, 2000);
+        setTimeout(() => { window.location.href = "https://web.fatakpay.com/authentication/login?utm_source=651_TT83W&utm_medium=covermantra"; }, 2000);
       } else {
         showModal("Not eligible for this lender. Try other lenders.", "error");
         setTimeout(() => { window.location.href = "/personal-loans"; }, 3000);
