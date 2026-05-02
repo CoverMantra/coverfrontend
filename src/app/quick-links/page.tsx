@@ -68,7 +68,7 @@ const lenders = [
     rate: "12% - 35.95% p.a",
     tenure: "3-24 months",
     features: ["Zero Paperwork", "Small Credit", "Instant Disbursal"],
-    url: "https://web.fatakpay.com/authentication/login?utm_source=651_TT83W?utm_medium=",
+    url: "https://fatakpay.onelink.me/2uSI/652_IUXYC?utm_medium=",
   }
   
 ];
@@ -121,10 +121,11 @@ export default function Page() {
     }
   };
 
-  return (
+ return (
     <main className="min-h-screen bg-[#FFF4E5] pt-28 pb-20 px-4 sm:px-6 lg:px-8 font-sans selection:bg-[#FF7819] selection:text-white relative overflow-hidden">
-      {/* 🔱 Mantra Strip */}
-      <div className="absolute top-28 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
+      
+      {/* 🔱 Mantra Strip - Fixed Position to avoid overlap */}
+      <div className="absolute top-24 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
         <div className="flex items-center gap-4 text-[#08101E]/80 font-serif tracking-[0.4em] uppercase text-xs font-bold">
           <span className="h-[1px] w-16 bg-gradient-to-r from-transparent via-[#08101E]/40 to-[#08101E]/80" />
           <span className="drop-shadow-[0_0_8px_rgba(8,16,30,0.1)]">सत्यम शिवम सुंदरम</span>
@@ -136,7 +137,7 @@ export default function Page() {
       <div className="absolute top-0 left-1/4 w-96 h-96 bg-[#FF7819]/5 rounded-full blur-[120px] -z-10 animate-pulse"></div>
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-green-500/5 rounded-full blur-[150px] -z-10"></div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 mt-10 md:mt-16">
         
         {/* ✨ Hero Section */}
         <motion.div 
@@ -185,61 +186,60 @@ export default function Page() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.3, delay: index * 0.05 }}
-                  whileHover={{ rotateY: -3, rotateX: 3, scale: 1.02 }}
-                  style={{ transformStyle: "preserve-3d" }}
-                  className="group bg-white p-8 rounded-[3rem] border border-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(255,120,25,0.15)] transition-all duration-500 relative overflow-hidden"
-                >
-                  {/* Subtle 3D Depth Decoration */}
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF7819]/5 rounded-full -mr-16 -mt-16 group-hover:bg-[#FF7819]/10 transition-colors"></div>
+                    whileHover={{ rotateY: -3, rotateX: 3, scale: 1.02 }}
+                    style={{ transformStyle: "preserve-3d" }}
+                    className="group bg-white p-8 rounded-[3rem] border border-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(255,120,25,0.15)] transition-all duration-500 relative overflow-hidden"
+                  >
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF7819]/5 rounded-full -mr-16 -mt-16 group-hover:bg-[#FF7819]/10 transition-colors"></div>
 
-                  <div className="flex justify-between items-start mb-8">
-                    <div className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center h-16 w-32 group-hover:scale-105 transition-transform">
-                      <img src={lender.logo} alt={lender.name} className="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all" />
+                    <div className="flex justify-between items-start mb-8">
+                      <div className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center h-16 w-32 group-hover:scale-105 transition-transform">
+                        <img src={lender.logo} alt={lender.name} className="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all" />
+                      </div>
+                      <div className="flex items-center gap-1.5 bg-green-500 text-white px-4 py-1.5 rounded-full font-black shadow-lg shadow-green-500/20 text-[10px] tracking-tighter">
+                        {lender.approval} SUCCESS
+                      </div>
                     </div>
-                    <div className="flex items-center gap-1.5 bg-green-500 text-white px-4 py-1.5 rounded-full font-black shadow-lg shadow-green-500/20 text-[10px] tracking-tighter">
-                      {lender.approval} SUCCESS Rate
-                    </div>
-                  </div>
 
-                  <h3 className="text-xl font-black text-[#08101E] mb-6 tracking-tight uppercase italic">{lender.name}</h3>
+                    <h3 className="text-xl font-black text-[#08101E] mb-6 tracking-tight uppercase italic">{lender.name}</h3>
 
-                  <div className="grid grid-cols-2 gap-4 mb-8">
-                    <div className="bg-[#FFF4E5]/50 p-4 rounded-2xl border border-[#FF7819]/5">
-                      <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Max Amount</p>
-                      <p className="text-sm font-black text-[#FF7819] flex items-center gap-1"><FaHandHoldingUsd /> {lender.amount}</p>
+                    <div className="grid grid-cols-2 gap-4 mb-8">
+                      <div className="bg-[#FFF4E5]/50 p-4 rounded-2xl border border-[#FF7819]/5">
+                        <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Max Amount</p>
+                        <p className="text-sm font-black text-[#FF7819] flex items-center gap-1"><FaHandHoldingUsd /> {lender.amount}</p>
+                      </div>
+                      <div className="bg-[#FFF4E5]/50 p-4 rounded-2xl border border-[#FF7819]/5">
+                        <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Interest</p>
+                        <p className="text-[11px] font-black text-[#08101E] flex items-center gap-1"><FaChartLine /> {lender.rate}</p>
+                      </div>
                     </div>
-                    <div className="bg-[#FFF4E5]/50 p-4 rounded-2xl border border-[#FF7819]/5">
-                      <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Interest</p>
-                      <p className="text-[11px] font-black text-[#08101E] flex items-center gap-1"><FaChartLine /> {lender.rate}</p>
-                    </div>
-                  </div>
 
-                  <div className="mb-10">
-                    <div className="flex flex-wrap gap-2">
-                      {lender.features.map((feature, i) => (
-                        <span key={i} className="flex items-center gap-1.5 text-[9px] font-black bg-gray-50 text-gray-500 px-3 py-2 rounded-xl border border-gray-100 uppercase tracking-wider group-hover:bg-green-50 group-hover:text-green-600 group-hover:border-green-100 transition-all">
-                          <FaCheckCircle className="text-[10px]" /> {feature}
-                        </span>
-                      ))}
+                    <div className="mb-10">
+                      <div className="flex flex-wrap gap-2">
+                        {lender.features.map((feature, i) => (
+                          <span key={i} className="flex items-center gap-1.5 text-[9px] font-black bg-gray-50 text-gray-500 px-3 py-2 rounded-xl border border-gray-100 uppercase tracking-wider group-hover:bg-green-50 group-hover:text-green-600 transition-all">
+                            <FaCheckCircle className="text-[10px]" /> {feature}
+                          </span>
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
-                  <a href={lender.url} target="_blank" rel="noopener noreferrer" className="block relative z-10">
-                    <motion.button 
-                      whileTap={{ scale: 0.95 }}
-                      className="w-full bg-[#08101E] hover:bg-[#FF7819] text-white font-black py-5 rounded-[1.8rem] shadow-xl transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[10px]"
-                    >
-                      Apply Instantly <FaBolt className="text-[#FF7819] group-hover:text-white" />
-                    </motion.button>
-                  </a>
-                </motion.div>
+                    <a href={lender.url} target="_blank" rel="noopener noreferrer" className="block relative z-10">
+                      <motion.button 
+                        whileTap={{ scale: 0.95 }}
+                        className="w-full bg-[#08101E] hover:bg-[#FF7819] text-white font-black py-5 rounded-[1.8rem] shadow-xl transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[10px]"
+                      >
+                        Apply Instantly <FaBolt className="text-[#FF7819] group-hover:text-white" />
+                      </motion.button>
+                    </a>
+                  </motion.div>
                 ))}
                 </AnimatePresence>
               </div>
             )}
           </div>
 
-          {/* 📝 ELIGIBILITY FORM SECTION (Glass Sticky) */}
+          {/* 📝 ELIGIBILITY FORM SECTION */}
           <div className="lg:col-span-5 lg:sticky lg:top-28 h-fit">
             <motion.div 
               initial={{ opacity: 0, scale: 0.95 }}

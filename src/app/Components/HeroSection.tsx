@@ -47,7 +47,7 @@ export default function HeroSection() {
     {
       src: "/image/himg2.png",
       tagline: "Naye India ka Digital Mantra",
-      headline: "Tractor Loans for <br /> <span class='text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFD700]'>Farmers</span>",
+      headline: "Turant Manzoori <br /> <span class='text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFD700]'>Quick Approval</span>",
       description: "Empowering agricultural growth with easy digital applications."
     },
     {
