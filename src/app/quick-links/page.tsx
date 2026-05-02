@@ -68,7 +68,7 @@ const lenders = [
     rate: "12% - 35.95% p.a",
     tenure: "3-24 months",
     features: ["Zero Paperwork", "Small Credit", "Instant Disbursal"],
-    url: "https://fatakpay.onelink.me/2uSI/652_IUXYC?utm_medium=",
+    url: "https://www.fatakpay.com/",
   }
   
 ];

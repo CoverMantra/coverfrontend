@@ -55,7 +55,7 @@ export default function LendersPage() {
       if (apiData?.success && apiData?.message === "You are eligible.") {
         showModal("✅ You are eligible!", "success");
         setTimeout(() => {
-          window.location.href = "https://fatakpay.onelink.me/2uSI/652_IUXYC?utm_medium=";
+          window.location.href = "https://www.fatakpay.com/";
         }, 2000);
       } else {
         showModal("Not eligible for this lender. Try other lenders.", "error");
