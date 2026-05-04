@@ -111,7 +111,56 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+{/* MISSION SECTION ENDS */}
 
+{/* 🗺️ JOURNEY CHART SECTION */}
+<section className="max-w-7xl mx-auto px-4 sm:px-6 py-16 md:py-24" data-aos="fade-up">
+  <div className="text-center mb-10 md:mb-16">
+    <div className="inline-block px-4 py-1.5 rounded-full bg-[#FF7819]/10 border border-[#FF7819]/20 text-[#FF7819] text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-4">
+      Timeline
+    </div>
+    <h2 className="text-3xl md:text-6xl font-black text-[#08101E] tracking-tight">
+      The <span className="text-[#FF7819]">CoverMantra</span> Story
+    </h2>
+    <div className="w-20 h-1.5 bg-[#FF7819] mx-auto mt-6 rounded-full shadow-[0_0_15px_rgba(255,120,25,0.3)]"></div>
+  </div>
+
+  <div className="relative group">
+    {/* Glassmorphism Frame */}
+    <div className="relative bg-white p-3 md:p-6 rounded-[2.5rem] md:rounded-[4rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.1)] border border-[#FF7819]/10 overflow-hidden">
+      
+      {/* Scrollable Container for Mobile Readability */}
+      <div className="overflow-x-auto custom-scrollbar rounded-[1.5rem] md:rounded-[3rem]"> 
+        <motion.img
+          whileHover={{ scale: 1.02 }}
+          transition={{ duration: 0.5 }}
+          src="/image/CM-Poster.jpeg" // Update with your actual image path
+          alt="CoverMantra Journey: Shuruaat se Bharosa tak"
+          className="w-full h-auto min-w-[800px] md:min-w-full cursor-zoom-in"
+          onClick={() => window.open('/path-to-your-image/journey-poster.jpg', '_blank')}
+        />
+      </div>
+
+      {/* Subtle Overlay Effect on Hover */}
+      <div className="absolute inset-0 pointer-events-none border-[12px] md:border-[20px] border-white rounded-[2.5rem] md:rounded-[4rem]"></div>
+    </div>
+
+    {/* Decorative Background Elements */}
+    <div className="absolute -top-10 -right-10 w-40 h-40 bg-[#FF7819]/10 rounded-full blur-3xl pointer-events-none -z-10"></div>
+    <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-[#FF7819]/5 rounded-full blur-3xl pointer-events-none -z-10"></div>
+  </div>
+
+  {/* Mobile Interactivity Hint */}
+  <div className="flex flex-col items-center gap-3 mt-8 md:hidden">
+    <div className="flex items-center gap-2 text-[#08101E]/40 font-bold text-[10px] uppercase tracking-widest">
+      <span>← Scroll to explore</span>
+      <div className="w-1 h-1 rounded-full bg-[#FF7819]"></div>
+      <span>Tap to zoom →</span>
+    </div>
+  </div>
+</section>
+
+{/* WHY DIFFERENT SECTION STARTS */}
       {/* WHY DIFFERENT */}
       <section className="bg-[#08101E] py-16 md:py-24 px-4 sm:px-6 relative">
         <div className="max-w-7xl mx-auto">
