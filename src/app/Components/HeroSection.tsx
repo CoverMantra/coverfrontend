@@ -41,19 +41,19 @@ export default function HeroSection() {
     {
       src: "/image/himg.png",
       tagline: "India's Trusted Applicant-Lender Connector",
-      headline: "Finance ka <br /> <span class='text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFD700]'>Smart Mantra</span>",
+      headline: "Finance ka <br /> <span class='text-transparent bg-clip-text bg-linear-to-r from-[#FF690B] to-[#FFD700]'>Smart Mantra</span>",
       description: "Seamlessly connecting you to RBI-Registered Lenders for instant loan approvals."
     },
     {
       src: "/image/himg2.png",
       tagline: "Naye India ka Digital Mantra",
-      headline: "Turant Manzoori <br /> <span class='text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFD700]'>Quick Approval</span>",
+      headline: "Turant Manzoori <br /> <span class='text-transparent bg-clip-text bg-linear-to-r from-[#FF690B] to-[#FFD700]'>Quick Approval</span>",
       description: "Empowering agricultural growth with easy digital applications."
     },
     {
       src: "/image/himg3.png",
       tagline: "Full-Range Fintech Mantra",
-      headline: "Loans. Insurance. <br /> <span class='text-transparent bg-clip-text bg-gradient-to-r from-[#FF690B] to-[#FFD700]'>Growth.</span>",
+      headline: "Loans. Insurance. <br /> <span class='text-transparent bg-clip-text bg-linear-to-r from-[#FF690B] to-[#FFD700]'>Growth.</span>",
       description: "Home, Business, Car Loans, and Instant Insurance Covers."
     },
   ];
@@ -61,19 +61,19 @@ export default function HeroSection() {
   if (!isMounted) return <div className="min-h-screen bg-[#08101E]" />;
 
   return (
-    <section className="relative bg-[#08101E] min-h-[100dvh] flex flex-col justify-center text-white overflow-hidden pt-24 md:pt-10">
+    <section className="relative bg-[#08101E] min-h-screen flex flex-col justify-center text-white overflow-hidden pt-24 md:pt-10">
       
       {/* 🔱 Satyam Shivam Sundaram Mantra Strip */}
        <div className="absolute top-24 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
           <div className="flex items-center gap-4 text-white font-serif tracking-[0.4em] uppercase text-xs font-bold">
-            <span className="h-[1px] w-16 bg-gradient-to-r from-transparent via-white/50 to-white" />
+            <span className="h-px w-16 bg-linear-to-r from-transparent via-white/50 to-white" />
             <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">सत्यम शिवम सुंदरम</span>
-            <span className="h-[1px] w-16 bg-gradient-to-l from-transparent via-white/50 to-white" />
+            <span className="h-px w-16 bg-linear-to-l from-transparent via-white/50 to-white" />
           </div>
         </div>
 
       {/* Dynamic Background Glow */}
-      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-[800px] aspect-square rounded-full blur-[130px] opacity-15 -z-10 transition-colors duration-1000 ${
+      <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-200 aspect-square rounded-full blur-[130px] opacity-15 -z-10 transition-colors duration-1000 ${
         activeSlide === 1 ? "bg-green-500" : "bg-[#FF690B]"
       }`} />
 
@@ -125,7 +125,7 @@ export default function HeroSection() {
         </div>
 
         {/* RIGHT CONTENT: Slider Image */}
-        <div className="order-1 md:order-2 w-full relative h-[300px] sm:h-[450px] lg:h-[600px] flex items-center justify-center">
+        <div className="order-1 md:order-2 w-full relative h-75 sm:h-112.5 lg:h-150 flex items-center justify-center">
           <Swiper
             modules={[Autoplay, EffectFade, Pagination]}
             effect="fade"
@@ -153,8 +153,8 @@ export default function HeroSection() {
       </div>
 
       {/* Wave Divider */}
-      <div className="absolute bottom-0 left-0 w-full z-30 translate-y-[2px]">
-        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-[50px] sm:h-[80px] lg:h-[120px]">
+      <div className="absolute bottom-0 left-0 w-full z-30 translate-y-0.5">
+        <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-12.5 sm:h-20 lg:h-30">
           <path d="M0,120 L1440,120 L1440,40 C1320,80 1200,0 1080,40 C960,80 840,0 720,40 C600,80 480,0 360,40 C240,80 120,0 0,40 Z" fill="white" />
         </svg>
       </div>

@@ -76,7 +76,7 @@ export default function Navbar() {
   return (
     <>
       <nav
-        className={`fixed top-0 left-0 w-full z-100 transition-all duration-500 ${
+        className={`fixed top-0 left-0 w-full z-[100] transition-all duration-500 ${
           scrolled 
           ? "py-3 bg-[#08101E]/90 backdrop-blur-xl border-b border-white/10 shadow-2xl" 
           : "py-5 bg-transparent"
@@ -85,7 +85,7 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex justify-between items-center">
           
           {/* Logo Section */}
-          <Link href="/" className="flex items-center gap-2 sm:gap-3 group relative z-110">
+          <Link href="/" className="flex items-center gap-2 sm:gap-3 group relative z-[110]">
             <div className="w-8 h-8 sm:w-10 sm:h-10 lg:w-12 lg:h-12 shrink-0 group-hover:scale-105 transition-transform duration-300">
                <img src="/image/logo.png" alt="CoverMantra Logo" className="w-full h-full object-contain" />
             </div>
@@ -153,7 +153,7 @@ export default function Navbar() {
           {/* Mobile Hamburger */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden relative z-110 p-2 bg-white/5 rounded-xl border border-white/10 text-white active:scale-90 transition-transform"
+            className="lg:hidden relative z-[110] p-2 bg-white/5 rounded-xl border border-white/10 text-white active:scale-90 transition-transform"
           >
             {mobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
@@ -162,7 +162,7 @@ export default function Navbar() {
 
       {/* Mobile Menu Overlay */}
       <div
-        className={`fixed inset-0 bg-[#08101E] z-100 transition-all duration-500 ease-in-out lg:hidden ${
+        className={`fixed inset-0 bg-[#08101E] z-[100] transition-all duration-500 ease-in-out lg:hidden ${
           mobileMenuOpen ? "opacity-100 pointer-events-auto translate-y-0" : "opacity-0 pointer-events-none -translate-y-full"
         }`}
       >
