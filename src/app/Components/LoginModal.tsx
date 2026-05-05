@@ -64,7 +64,18 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
         setErrorMsg(res?.message || "Failed to send OTP!");
       }
     } catch (err: any) {
-      setErrorMsg(err?.response?.data?.message || "Failed to send OTP!");
+      const responseData = err?.response?.data;
+      let message =
+        responseData?.message ||
+        (typeof responseData === "string" ? responseData : null) ||
+        err?.message ||
+        "Failed to send OTP!";
+
+      if (responseData?.details && !message.includes(responseData.details)) {
+        message += ` (${JSON.stringify(responseData.details)})`;
+      }
+
+      setErrorMsg(message);
     } finally {
       setIsLoading(false);
     }

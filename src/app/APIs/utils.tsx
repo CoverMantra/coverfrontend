@@ -5,7 +5,12 @@ export const sendOtp = async (phone: string): Promise<any> => {
     const { data } = await api.post("/api/user/send-otp", { phone });
     return data;
   } catch (error: any) {
-    console.error("Send OTP API Error:", error?.response?.data || error.message);
+    const apiError =
+      error?.response?.data ||
+      error?.response?.data?.message ||
+      error.message ||
+      error;
+    console.error("Send OTP API Error:", apiError);
     throw error;
   }
 };
