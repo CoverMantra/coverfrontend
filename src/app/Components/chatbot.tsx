@@ -10,7 +10,7 @@ import animationData from "../../animations/chatbot.json";
 import { useRouter } from "next/navigation";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { FaPaperPlane, FaTimes, FaRobot, FaWhatsapp, FaUserCircle } from "react-icons/fa";
+import { FaPaperPlane, FaTimes, FaWhatsapp, FaUserCircle, FaCheckCircle, FaBuilding, FaBriefcase } from "react-icons/fa";
 import FloatingMessage from "./FloatingMessage";
 import LoginModal from "../Components/LoginModal";
 
@@ -28,9 +28,26 @@ export const fetchUserData = async (phone: string) => {
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 type ChatMessage = {
-  type: "bot" | "user" | "signup" | "options" | "form" | "submit_button" | "employment_options" | "prefilled_options" | "lender_recommendations";
+  type: "bot" | "user" | "signup" | "options" | "form" | "submit_button" | "employment_options" | "prefilled_options" | "lender_recommendations" | "whatsapp_only";
   text: string;
   timestamp?: string;
+};
+
+const calculateAge = (dobString: string | Date): number => {
+  let dob: Date;
+  if (typeof dobString === 'string') {
+    const [day, month, year] = dobString.split('/').map(Number);
+    dob = new Date(year, month - 1, day);
+  } else {
+    dob = dobString;
+  }
+  const today = new Date();
+  let age = today.getFullYear() - dob.getFullYear();
+  const m = today.getMonth() - dob.getMonth();
+  if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+      age--;
+  }
+  return age;
 };
 
 type FormData = {
@@ -43,14 +60,6 @@ type FormField = {
   key: keyof FormData;
   question: string;
   validation: (value: string) => boolean;
-};
-
-// Theme Constants
-const COLORS = {
-  primary: "#FF7819", // Saffron
-  accent: "#3C8291",  // Blue
-  bg: "#08101E",      // Deep Navy
-  text: "#C9CBCC"     // Greyish Text
 };
 
 export default function Bot() {
@@ -154,7 +163,8 @@ export default function Bot() {
          addBotMessage("Thanks! In details ke basis par mere paas kuch ache plans hain.");
          addBotMessageWithDelay("Unhe dekhne ke liye please ek baar Login/Sign-up karein taaki hum process start kar sakein.", "signup", 1000);
       } else if (mode === "logged_in_hook") {
-         addBotMessage(`Main dekh raha hoon aapka ₹${currentData.loanAmount} ka loan process mein hai. Kya main isme aapki help karoon?`, "options");
+         addBotMessage(`Aapke ₹${currentData.loanAmount} ke loan ke liye humare paas best lenders available hain. Please keep your PAN Card & Aadhaar Card ready for a quick 2-minute process.`);
+         addBotMessageWithDelay("", "options", 1500);
       } else {
          addBotMessage("Thanks! You have provided all information.");
          addBotMessage("Submit Application", "submit_button");
@@ -180,7 +190,8 @@ export default function Bot() {
               advanceForm(data, "logged_in_hook");
            }, 1000);
         } else {
-           addBotMessageWithDelay(`Main dekh raha hoon aapka ₹${data.loanAmount} ka loan process mein hai. Kya main isme aapki help karoon?`, "options", 1000);
+           addBotMessageWithDelay(`Aapke ₹${data.loanAmount} ke loan ke liye humare paas best lenders available hain. Please keep your PAN Card & Aadhaar Card ready for a quick 2-minute process.`, "bot", 1000);
+           addBotMessageWithDelay("", "options", 2500);
         }
       } else {
         setFormMode("guest_hook");
@@ -236,6 +247,15 @@ export default function Bot() {
       const field = getFullFormFields().find(f => f.key === currentFormField);
       if (field) {
         if (field.validation(trimmed)) {
+          if (field.key === "dob" && calculateAge(trimmed) < 18) {
+             addBotMessage("Sorry, aapki age 18 saal se kam hai. Personal loan ke liye minimum age 18 years honi chahiye.");
+             setTimeout(() => {
+                addBotMessage("Kisi aur help ke liye aap humari team se WhatsApp par connect kar sakte hain:", "whatsapp_only");
+             }, 1000);
+             setIsCollectingForm(false);
+             setCurrentFormField(null);
+             return;
+          }
           const newData = { ...formData, [field.key]: trimmed };
           setFormData(newData);
           setTimeout(() => advanceForm(newData), 600);
@@ -256,9 +276,9 @@ export default function Bot() {
 
   const handleOptionSelect = (option: string) => {
     if (option === "apply") {
-      setFormMode("full_apply");
-      setIsCollectingForm(true);
-      advanceForm(formData, "full_apply");
+      setIsOpen(false);
+      // Optional: Pass data via query params if needed, but for now just redirect
+      router.push("/personal-loans");
     } else if (option === "apply_lenders") {
       router.push("/personal-loans");
     } else if (option === "Salaried" || option === "Self-employed") {
@@ -282,14 +302,171 @@ export default function Bot() {
   const handleDateSelect = (date: Date | null) => {
     if (!date) return;
     const formatted = `${date.getDate().toString().padStart(2,'0')}/${(date.getMonth()+1).toString().padStart(2,'0')}/${date.getFullYear()}`;
+    setChatMessages(p => [...p, { type: "user", text: `DOB: ${formatted}`, timestamp: getTimestamp() }]);
+    setShowDatePicker(false);
+    
+    if (calculateAge(date) < 18) {
+       setTimeout(() => {
+           addBotMessage("Sorry, aapki age 18 saal se kam hai. Personal loan ke liye minimum age 18 years honi chahiye.");
+           setTimeout(() => {
+              addBotMessage("Kisi aur help ke liye aap humari team se WhatsApp par connect kar sakte hain:", "whatsapp_only");
+           }, 1000);
+       }, 600);
+       setIsCollectingForm(false);
+       setCurrentFormField(null);
+       return;
+    }
+
     const newData = { ...formData, dob: formatted };
     setFormData(newData);
-    setShowDatePicker(false);
-    setChatMessages(p => [...p, { type: "user", text: `DOB: ${formatted}`, timestamp: getTimestamp() }]);
     setTimeout(() => advanceForm(newData), 600);
   };
 
   const inputDisabled = isSubmitting || showDatePicker || currentFormField === "employment";
+
+  const renderMessageContent = (msg: ChatMessage) => {
+    if (msg.type === "bot") {
+      return (
+        <div className="flex gap-3 max-w-[90%] sm:max-w-[85%]">
+          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-md overflow-hidden p-1 border border-white/10 mt-1">
+            <img src="/image/logo.png" alt="Bot" className="w-full h-full object-contain" />
+          </div>
+          <div className="flex flex-col gap-1">
+            <div className="px-4 py-3 bg-white/10 backdrop-blur-md text-[#E2E8F0] rounded-2xl rounded-tl-sm border border-white/5 text-sm leading-relaxed shadow-lg">
+              {msg.text}
+            </div>
+            {msg.timestamp && <p className="text-[10px] text-[#94A3B8] font-medium ml-1">{msg.timestamp}</p>}
+          </div>
+        </div>
+      );
+    }
+    
+    if (msg.type === "user") {
+      return (
+        <div className="flex gap-3 max-w-[90%] sm:max-w-[85%]">
+          <div className="flex flex-col items-end gap-1">
+            <div className="px-4 py-3 bg-gradient-to-br from-[#FF7819] to-[#e66a15] text-white rounded-2xl rounded-tr-sm shadow-[0_10px_20px_-10px_rgba(255,120,25,0.6)] text-sm font-medium">
+              {msg.text}
+            </div>
+            {msg.timestamp && <p className="text-[10px] text-[#94A3B8] font-medium mr-1">{msg.timestamp}</p>}
+          </div>
+        </div>
+      );
+    }
+  
+    // Handle Special Interactive Components
+    return (
+      <div className="w-full space-y-4">
+        {msg.type === "signup" && !isLoggedIn && (
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={() => setIsLoginOpen(true)}
+            className="w-full p-4 rounded-2xl bg-gradient-to-r from-[#FF7819] to-[#FFB800] text-[#08101E] font-black shadow-[0_15px_30px_-10px_rgba(255,120,25,0.5)] flex items-center justify-center gap-2 text-sm tracking-wide"
+          >
+            Secure Log In / Sign Up <span className="text-xl">→</span>
+          </motion.button>
+        )}
+        
+        {msg.type === "options" && (
+           <div className="grid grid-cols-1 gap-3 w-full">
+             <button onClick={() => handleOptionSelect("apply")} className="p-4 bg-white/5 backdrop-blur-md text-white rounded-2xl font-bold border border-white/10 hover:bg-white/10 transition-all flex items-center justify-between group text-sm shadow-lg">
+               Apply for Personal Loan <span className="text-[#FF7819] group-hover:translate-x-1 transition-transform">→</span>
+             </button>                
+             <button onClick={() => window.open("https://wa.me/919729509967", "_blank")} className="p-4 bg-green-500/10 text-green-400 rounded-2xl font-bold border border-green-500/20 hover:bg-green-500/20 transition-all flex items-center justify-center gap-2 text-sm shadow-lg">
+               <FaWhatsapp size={16} /> Talk on WhatsApp
+             </button>
+           </div>
+        )}
+  
+        {msg.type === "whatsapp_only" && (
+           <button onClick={() => window.open("https://wa.me/919729509967", "_blank")} className="w-full p-4 bg-green-500/10 text-green-400 rounded-2xl font-bold border border-green-500/20 hover:bg-green-500/20 transition-all flex items-center justify-center gap-2 text-sm shadow-lg">
+             <FaWhatsapp size={18} /> Chat on WhatsApp
+           </button>
+        )}
+  
+        {msg.type === "employment_options" && (
+          <div className="flex gap-3">
+            {["Salaried", "Self-employed"].map(opt => (
+              <button key={opt} onClick={() => handleOptionSelect(opt)} className="flex-1 p-4 bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl text-[#E2E8F0] font-bold hover:bg-[#FF7819]/10 hover:border-[#FF7819]/50 hover:text-white transition-all text-xs flex flex-col items-center gap-2 shadow-lg">
+                {opt === "Salaried" ? <FaBuilding size={20} className="text-[#3C8291]" /> : <FaBriefcase size={20} className="text-[#FF7819]" />}
+                {opt}
+              </button>
+            ))}
+          </div>
+        )}
+  
+        {msg.type === "submit_button" && (
+          <motion.button 
+            whileTap={{ scale: 0.98 }}
+            onClick={submitFormData} 
+            disabled={isSubmitting}
+            className="w-full p-4 bg-gradient-to-r from-[#FF7819] to-[#e66a15] text-white rounded-2xl font-black shadow-[0_15px_30px_-10px_rgba(255,120,25,0.5)] hover:shadow-[0_20px_40px_-10px_rgba(255,120,25,0.6)] disabled:opacity-50 disabled:cursor-not-allowed transition-all tracking-wide"
+          >
+            {isSubmitting ? "PROCESSING..." : "CONFIRM & SUBMIT"}
+          </motion.button>
+        )}
+  
+        {msg.type === "prefilled_options" && (
+          <div className="grid grid-cols-1 gap-3 w-full">
+             <button onClick={() => handleOptionSelect("apply")} className="w-full p-4 bg-[#3C8291] text-white rounded-2xl font-bold shadow-lg hover:bg-[#34717d] transition-all">
+               Update Details & Re-apply
+             </button>
+             <button onClick={() => handleOptionSelect("apply_lenders")} className="w-full p-4 bg-white/5 backdrop-blur-md border border-white/10 text-white rounded-2xl font-bold shadow-lg hover:bg-white/10 transition-all">
+               View Lender Offers
+             </button>
+             <button onClick={() => window.open("https://wa.me/919729509967", "_blank")} className="p-4 bg-green-500/10 text-green-400 rounded-2xl font-bold border border-green-500/20 hover:bg-green-500/20 transition-all flex items-center justify-center gap-2 text-sm shadow-lg">
+               <FaWhatsapp /> Talk on WhatsApp
+             </button>
+          </div>
+        )}
+  
+        {msg.type === "lender_recommendations" && (
+          <div className="space-y-4 w-full">
+              <div className="flex items-center gap-2">
+                 <div className="h-[1px] flex-1 bg-white/10"></div>
+                 <p className="text-[#3C8291] text-[10px] font-black uppercase tracking-widest px-2">Matches For You</p>
+                 <div className="h-[1px] flex-1 bg-white/10"></div>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-4">
+                {Number(formData.income?.replace(/,/g, '')) > 25000 && (
+                  <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-[#0A192F] to-[#08101E] p-5 rounded-2xl border border-green-500/30 shadow-[0_10px_30px_-15px_rgba(34,197,94,0.3)] relative overflow-hidden group cursor-pointer" onClick={() => { router.push("/LenderAPI/zype"); setIsOpen(false); }}>
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-3xl group-hover:bg-green-500/20 transition-all"></div>
+                      <div className="flex justify-between items-center mb-3 relative z-10">
+                          <div className="flex items-center gap-3">
+                             <div className="w-10 h-10 bg-white rounded-xl p-1.5 shadow-md">
+                               <img src="/image/zypelogo.png" alt="Zype" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "/image/logo.png" }} />
+                             </div>
+                             <h4 className="font-black text-white text-lg">Zype</h4>
+                          </div>
+                          <span className="text-[10px] font-black uppercase bg-green-500/20 text-green-400 px-3 py-1.5 rounded-full border border-green-500/30 shadow-sm flex items-center gap-1"><FaCheckCircle/> Pre-approved</span>
+                      </div>
+                      <p className="text-xs text-[#94A3B8] mb-5 font-medium leading-relaxed relative z-10">Instant approval up to ₹5,00,000 at the lowest interest rates based on your profile.</p>
+                      <button className="w-full py-3 bg-green-500 hover:bg-green-400 text-white rounded-xl font-black text-xs transition-colors shadow-lg relative z-10 tracking-wide">CLAIM OFFER</button>
+                  </motion.div>
+                )}
+                
+                <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-[#0A192F] to-[#08101E] p-5 rounded-2xl border border-[#FF7819]/30 shadow-[0_10px_30px_-15px_rgba(255,120,25,0.3)] relative overflow-hidden group cursor-pointer" onClick={() => { router.push("/LenderAPI/vivifi"); setIsOpen(false); }}>
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF7819]/10 rounded-full blur-3xl group-hover:bg-[#FF7819]/20 transition-all"></div>
+                    <div className="flex justify-between items-center mb-3 relative z-10">
+                        <div className="flex items-center gap-3">
+                           <div className="w-10 h-10 bg-white rounded-xl p-1 shadow-md">
+                             <img src="/image/vivifilogo.png" alt="Vivifi" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "/image/logo.png" }} />
+                           </div>
+                           <h4 className="font-black text-white text-lg">Vivifi</h4>
+                        </div>
+                        <span className="text-[10px] font-black uppercase bg-[#FF7819]/20 text-[#FF7819] px-3 py-1.5 rounded-full border border-[#FF7819]/30 shadow-sm">High Chances</span>
+                    </div>
+                    <p className="text-xs text-[#94A3B8] mb-5 font-medium leading-relaxed relative z-10">Flexible instant credit line, ideal for your professional profile and income.</p>
+                    <button className="w-full py-3 bg-[#FF7819] hover:bg-[#e66a15] text-white rounded-xl font-black text-xs transition-colors shadow-lg relative z-10 tracking-wide">APPLY NOW</button>
+                </motion.div>
+              </div>
+          </div>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className="fixed bottom-6 right-6 z-[9999] font-sans antialiased">
@@ -298,161 +475,65 @@ export default function Bot() {
       <AnimatePresence>
         {isOpen && (
           <>
-            {/* Backdrop Overlay */}
+            {/* Backdrop Overlay (Mobile) */}
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsOpen(false)}
-              className="fixed inset-0 bg-[#08101E]/60 backdrop-blur-sm z-[9998] lg:hidden"
+              className="fixed inset-0 bg-[#08101E]/60 backdrop-blur-md z-[9998] lg:hidden"
             />
 
             {/* Chatbot Window */}
             <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 50, rotateX: -10 }}
-              animate={{ opacity: 1, scale: 1, y: 0, rotateX: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 50 }}
-              className="relative z-[9999] w-[92vw] sm:w-[400px] h-[600px] max-h-[85vh] bg-[#08101E] rounded-[2.5rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.5)] flex flex-col border border-[#3C8291]/30 overflow-hidden"
+              initial={{ opacity: 0, scale: 0.95, y: 40, transformOrigin: "bottom right" }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: 40, transition: { duration: 0.2 } }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+              className="relative z-[9999] w-[92vw] sm:w-[420px] h-[650px] max-h-[85vh] bg-[#08101E]/95 backdrop-blur-3xl rounded-[2rem] shadow-[0_32px_64px_-16px_rgba(0,0,0,0.8)] flex flex-col border border-white/10 overflow-hidden"
             >
               {/* Header */}
-              <div className="p-6 bg-gradient-to-r from-[#08101E] to-[#16253d] text-white flex justify-between items-center border-b border-[#3C8291]/20">
+              <div className="p-5 bg-white/5 backdrop-blur-xl border-b border-white/10 flex justify-between items-center z-10 relative">
                 <div className="flex items-center gap-3">
                   <div className="relative">
-                    <div className="w-10 h-10 bg-white rounded-2xl flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.2)] overflow-hidden p-1">
+                    <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-lg shadow-black/20 overflow-hidden p-1 border-2 border-white/10">
                       <img src="/image/logo.png" alt="Bot" className="w-full h-full object-contain" />
                     </div>
-                    <span className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 border-2 border-[#08101E] rounded-full"></span>
+                    <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-500 border-2 border-[#08101E] rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]"></span>
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm tracking-wide">CoverMantra Bot</h3>
-                    <p className="text-[10px] text-[#3C8291] font-black uppercase tracking-tighter">AI Assistant Active</p>
+                    <h3 className="font-bold text-white text-base tracking-wide flex items-center gap-2">CoverMantra AI <FaCheckCircle className="text-[#3C8291] text-xs" /></h3>
+                    <p className="text-[11px] text-[#3C8291] font-black uppercase tracking-widest">Always Active</p>
                   </div>
                 </div>
-                <div className="flex items-center gap-2">
-                  <button onClick={() => window.open("https://wa.me/919729509967", "_blank")} className="p-2 bg-green-900/20 hover:bg-green-900/50 rounded-full transition-colors text-green-400 border border-green-900/50" title="Contact on WhatsApp">
-                    <FaWhatsapp size={20} />
+                <div className="flex items-center gap-1">
+                  <button onClick={() => window.open("https://wa.me/919729509967", "_blank")} className="p-2.5 bg-green-500/10 hover:bg-green-500/20 rounded-full transition-all text-green-400 group" title="Contact on WhatsApp">
+                    <FaWhatsapp size={18} className="group-hover:scale-110 transition-transform" />
                   </button>
-                  <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/5 rounded-full transition-colors text-[#C9CBCC]">
-                    <FaTimes size={20} />
+                  <button onClick={() => setIsOpen(false)} className="p-2.5 hover:bg-white/10 rounded-full transition-all text-[#C9CBCC] hover:text-white group">
+                    <FaTimes size={18} className="group-hover:rotate-90 transition-transform" />
                   </button>
                 </div>
               </div>
 
               {/* Messages Area */}
-              <div className="flex-1 overflow-y-auto p-5 space-y-5 custom-scrollbar bg-[#08101E]">
+              <div className="flex-1 overflow-y-auto p-5 space-y-6 custom-scrollbar relative z-0">
                 <AnimatePresence initial={false}>
                   {chatMessages.map((msg, idx) => (
                     <motion.div
                       key={idx}
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
+                      initial={{ opacity: 0, y: 15, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
                       className={`flex ${msg.type === "user" ? "justify-end" : "justify-start"}`}
                     >
-                      {msg.type === "bot" ? (
-                        <div className="flex gap-3 max-w-[85%]">
-                          <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shrink-0 shadow-sm overflow-hidden p-1">
-                            <img src="/image/logo.png" alt="Bot" className="w-full h-full object-contain" />
-                          </div>
-                          <div>
-                            <div className="px-4 py-3 bg-[#1a2a44] text-[#C9CBCC] rounded-2xl rounded-tl-none border border-[#3C8291]/20 text-sm leading-relaxed shadow-sm">
-                              {msg.text}
-                            </div>
-                            {msg.timestamp && <p className="text-[10px] text-gray-500 mt-1 ml-1">{msg.timestamp}</p>}
-                          </div>
-                        </div>
-                      ) : msg.type === "user" ? (
-                        <div className="flex gap-3 max-w-[85%]">
-                          <div className="flex flex-col items-end">
-                            <div className="px-4 py-3 bg-[#FF7819] text-white rounded-2xl rounded-tr-none shadow-lg text-sm font-medium">
-                              {msg.text}
-                            </div>
-                            {msg.timestamp && <p className="text-[10px] text-gray-500 mt-1 mr-1">{msg.timestamp}</p>}
-                          </div>
-                          <div className="w-8 h-8 rounded-lg bg-[#FF7819] flex items-center justify-center text-white shrink-0 shadow-md">
-                            <FaUserCircle size={16} />
-                          </div>
-                        </div>
-                      ) : (
-                        <div className="w-full space-y-3">
-                          {/* Bot Action Components */}
-                          {msg.type === "signup" && !isLoggedIn && (
-                            <button
-                              onClick={() => setIsLoginOpen(true)}
-                              className="w-full p-4 rounded-2xl bg-gradient-to-br from-[#FF7819] to-[#e66a15] text-white font-bold shadow-xl hover:scale-[1.02] transition-transform"
-                            >
-                              Get Started / Log In
-                            </button>
-                          )}
-                          {msg.type === "options" && (
-                            <div className="grid grid-cols-1 gap-3 w-full">
-                              <button onClick={() => handleOptionSelect("apply")} className="p-4 bg-[#1a2a44] text-white rounded-2xl font-bold border border-[#3C8291]/40 hover:border-[#FF7819] transition-all flex items-center justify-between group text-sm">
-                                Apply for Personal Loan <span className="text-[#FF7819] group-hover:translate-x-1 transition-transform">→</span>
-                              </button>                
-                              <button onClick={() => window.open("https://wa.me/919729509967", "_blank")} className="p-4 bg-[#0d2a1c] text-green-400 rounded-2xl font-bold border border-green-900/50 hover:bg-green-900/20 transition-all flex items-center justify-center gap-2 text-sm">
-                                <FaWhatsapp /> Talk on WhatsApp
-                              </button>
-                            </div>
-                          )}
-                          {msg.type === "employment_options" && (
-                            <div className="flex gap-2">
-                              {["Salaried", "Self-employed"].map(opt => (
-                                <button key={opt} onClick={() => handleOptionSelect(opt)} className="flex-1 p-3 bg-[#1a2a44] border border-[#3C8291]/30 rounded-xl text-[#C9CBCC] font-bold hover:border-[#FF7819] hover:text-white transition-all text-xs">
-                                  {opt}
-                                </button>
-                              ))}
-                            </div>
-                          )}
-                          {msg.type === "submit_button" && (
-                             <button onClick={submitFormData} className="w-full p-4 bg-[#FF7819] text-white rounded-2xl font-black shadow-2xl hover:bg-[#e66a15] disabled:bg-gray-700 transition-all">
-                               {isSubmitting ? "PROCESSING..." : "CONFIRM & SUBMIT"}
-                             </button>
-                          )}
-                          {msg.type === "prefilled_options" && (
-                             <div className="grid grid-cols-1 gap-3 w-full">
-                               <button onClick={() => handleOptionSelect("apply")} className="w-full p-4 bg-[#3C8291] text-white rounded-2xl font-bold shadow-lg hover:bg-[#34717d] transition-all">
-                                 Update Details & Re-apply
-                               </button>
-                               <button onClick={() => handleOptionSelect("apply_lenders")} className="w-full p-4 bg-[#1a2a44] border border-[#3C8291]/40 text-white rounded-2xl font-bold shadow-lg hover:bg-[#1f3352] transition-all">
-                                 View Lender Offers
-                               </button>
-                               <button onClick={() => window.open("https://wa.me/919729509967", "_blank")} className="p-4 bg-[#0d2a1c] text-green-400 rounded-2xl font-bold border border-green-900/50 hover:bg-green-900/20 transition-all flex items-center justify-center gap-2 text-sm">
-                                 <FaWhatsapp /> Talk on WhatsApp
-                               </button>
-                             </div>
-                          )}
-                          {msg.type === "lender_recommendations" && (
-                            <div className="space-y-3 w-full">
-                                <p className="text-[#3C8291] text-xs font-bold uppercase tracking-widest">Recommended For You</p>
-                                <div className="grid grid-cols-1 gap-3">
-                                  {Number(formData.income?.replace(/,/g, '')) > 25000 && (
-                                    <div className="bg-[#1a2a44] p-4 rounded-2xl border border-green-500/30">
-                                        <div className="flex justify-between items-center mb-2">
-                                            <h4 className="font-bold text-white">Zype</h4>
-                                            <span className="text-[10px] font-bold uppercase bg-green-900/50 text-green-400 px-2 py-1 rounded-full">Pre-approved</span>
-                                        </div>
-                                        <p className="text-xs text-[#C9CBCC] mb-4">Up to ₹5,00,000 at lowest interest rates based on your income.</p>
-                                        <button onClick={() => router.push("/LenderAPI/zype")} className="w-full py-2.5 bg-green-600 hover:bg-green-500 text-white rounded-xl font-bold text-xs transition-colors">Complete Zype Application</button>
-                                    </div>
-                                  )}
-                                  <div className="bg-[#1a2a44] p-4 rounded-2xl border border-[#3C8291]/30">
-                                      <div className="flex justify-between items-center mb-2">
-                                          <h4 className="font-bold text-white">Vivifi</h4>
-                                          <span className="text-[10px] font-bold uppercase bg-[#FF7819]/20 text-[#FF7819] px-2 py-1 rounded-full">High Chances</span>
-                                      </div>
-                                      <p className="text-xs text-[#C9CBCC] mb-4">Instant credit line, ideal for your professional profile.</p>
-                                      <button onClick={() => router.push("/LenderAPI/vivifi")} className="w-full py-2.5 bg-[#FF7819] hover:bg-[#e66a15] text-white rounded-xl font-bold text-xs transition-colors">Apply with Vivifi</button>
-                                  </div>
-                                </div>
-                            </div>
-                          )}
-                        </div>
-                      )}
+                      {renderMessageContent(msg)}
                     </motion.div>
                   ))}
                 </AnimatePresence>
 
                 {showDatePicker && (
-                  <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="p-2 bg-white rounded-2xl shadow-2xl">
+                  <motion.div initial={{ opacity: 0, y: 10, scale: 0.95 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="p-3 bg-white/10 backdrop-blur-xl rounded-2xl border border-white/20 shadow-2xl relative z-20">
                     <DatePicker
                       selected={selectedDate}
                       onChange={handleDateSelect}
@@ -460,48 +541,49 @@ export default function Bot() {
                       showYearDropdown
                       dropdownMode="select"
                       maxDate={new Date()}
+                      calendarClassName="modern-calendar"
                     />
                   </motion.div>
                 )}
 
                 {isTyping && (
                   <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} className="flex gap-3 max-w-[85%]">
-                    <div className="w-8 h-8 rounded-lg bg-white flex items-center justify-center shrink-0 shadow-sm overflow-hidden p-1">
+                    <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center shrink-0 shadow-sm overflow-hidden p-1 mt-1">
                       <img src="/image/logo.png" alt="Bot" className="w-full h-full object-contain" />
                     </div>
-                    <div className="flex gap-1.5 p-4 bg-[#1a2a44] rounded-2xl rounded-tl-none border border-[#3C8291]/20 items-center justify-center">
-                      <div className="w-1.5 h-1.5 bg-[#3C8291] rounded-full animate-bounce [animation-delay:-0.3s]"></div>
-                      <div className="w-1.5 h-1.5 bg-[#3C8291] rounded-full animate-bounce [animation-delay:-0.15s]"></div>
-                      <div className="w-1.5 h-1.5 bg-[#3C8291] rounded-full animate-bounce"></div>
+                    <div className="flex gap-1.5 px-4 py-4 bg-white/10 backdrop-blur-md rounded-2xl rounded-tl-sm border border-white/5 items-center justify-center shadow-md">
+                      <div className="w-1.5 h-1.5 bg-[#E2E8F0] rounded-full animate-bounce [animation-delay:-0.3s]"></div>
+                      <div className="w-1.5 h-1.5 bg-[#E2E8F0] rounded-full animate-bounce [animation-delay:-0.15s]"></div>
+                      <div className="w-1.5 h-1.5 bg-[#E2E8F0] rounded-full animate-bounce"></div>
                     </div>
                   </motion.div>
                 )}
                 
                 {isSubmitting && (
-                  <div className="flex justify-center py-4">
-                    <div className="w-10 h-10 border-4 border-[#3C8291]/20 border-t-[#FF7819] rounded-full animate-spin"></div>
+                  <div className="flex justify-center py-6">
+                    <div className="w-10 h-10 border-4 border-white/10 border-t-[#FF7819] rounded-full animate-spin"></div>
                   </div>
                 )}
                 <div ref={messagesEndRef} />
               </div>
 
               {/* Input Area */}
-              <div className="p-5 bg-[#16253d] border-t border-[#3C8291]/20 flex items-center gap-3">
+              <div className="p-4 bg-black/40 backdrop-blur-xl border-t border-white/10 flex items-center gap-3 relative z-10">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   disabled={inputDisabled}
                   onKeyDown={(e) => e.key === "Enter" && handleUserMessage(input)}
-                  placeholder={inputDisabled ? "Please use options above..." : "Type your query..."}
-                  className="flex-1 px-5 py-4 bg-[#08101E] border border-[#3C8291]/30 rounded-2xl text-white text-sm focus:outline-none focus:border-[#FF7819] transition-all disabled:opacity-40"
+                  placeholder={inputDisabled ? "Please use options above..." : "Type your message..."}
+                  className="flex-1 px-5 py-3.5 bg-white/5 border border-white/10 rounded-xl text-white text-sm focus:outline-none focus:border-[#FF7819]/50 focus:bg-white/10 transition-all disabled:opacity-40 placeholder:text-[#94A3B8] shadow-inner"
                 />
                 <button
                   onClick={() => handleUserMessage(input)}
                   disabled={!input.trim() || inputDisabled}
-                  className="p-4 bg-[#FF7819] text-white rounded-2xl shadow-lg hover:scale-105 active:scale-95 disabled:bg-gray-800 disabled:text-gray-500 transition-all"
+                  className="p-3.5 bg-gradient-to-br from-[#FF7819] to-[#e66a15] text-white rounded-xl shadow-[0_10px_20px_-10px_rgba(255,120,25,0.6)] hover:scale-105 active:scale-95 disabled:bg-white/5 disabled:text-gray-500 disabled:shadow-none transition-all"
                 >
-                  <FaPaperPlane size={14} />
+                  <FaPaperPlane size={16} />
                 </button>
               </div>
             </motion.div>
@@ -511,24 +593,31 @@ export default function Bot() {
 
       {/* Trigger Button */}
       <motion.button
-        whileHover={{ scale: 1.1, y: -5 }}
-        whileTap={{ scale: 0.9 }}
+        whileHover={{ scale: 1.05, y: -5 }}
+        whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="relative group w-16 h-16 bg-[#08101E] border-2 border-[#FF7819] rounded-2xl flex items-center justify-center shadow-[0_10px_40px_rgba(255,120,25,0.3)] z-[10000]"
+        className="relative group w-16 h-16 bg-gradient-to-br from-[#16253d] to-[#08101E] border border-white/20 rounded-2xl flex items-center justify-center shadow-[0_15px_40px_rgba(0,0,0,0.5)] z-[10000] overflow-hidden"
       >
-        <Lottie animationData={animationData} loop autoplay className="w-12 h-12" />
-        <div className="absolute inset-0 bg-[#FF7819] rounded-2xl blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
+        <div className="absolute inset-0 bg-gradient-to-tr from-[#FF7819]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        <Lottie animationData={animationData} loop autoplay className="w-14 h-14 relative z-10 drop-shadow-lg" />
       </motion.button>
 
       <LoginModal isOpen={isLoginOpen} onClose={() => setIsLoginOpen(false)} />
       
       <style jsx global>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #3C8291; border-radius: 10px; }
-        .react-datepicker { border: none !important; font-family: inherit !important; width: 100% !important; background: white !important; }
-        .react-datepicker__header { background: #f8fafc !important; border-bottom: 1px solid #e2e8f0 !important; }
-        .react-datepicker__day--selected { background-color: #FF7819 !important; border-radius: 0.5rem !important; }
-        .react-datepicker__day:hover { border-radius: 0.5rem !important; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.4); }
+        .react-datepicker { border: none !important; font-family: inherit !important; width: 100% !important; background: transparent !important; color: white !important;}
+        .react-datepicker__header { background: transparent !important; border-bottom: 1px solid rgba(255,255,255,0.1) !important; padding-top: 10px !important;}
+        .react-datepicker__current-month, .react-datepicker-time__header, .react-datepicker-year-header { color: white !important; font-weight: 800 !important; }
+        .react-datepicker__day-name { color: #94A3B8 !important; }
+        .react-datepicker__day { color: white !important; transition: all 0.2s; }
+        .react-datepicker__day:hover { background-color: rgba(255,120,25,0.2) !important; border-radius: 0.5rem !important; }
+        .react-datepicker__day--selected, .react-datepicker__day--keyboard-selected { background-color: #FF7819 !important; border-radius: 0.5rem !important; color: white !important; font-weight: bold;}
+        .modern-calendar { border-radius: 1rem !important; overflow: hidden; padding: 5px; }
+        .react-datepicker__month-select, .react-datepicker__year-select { background-color: #08101E !important; color: white !important; border: 1px solid rgba(255,255,255,0.2) !important; border-radius: 6px; padding: 2px 5px; outline: none; cursor: pointer; }
+        .react-datepicker__month-select option, .react-datepicker__year-select option { background-color: #08101E !important; color: white !important; }
       `}</style>
     </div>
   );

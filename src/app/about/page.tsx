@@ -134,10 +134,10 @@ export default function AboutPage() {
         <motion.img
           whileHover={{ scale: 1.02 }}
           transition={{ duration: 0.5 }}
-          src="/image/CM-Poster.jpeg" // Update with your actual image path
+          src="/image/CM-Poster.jpeg"
           alt="CoverMantra Journey: Shuruaat se Bharosa tak"
           className="w-full h-auto min-w-[800px] md:min-w-full cursor-zoom-in"
-          onClick={() => window.open('/path-to-your-image/journey-poster.jpg', '_blank')}
+          onClick={() => window.open('/image/CM-Poster.jpeg', '_blank')}
         />
       </div>
 
