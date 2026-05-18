@@ -1,17 +1,35 @@
 "use client";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import axios from "axios";
+
+// Update base URL if needed based on your environment
+const API_BASE_URL = "http://localhost:5001/api";
+
+interface Partner {
+  _id?: string;
+  name: string;
+  logo: string;
+  link?: string;
+  UTM?: string;
+  priority?: number;
+}
 
 export default function OurPartners() {
-  const partners = [
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Static fallback array to ensure page NEVER breaks
+  const fallbackPartners: Partner[] = [
+    {
+      name: "Vivifi",
+      logo: "https://www.vivifin.com/images/vivifi-logo.png",
+      link: "https://www.vivifin.com/"
+    },
     {
       name: "MoneyView",
       logo: "https://moneyview.in/images/mv-green-logo-v3Compressed.svg",
       link: "https://moneyview.in/"
-    },
-    {
-      name: "FDPL Finance",
-      logo: "https://www.fdplfinance.com/assets/images/logo/Logo.svg",
-      link: "https://fatakpay.com/"
     },
     {
       name: "Zype",
@@ -19,11 +37,33 @@ export default function OurPartners() {
       link: "https://zype.onelink.me/vx8a?af_xp=custom&pid=CustomerSource&af_dp=com.zype.mobile%3A%2F%2F&deep_link_value=myZype&af_click_lookback=30d&c=Spiraea"
     },
     {
-      name: "Vivifi",
-      logo: "https://www.vivifin.com/images/vivifi-logo.png",
-      link: "https://www.vivifin.com/"
+      name: "FDPL Finance",
+      logo: "https://www.fdplfinance.com/assets/images/logo/Logo.svg",
+      link: "https://fatakpay.com/"
     },
   ];
+
+  useEffect(() => {
+    const fetchPartners = async () => {
+      try {
+        const res = await axios.get(`${API_BASE_URL}/lenders`);
+        if (res.data && res.data.length > 0) {
+          // Sort explicitly just in case
+          const sorted = res.data.sort((a: Partner, b: Partner) => (a.priority || 0) - (b.priority || 0));
+          setPartners(sorted);
+        } else {
+          setPartners(fallbackPartners);
+        }
+      } catch (error) {
+        console.error("Failed to fetch lenders, falling back to static list", error);
+        setPartners(fallbackPartners);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPartners();
+  }, []);
 
   return (
     <section className="relative bg-[#FFF4E5] py-20 md:py-28 overflow-hidden">
@@ -73,7 +113,7 @@ export default function OurPartners() {
           {partners.map((partner, index) => (
             <motion.a
               key={index}
-              href={partner.link}
+              href={partner.UTM || partner.link || "#"}
               target="_blank"
               rel="noopener noreferrer"
               initial={{ opacity: 0, y: 30 }}

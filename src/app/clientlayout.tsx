@@ -75,16 +75,11 @@ export default function ClientLayout({
 
       e.clipboardData?.setData(
         "text/plain",
-        "Itna pasand aaya? Dil me rakho ❤️ clipboard me nahi!"
+        "© 2026 CoverMantra. All rights reserved. Unauthorized reproduction is strictly prohibited."
       );
     };
 
-    // Disable Text Selection
-    const disableSelection = (
-      e: Event
-    ) => {
-      e.preventDefault();
-    };
+    // Text selection is allowed now
 
     // Disable Drag
     const disableDrag = (
@@ -109,10 +104,7 @@ export default function ClientLayout({
       disableCopy
     );
 
-    document.addEventListener(
-      "selectstart",
-      disableSelection
-    );
+    // Selection allowed
 
     document.addEventListener(
       "dragstart",
@@ -136,10 +128,7 @@ export default function ClientLayout({
         disableCopy
       );
 
-      document.removeEventListener(
-        "selectstart",
-        disableSelection
-      );
+    // Selection allowed
 
       document.removeEventListener(
         "dragstart",
@@ -152,7 +141,7 @@ export default function ClientLayout({
   return (
     <ModalProvider>
 
-      <div className="relative min-h-screen select-none">
+      <div className="relative min-h-screen">
 
         <Navbar />
 
@@ -169,21 +158,9 @@ export default function ClientLayout({
       </div>
 
       <style jsx global>{`
-        html,
-        body {
-          user-select: none;
-          -webkit-user-select: none;
-          -moz-user-select: none;
-          -ms-user-select: none;
-        }
-
         img {
           pointer-events: none;
           -webkit-user-drag: none;
-        }
-
-        ::selection {
-          background: transparent;
         }
       `}</style>
 
