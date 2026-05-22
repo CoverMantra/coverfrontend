@@ -61,26 +61,51 @@ export default function HeroSection() {
   if (!isMounted) return <div className="min-h-screen bg-[#08101E]" />;
 
   return (
-    <section className="relative bg-[#08101E] min-h-screen flex flex-col justify-center text-white overflow-hidden pt-24 md:pt-10">
+    <section className="relative bg-[#08101E] min-h-screen flex flex-col justify-start text-white overflow-hidden pt-4 sm:pt-6">
       
-      {/* 🔱 Satyam Shivam Sundaram Mantra Strip */}
-       <div className="absolute top-24 left-1/2 -translate-x-1/2 z-20 opacity-100 hidden lg:block pointer-events-none">
-          <div className="flex items-center gap-4 text-white font-serif tracking-[0.4em] uppercase text-xs font-bold">
-            <span className="h-px w-16 bg-linear-to-r from-transparent via-white/50 to-white" />
-            <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]">सत्यम शिवम सुंदरम</span>
-            <span className="h-px w-16 bg-linear-to-l from-transparent via-white/50 to-white" />
-          </div>
+      {/* 🔱 Top Central Master Block (Gaps and margins strictly reduced here) */}
+      <div className="w-full max-w-4xl mx-auto text-center px-4 pt-12 sm:pt-16 md:pt-20 z-50 flex flex-col items-center">
+        
+        {/* Satyam Shivam Sundaram Mantra Strip */}
+        <div className="flex items-center justify-center gap-3 sm:gap-4 text-white font-serif tracking-[0.3em] sm:tracking-[0.4em] uppercase text-[11px] sm:text-xs font-bold select-none mb-3 sm:mb-4">
+          <span className="h-px w-10 sm:w-20 bg-gradient-to-r from-transparent via-white/40 to-white" />
+          <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] whitespace-nowrap">सत्यम शिवम सुंदरam</span>
+          <span className="h-px w-10 sm:w-20 bg-gradient-to-l from-transparent via-white/40 to-white" />
         </div>
 
-      {/* Dynamic Background Glow */}
+        {/* 🎯 Apply Now Button - Niche ka space tight karne ke liye mb-2 rakha hai */}
+        <div className="w-full flex justify-center mb-1 sm:mb-2">
+          {isUserAuthenticated ? (
+            <button
+              disabled={true}
+              className="w-auto flex items-center justify-center gap-3 px-6 sm:px-10 py-3 sm:py-4 bg-white/10 text-white/40 font-black rounded-2xl border border-white/10 text-xs sm:text-sm tracking-wide cursor-not-allowed select-none"
+            >
+              ALREADY LOGGED IN ✨
+            </button>
+          ) : (
+            <button
+              onClick={handleApplyNow}
+              className="w-auto group inline-flex items-center justify-center gap-3 sm:gap-5 px-8 sm:px-12 py-3.5 sm:py-4 bg-white text-[#08101E] font-black rounded-2xl text-xs sm:text-sm tracking-wider shadow-[0_0_35px_rgba(255,255,255,0.3)] hover:bg-[#FF690B] hover:text-white transition-all duration-300 animate-pulse cursor-pointer"
+            >
+              APPLY NOW
+              <div className={`w-5 h-5 sm:w-6 sm:h-6 ${activeSlide === 1 ? 'bg-green-600' : 'bg-[#FF690B]'} rounded-full flex items-center justify-center group-hover:bg-white transition-colors`}>
+                <span className="text-white group-hover:text-[#08101E] text-xs sm:text-sm">→</span>
+              </div>
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* Dynamic Background Glow Layer */}
       <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full max-w-200 aspect-square rounded-full blur-[130px] opacity-15 -z-10 transition-colors duration-1000 ${
         activeSlide === 1 ? "bg-green-500" : "bg-[#FF690B]"
       }`} />
 
-      <div className="container mx-auto px-4 sm:px-8 lg:px-12 w-full grid grid-cols-1 md:grid-cols-2 items-center gap-8 lg:gap-16 z-20 pb-20 md:pb-24">
+      {/* Content Layout Grid (Space strictly reduced by changing mt-8 to mt-2/mt-4) */}
+      <div className="container mx-auto px-4 sm:px-8 lg:px-12 w-full grid grid-cols-1 md:grid-cols-2 items-center gap-6 lg:gap-12 z-20 pb-12 md:pb-16 mt-2 sm:mt-4 md:mt-1">
         
-        {/* LEFT CONTENT */}
-        <div className="order-2 md:order-1 text-center md:text-left flex flex-col items-center md:items-start">
+        {/* LEFT MAIN TEXT BUNDLE */}
+        <div className="order-2 md:order-1 text-center md:text-left flex flex-col items-center md:items-start pt-2 md:pt-0">
           <AnimatePresence mode="wait">
             <motion.div
               key={activeSlide}
@@ -89,7 +114,7 @@ export default function HeroSection() {
               exit={{ opacity: 0, x: 30 }}
               transition={{ duration: 0.6 }}
             >
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-white/5 backdrop-blur-md rounded-full border border-white/10 mb-4">
                 <span className="relative flex h-2 w-2">
                   <span className={`animate-ping absolute h-full w-full rounded-full ${activeSlide === 1 ? "bg-green-500" : "bg-[#FF690B]"} opacity-75`}></span>
                   <span className={`relative inline-flex rounded-full h-2 w-2 ${activeSlide === 1 ? "bg-green-500" : "bg-[#FF690B]"}`}></span>
@@ -100,32 +125,19 @@ export default function HeroSection() {
               </div>
 
               <h1 
-                className="text-4xl sm:text-5xl lg:text-7xl font-black leading-[1.1] mb-6"
+                className="text-3xl sm:text-5xl lg:text-7xl font-black leading-[1.1] mb-4"
                 dangerouslySetInnerHTML={{ __html: slides[activeSlide].headline }}
               />
 
-              <p className="text-sm sm:text-base lg:text-lg text-white/60 max-w-lg mb-8 leading-relaxed">
+              <p className="text-sm sm:text-base lg:text-lg text-white/60 max-w-lg mb-2 leading-relaxed">
                 {slides[activeSlide].description}
               </p>
             </motion.div>
           </AnimatePresence>
-
-          {/* CTA Button */}
-          <div className="w-full sm:w-auto">
-            <button
-              onClick={handleApplyNow}
-              className="w-full sm:w-auto group relative inline-flex items-center justify-center gap-6 px-10 py-4 bg-white text-[#08101E] font-black rounded-2xl shadow-xl hover:bg-[#FF690B] hover:text-white transition-all duration-300"
-            >
-              <span className="tracking-tighter">APPLY NOW</span>
-              <div className={`w-8 h-8 ${activeSlide === 1 ? 'bg-green-600' : 'bg-[#FF690B]'} rounded-full flex items-center justify-center group-hover:bg-white transition-colors`}>
-                <span className="text-white group-hover:text-[#08101E]">→</span>
-              </div>
-            </button>
-          </div>
         </div>
 
-        {/* RIGHT CONTENT: Slider Image */}
-        <div className="order-1 md:order-2 w-full relative h-75 sm:h-112.5 lg:h-150 flex items-center justify-center">
+        {/* RIGHT IMAGE COMPONENT */}
+        <div className="order-1 md:order-2 w-full relative h-64 sm:h-80 md:h-96 lg:h-120 flex items-center justify-center mt-4 md:mt-0">
           <Swiper
             modules={[Autoplay, EffectFade, Pagination]}
             effect="fade"
@@ -139,7 +151,7 @@ export default function HeroSection() {
                 <div className="relative w-full h-full">
                   <Image
                     src={slide.src}
-                    alt="Hero Slide"
+                    alt="Hero Slide Image"
                     fill
                     priority={i === 0}
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 40vw"
@@ -152,7 +164,7 @@ export default function HeroSection() {
         </div>
       </div>
 
-      {/* Wave Divider */}
+      {/* Premium Wave Bottom Accent */}
       <div className="absolute bottom-0 left-0 w-full z-30 translate-y-0.5">
         <svg viewBox="0 0 1440 120" preserveAspectRatio="none" className="w-full h-12.5 sm:h-20 lg:h-30">
           <path d="M0,120 L1440,120 L1440,40 C1320,80 1200,0 1080,40 C960,80 840,0 720,40 C600,80 480,0 360,40 C240,80 120,0 0,40 Z" fill="white" />
