@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import Cookies from "js-cookie";
 import { motion, AnimatePresence } from "framer-motion";
 import { useModal } from "../context/modelcontext";
@@ -14,12 +14,16 @@ import { FaPaperPlane, FaTimes, FaWhatsapp, FaUserCircle, FaCheckCircle, FaBuild
 import FloatingMessage from "./FloatingMessage";
 import LoginModal from "../Components/LoginModal";
 
-// --- Logic Helpers ---
+// --- Logic Helpers Optimized against API crashes ---
 export const fetchUserData = async (phone: string) => {
   try {
     const { data } = await api.post("/api/user/profile", { phone });
     return data?.user || data;
-  } catch (err) {
+  } catch (err: any) {
+    if (err.response?.status === 404) {
+      console.warn("User status log: profile not found in database (New User Entry).");
+      return null;
+    }
     console.error("Failed to fetch user data", err);
     return null;
   }
@@ -163,7 +167,7 @@ export default function Bot() {
          addBotMessage("Thanks! In details ke basis par mere paas kuch ache plans hain.");
          addBotMessageWithDelay("Unhe dekhne ke liye please ek baar Login/Sign-up karein taaki hum process start kar sakein.", "signup", 1000);
       } else if (mode === "logged_in_hook") {
-         addBotMessage(`Aapke ₹${currentData.loanAmount} ke loan ke liye humare paas best lenders available hain. Please keep your PAN Card & Aadhaar Card ready for a quick 2-minute process.`);
+         addBotMessage(`Aapke ₹${currentData.loanAmount} ke loan ke liye humare paas best lenders available hain. Please keep your PAN Card ready for a quick 2-minute process.`);
          addBotMessageWithDelay("", "options", 1500);
       } else {
          addBotMessage("Thanks! You have provided all information.");
@@ -190,7 +194,7 @@ export default function Bot() {
               advanceForm(data, "logged_in_hook");
            }, 1000);
         } else {
-           addBotMessageWithDelay(`Aapke ₹${data.loanAmount} ke loan ke liye humare paas best lenders available hain. Please keep your PAN Card & Aadhaar Card ready for a quick 2-minute process.`, "bot", 1000);
+           addBotMessageWithDelay(`Aapke ₹${data.loanAmount} ke loan ke liye humare paas best lenders available hain. Please keep your PAN Card ready for a quick 2-minute process.`, "bot", 1000);
            addBotMessageWithDelay("", "options", 2500);
         }
       } else {
@@ -228,7 +232,6 @@ export default function Bot() {
     checkUserStatus();
   }, [handleInitialPrompt, isInitialPromptDisplayed]);
 
-  // Listen to global login status changes to update the bot dynamically
   useEffect(() => {
     const handleLoginChange = () => {
       setIsInitialPromptDisplayed(false);
@@ -277,7 +280,6 @@ export default function Bot() {
   const handleOptionSelect = (option: string) => {
     if (option === "apply") {
       setIsOpen(false);
-      // Optional: Pass data via query params if needed, but for now just redirect
       router.push("/personal-loans");
     } else if (option === "apply_lenders") {
       router.push("/personal-loans");
@@ -291,7 +293,6 @@ export default function Bot() {
 
   const submitFormData = async () => {
     setIsSubmitting(true);
-    // API logic simulation
     setTimeout(() => {
         setIsSubmitting(false);
         addBotMessage("Application verified successfully! Analyzing your profile for the best lenders...", "bot");
@@ -354,7 +355,6 @@ export default function Bot() {
       );
     }
   
-    // Handle Special Interactive Components
     return (
       <div className="w-full space-y-4">
         {msg.type === "signup" && !isLoggedIn && (
@@ -521,7 +521,7 @@ export default function Bot() {
                 <AnimatePresence initial={false}>
                   {chatMessages.map((msg, idx) => (
                     <motion.div
-                      key={idx}
+                      key={`msg-${msg.type}-${idx}`}
                       initial={{ opacity: 0, y: 15, scale: 0.95 }}
                       animate={{ opacity: 1, y: 0, scale: 1 }}
                       transition={{ type: "spring", stiffness: 400, damping: 30 }}

@@ -9,6 +9,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, EffectFade, Pagination } from "swiper/modules";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import { Smartphone } from "lucide-react";
 
 // Swiper CSS
 import "swiper/css";
@@ -69,23 +70,23 @@ export default function HeroSection() {
         {/* Satyam Shivam Sundaram Mantra Strip */}
         <div className="flex items-center justify-center gap-3 sm:gap-4 text-white font-serif tracking-[0.3em] sm:tracking-[0.4em] uppercase text-[11px] sm:text-xs font-bold select-none mb-3 sm:mb-4">
           <span className="h-px w-10 sm:w-20 bg-gradient-to-r from-transparent via-white/40 to-white" />
-          <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] whitespace-nowrap">सत्यम शिवम सुंदरam</span>
+          <span className="drop-shadow-[0_0_8px_rgba(255,255,255,0.4)] whitespace-nowrap">सत्यम शिवम सुंदरम</span>
           <span className="h-px w-10 sm:w-20 bg-gradient-to-l from-transparent via-white/40 to-white" />
         </div>
 
-        {/* 🎯 Apply Now Button - Niche ka space tight karne ke liye mb-2 rakha hai */}
-        <div className="w-full flex justify-center mb-1 sm:mb-2">
+        {/* 🎯 Apply Now & Download App Buttons - Flex layout side by side */}
+        <div className="w-full flex flex-col sm:flex-row justify-center items-center gap-4 mb-2 max-w-lg">
           {isUserAuthenticated ? (
             <button
               disabled={true}
-              className="w-auto flex items-center justify-center gap-3 px-6 sm:px-10 py-3 sm:py-4 bg-white/10 text-white/40 font-black rounded-2xl border border-white/10 text-xs sm:text-sm tracking-wide cursor-not-allowed select-none"
+              className="w-full sm:w-auto flex items-center justify-center gap-3 px-6 sm:px-10 py-3.5 sm:py-4 bg-white/10 text-white/40 font-black rounded-2xl border border-white/10 text-xs sm:text-sm tracking-wide cursor-not-allowed select-none"
             >
               ALREADY LOGGED IN ✨
             </button>
           ) : (
             <button
               onClick={handleApplyNow}
-              className="w-auto group inline-flex items-center justify-center gap-3 sm:gap-5 px-8 sm:px-12 py-3.5 sm:py-4 bg-white text-[#08101E] font-black rounded-2xl text-xs sm:text-sm tracking-wider shadow-[0_0_35px_rgba(255,255,255,0.3)] hover:bg-[#FF690B] hover:text-white transition-all duration-300 animate-pulse cursor-pointer"
+              className="w-full sm:w-auto group inline-flex items-center justify-center gap-3 sm:gap-5 px-8 sm:px-10 py-3.5 sm:py-4 bg-white text-[#08101E] font-black rounded-2xl text-xs sm:text-sm tracking-wider shadow-[0_0_35px_rgba(255,255,255,0.3)] hover:bg-[#FF690B] hover:text-white transition-all duration-300 animate-pulse cursor-pointer"
             >
               APPLY NOW
               <div className={`w-5 h-5 sm:w-6 sm:h-6 ${activeSlide === 1 ? 'bg-green-600' : 'bg-[#FF690B]'} rounded-full flex items-center justify-center group-hover:bg-white transition-colors`}>
@@ -93,6 +94,16 @@ export default function HeroSection() {
               </div>
             </button>
           )}
+
+          <a
+            href="https://play.google.com/store/apps/details?id=com.covermantra.loan"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="w-full sm:w-auto group inline-flex items-center justify-center gap-2.5 px-8 sm:px-10 py-3.5 sm:py-4 bg-white/5 hover:bg-white/15 text-white font-black rounded-2xl text-xs sm:text-sm tracking-wider border border-white/10 transition-all duration-300 shadow-[0_0_20px_rgba(255,255,255,0.02)] cursor-pointer"
+          >
+            <Smartphone size={16} className="text-[#FF690B] group-hover:scale-110 transition-transform" />
+            <span>DOWNLOAD APP</span>
+          </a>
         </div>
       </div>
 

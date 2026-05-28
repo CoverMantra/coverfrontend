@@ -102,7 +102,14 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
           const userData = await getUser(phone);
           if (userData?.user) {
             login({ phone, token });
-            onClose();
+            if (suppressGlobalModal) {
+              if (onSuccess) await onSuccess();
+              onClose();
+            } else {
+              onClose();
+              Cookies.set("isNewUserRegistration", "false", { expires: 1 });
+              window.location.href = "/apply-success";
+            }
           } else {
             if (suppressGlobalModal) {
               if (onSuccess) await onSuccess();
