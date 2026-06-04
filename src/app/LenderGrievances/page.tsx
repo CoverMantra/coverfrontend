@@ -16,11 +16,11 @@ const lenders = [
   },
   {
     name: "FDPL Finance Private Limited",
-    logo: "https://www.fdplfinance.com/assets/images/logo/Logo.svg",
+    logo: "https://www.fdplfinance.com/assets/images/logo/FatakLoans.svg",
     officer: "Ms. Vaishnavi Batulkar",
     address: `Office Number 623, 6th floor, B-Wing, Chintamani Plaza, Andheri kurla road, Near to Western express metro, Mumbai - 400099`,
-    email: "escalation@fdplfinance.com,help@fdplfinance.com", 
-    phone: "+91-9076058709",
+    email: "escalation@fdplfinance.com", 
+    phone: "+91-9076058709 / 07969699880",
     timings: "9:00 AM - 6:00 PM (Mon - Fri, excluding public holidays)",
   },
   {

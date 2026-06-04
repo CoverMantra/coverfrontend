@@ -43,7 +43,7 @@ export default function ApplySuccessPage() {
       opacity: 1, 
       y: 0, 
       transition: { 
-        type: "spring", 
+        type: "spring" as const, 
         stiffness: 100, 
         damping: 20 
       } 
@@ -54,30 +54,22 @@ export default function ApplySuccessPage() {
     {
       icon: <Zap className="text-white w-6 h-6" />,
       title: "Fast-Track Approval",
-      titleHi: "तेज़ अप्रूवल",
-      desc: "Get instant approval decisions in under 5 minutes.",
-      descHi: "सिर्फ 5 मिनट में अपनी पात्रता और अप्रूवल जानें।"
+      desc: "Get instant approval decisions in under 5 minutes."
     },
     {
       icon: <Smartphone className="text-white w-6 h-6" />,
       title: "Real-time Tracking",
-      titleHi: "लाइव ट्रैकिंग",
-      desc: "Track every step of your application status in real-time.",
-      descHi: "अपने लोन स्टेटस को लाइव ट्रैक करें।"
+      desc: "Track every step of your application status in real-time."
     },
     {
       icon: <Coins className="text-white w-6 h-6" />,
       title: "Direct Disbursal",
-      titleHi: "सीधे बैंक खाते में",
-      desc: "Fastest bank transfers directly via mobile e-signatures.",
-      descHi: "बिना किसी रुकावट सीधे bank अकाउंट में ट्रांसफर।"
+      desc: "Fastest bank transfers directly via mobile e-signatures."
     },
     {
       icon: <ShieldCheck className="text-white w-6 h-6" />,
       title: "100% Safe & Secure",
-      titleHi: "पूर्णतः सुरक्षित",
-      desc: "ISO Certified 256-bit bank-grade encryption security.",
-      descHi: "आपकी जानकारी पूरी तरह सुरक्षित और एन्क्रिप्टेड है।"
+      desc: "ISO Certified 256-bit bank-grade encryption security."
     }
   ];
 
@@ -118,11 +110,11 @@ export default function ApplySuccessPage() {
             </h1>
             <p className="text-[#FF7819] font-black text-xs sm:text-sm uppercase tracking-widest">
               {isNewUser === null ? (
-                "बधाई हो! आपकी जानकारी सुरक्षित सबमिट कर दी गई है।"
+                "Congratulations! Your information has been submitted securely."
               ) : isNewUser ? (
-                "बधाई हो! आपका नया अकाउंट बन गया है और लोन एप्लीकेशन सबमिट हो गई है।"
+                "Congratulations! Your new account has been created and your application is submitted."
               ) : (
-                "आपका स्वागत है! आपकी लोन एप्लीकेशन सफलतापूर्वक सबमिट कर दी गई है।"
+                "Welcome Back! Your application has been successfully submitted."
               )}
             </p>
           </motion.div>
@@ -133,11 +125,11 @@ export default function ApplySuccessPage() {
             className="mt-6 text-xs sm:text-sm text-gray-400 font-medium max-w-xl leading-relaxed"
           >
             {isNewUser === null ? (
-              "लेंडर ऑफर्स का मिलान और कागजी कार्रवाई पूरी करने के लिए हमारा मोबाइल ऐप डाउनलोड करें। ऐप पर आपको तेज़ और पेपरलेस लोन प्रक्रिया मिलेगी।"
+              "Download our mobile app to match lender offers and complete your paperwork. You will get a fast and paperless loan process on the app."
             ) : isNewUser ? (
-              "आपका नया अकाउंट सफलतापूर्वक रजिस्टर हो गया है। लेंडर ऑफर्स का मिलान और कागजी कार्रवाई पूरी करने के लिए हमारा मोबाइल ऐप डाउनलोड करें।"
+              "Your new account has been successfully registered. Download our mobile app to match lender offers and complete your paperwork."
             ) : (
-              "आपके पुराने प्रोफाइल के साथ लोन एप्लीकेशन सबmit हो गई है। लेटेस्ट ऑफर्स ट्रैक करने और इंस्टेंट डिस्बर्सल के लिए मोबाइल ऐप पर लॉगिन करें।"
+              "Your application has been submitted with your existing profile. Please log in to the mobile app to track your application and get instant disbursal."
             )}
           </motion.p>
 
@@ -197,13 +189,10 @@ export default function ApplySuccessPage() {
               </div>
               <div className="space-y-1">
                 <h4 className="font-black text-[#08101E] text-base flex flex-wrap items-center gap-1.5 leading-tight">
-                  {b.title} <span className="text-gray-400 text-[10px] font-black">({b.titleHi})</span>
+                  {b.title}
                 </h4>
                 <p className="text-xs text-gray-500 font-semibold leading-relaxed">
                   {b.desc}
-                </p>
-                <p className="text-[10px] text-[#FF7819] font-bold leading-relaxed">
-                  {b.descHi}
                 </p>
               </div>
             </motion.div>

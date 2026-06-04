@@ -38,8 +38,8 @@ export default function OurPartners() {
     },
     {
       name: "FDPL Finance",
-      logo: "https://www.fdplfinance.com/assets/images/logo/Logo.svg",
-      link: "https://fatakpay.com/"
+      logo: "https://www.fdplfinance.com/assets/images/logo/FatakLoans.svg",
+      link: "https://www.fdplfinance.com/"
     },
   ];
 

@@ -51,7 +51,7 @@ const lenders = [
   {
     id: 3,
     name: "FatakPay Personal Loans",
-    logo: "https://web.fatakpay.com/assets/images/logo/Logo.svg",
+    logo: "https://www.fdplfinance.com/assets/images/logo/FatakLoans.svg",
     approval: "90%",
     amount: "Upto 5L",
     rate: "12% - 35.95% p.a",
@@ -62,7 +62,7 @@ const lenders = [
   {
     id: 4,
     name: "FatakPay Short Term",
-    logo: "https://web.fatakpay.com/assets/images/logo/Logo.svg",
+    logo: "https://www.fdplfinance.com/assets/images/logo/FatakLoans.svg",
     approval: "90%",
     amount: "Upto 5000",
     rate: "12% - 35.95% p.a",
