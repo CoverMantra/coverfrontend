@@ -21,13 +21,14 @@ export default function HeroSection() {
   const [loginOpen, setLoginOpen] = useState(false);
   const [activeSlide, setActiveSlide] = useState(0);
   const [isMounted, setIsMounted] = useState(false);
-  const [isUserAuthenticated, setIsUserAuthenticated] = useState(false);
+const isUserAuthenticated = useAuthStore(
+  (state) => state.isAuthenticated
+);
 
-  useEffect(() => {
-    setIsMounted(true);
-    const authStatus = useAuthStore.getState().isAuthenticated;
-    setIsUserAuthenticated(authStatus);
-  }, []);
+useEffect(() => {
+  setIsMounted(true);
+  useAuthStore.getState().checkAuth();
+}, []);
 
   const handleApplyNow = () => {
     if (!isMounted) return;
