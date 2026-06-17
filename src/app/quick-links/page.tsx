@@ -101,8 +101,26 @@ export default function Page() {
     if (savedPhone) setForm(prev => ({ ...prev, phone: savedPhone }));
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    setForm(prev => ({ ...prev, [e.target.name]: e.target.value }));
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setForm(prev => ({ ...prev, [name]: value }));
+
+    if (name === "pincode" && value.length === 6) {
+      try {
+        const res = await fetch(`https://api.postalpincode.in/pincode/${value}`);
+        const data = await res.json();
+        if (data?.[0]?.Status === "Success" && data?.[0]?.PostOffice?.length > 0) {
+          const postOffice = data[0].PostOffice[0];
+          setForm(prev => ({
+            ...prev,
+            city: postOffice.District || "",
+            state: postOffice.State || "",
+          }));
+        }
+      } catch (err) {
+        console.error("Postal lookup failed:", err);
+      }
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -114,9 +132,19 @@ export default function Page() {
 
   const handleRegisterUser = async () => {
     try {
-      await registerUser({ ...form, pan: form.pan.toUpperCase() });
+      const savedPhone = Cookies.get("co_phone") || form.phone;
+      const payload = {
+        ...form,
+        phone: savedPhone,
+        pan: form.pan.toUpperCase(),
+        employment: form.employeeType,
+        city: form.city || "Unknown",
+        state: form.state || "Unknown"
+      };
+      await registerUser(payload);
       router.push("/personal-loans");
     } catch (err) {
+      console.error("Failed to register user from eligibility check:", err);
       router.push("/personal-loans");
     }
   };
@@ -254,6 +282,11 @@ export default function Page() {
                   <label className="text-[9px] font-black text-[#08101E] uppercase tracking-widest ml-3">Full Name (PAN)</label>
                   <input name="name" placeholder="Ex: John Doe" value={form.name} onChange={handleChange} className="w-full bg-[#FFF4E5] border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-[#FF7819] outline-none transition-all font-bold shadow-inner" required />
                 </div>
+
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black text-[#08101E] uppercase tracking-widest ml-3">Email Address</label>
+                  <input name="email" type="email" placeholder="example@domain.com" value={form.email} onChange={handleChange} className="w-full bg-[#FFF4E5] border-2 border-transparent rounded-2xl px-6 py-4 focus:bg-white focus:border-[#FF7819] outline-none transition-all font-bold shadow-inner" required />
+                </div>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -266,34 +299,52 @@ export default function Page() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <select name="employeeType" value={form.employeeType} onChange={handleChange} className="bg-[#FFF4E5] border-2 border-transparent rounded-2xl px-6 py-4 outline-none font-bold shadow-inner text-gray-500 appearance-none focus:border-[#FF7819] focus:bg-white" required>
-                    <option value="" disabled>Emp Type</option>
-                    <option value="Salaried">Salaried</option>
-                    <option value="Self-Employed">Self-Employed</option>
-                  </select>
-                  <select name="gender" value={form.gender} onChange={handleChange} className="bg-[#FFF4E5] border-2 border-transparent rounded-2xl px-6 py-4 outline-none font-bold shadow-inner text-gray-500 appearance-none focus:border-[#FF7819] focus:bg-white" required>
-                    <option value="" disabled>Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                  </select>
-                </div>
-
-                <div className="grid grid-cols-3 gap-3">
-                  {['City', 'State', 'Pincode'].map(item => (
-                    <input key={item} name={item.toLowerCase()} placeholder={item} onChange={handleChange} className="w-full bg-[#FFF4E5] border-2 border-transparent rounded-xl py-4 text-center outline-none font-black shadow-inner text-[10px] uppercase focus:border-[#FF7819] focus:bg-white" required />
-                  ))}
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <label className="text-[9px] font-black text-[#08101E] uppercase tracking-widest ml-3">Loan Amt</label>
-                    <input name="loanAmount" type="number" placeholder="₹" onChange={handleChange} className="w-full bg-[#FFF4E5] border-2 border-transparent rounded-2xl px-6 py-4 outline-none font-bold shadow-inner" required />
+                    <label className="text-[9px] font-black text-[#08101E] uppercase tracking-widest ml-3">Date of Birth</label>
+                    <input name="dob" type="date" value={form.dob} onChange={handleChange} className="w-full bg-[#FFF4E5] border-2 border-transparent rounded-2xl px-6 py-4 outline-none font-bold shadow-inner text-[#08101E]" required />
+                  </div>
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black text-[#08101E] uppercase tracking-widest ml-3">Gender</label>
+                    <select name="gender" value={form.gender} onChange={handleChange} className="w-full bg-[#FFF4E5] border-2 border-transparent rounded-2xl px-6 py-4 outline-none font-bold shadow-inner text-[#08101E] appearance-none focus:border-[#FF7819] focus:bg-white" required>
+                      <option value="" disabled>Select Gender</option>
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                      <option value="Other">Other</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <label className="text-[9px] font-black text-[#08101E] uppercase tracking-widest ml-3">Employment Type</label>
+                    <select name="employeeType" value={form.employeeType} onChange={handleChange} className="w-full bg-[#FFF4E5] border-2 border-transparent rounded-2xl px-6 py-4 outline-none font-bold shadow-inner text-[#08101E] appearance-none focus:border-[#FF7819] focus:bg-white" required>
+                      <option value="" disabled>Select Type</option>
+                      <option value="Salaried">Salaried</option>
+                      <option value="Self-Employed">Self-Employed</option>
+                    </select>
                   </div>
                   <div className="space-y-2">
                     <label className="text-[9px] font-black text-[#08101E] uppercase tracking-widest ml-3">Monthly Income</label>
-                    <input name="income" type="number" placeholder="₹" onChange={handleChange} className="w-full bg-[#FFF4E5] border-2 border-transparent rounded-2xl px-6 py-4 outline-none font-bold shadow-inner" required />
+                    <input name="income" type="number" placeholder="₹" value={form.income} onChange={handleChange} className="w-full bg-[#FFF4E5] border-2 border-transparent rounded-2xl px-6 py-4 outline-none font-bold shadow-inner" required />
                   </div>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                  {['City', 'State', 'Pincode'].map(item => {
+                    const name = item.toLowerCase() as "city" | "state" | "pincode";
+                    return (
+                      <div key={item} className="space-y-1">
+                        <label className="text-[8px] font-black text-[#08101E] uppercase tracking-widest ml-1">{item}</label>
+                        <input name={name} value={form[name] || ""} placeholder={item} onChange={handleChange} className="w-full bg-[#FFF4E5] border-2 border-transparent rounded-xl py-4 text-center outline-none font-black shadow-inner text-[10px] uppercase focus:border-[#FF7819] focus:bg-white" required />
+                      </div>
+                    );
+                  })}
+                </div>
+
+                <div className="space-y-2">
+                  <label className="text-[9px] font-black text-[#08101E] uppercase tracking-widest ml-3">Loan Amount Required</label>
+                  <input name="loanAmount" type="number" placeholder="₹" value={form.loanAmount} onChange={handleChange} className="w-full bg-[#FFF4E5] border-2 border-transparent rounded-2xl px-6 py-4 outline-none font-bold shadow-inner" required />
                 </div>
 
                 <div className="flex items-start gap-4 py-6 mt-6 border-t border-[#08101E]/5">

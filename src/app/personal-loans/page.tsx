@@ -1,12 +1,25 @@
 "use client";
 
 import Head from "next/head";
-import { useState } from "react";
-import Image from "next/image";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
+import api from "../../lib/axios";
 
-const cardsData = [
+interface LenderCard {
+  provider: string;
+  approval: string;
+  loanAmount: string;
+  interestRate: string;
+  processingFee: string;
+  support: string;
+  ratings: number;
+  logo: string;
+  applyLink: string;
+  features: string[];
+}
+
+const fallbackCards: LenderCard[] = [
   {
     provider: "FlexSalary (Vivifi)",
     approval: "Good",
@@ -15,8 +28,8 @@ const cardsData = [
     processingFee: "Starting from 2% of the approved loan amount",
     support: "24/7 customer support",
     ratings: 4.2,
-    logo: "/image/flexsalary-color-black.webp", 
-    applyLink: "/LenderAPI/vivifi", 
+    logo: "https://www.vivifin.com/images/vivifi-logo.png",
+    applyLink: "/LenderAPI/vivifi",
     features: [
       "Credit Line Facility", "Instant Disbursal", "Flexible Repayment", "No Fixed EMI", "Minimal Documentation", "24/7 support"
     ]
@@ -29,7 +42,7 @@ const cardsData = [
     processingFee: "Starting from 2.5% of the approved loan amount",
     support: "24/7 customer support",
     ratings: 4.0,
-    logo: "/image/fatak.webp",
+    logo: "https://www.fdplfinance.com/assets/images/logo/FatakLoans.svg",
     applyLink: "/LenderAPI/fatakPay",
     features: [
       "Quick disbursement", "Paperless process", "Low processing fee", "Instant approval", "No hidden charges", "24/7 customer support"
@@ -43,7 +56,7 @@ const cardsData = [
     processingFee: "Starting from 2.5% of the approved loan amount",
     support: "24/7 customer support",
     ratings: 4.0,
-    logo: "/image/fatak.webp",
+    logo: "https://www.fdplfinance.com/assets/images/logo/FatakLoans.svg",
     applyLink: "/LenderAPI/fatakPaydcl",
     features: [
       "Quick disbursement", "Paperless process", "Low processing fee", "Instant approval", "No hidden charges", "24/7 customer support"
@@ -57,12 +70,12 @@ const cardsData = [
     processingFee: "Starting from 2% to 6% on every loan",
     support: "24/7 customer support",
     ratings: 4.0,
-    logo: "/image/Zype.jpeg",
+    logo: "https://www.getzype.com/wp-content/uploads/2024/09/Zype_svg_black.svg",
     applyLink: "/LenderAPI/zype",
     features: [
       "Quick disbursement", "Paperless process", "Low processing fee", "Instant approval", "No hidden charges", "24/7 customer support"
     ]
-  },
+  }
 ];
 
 function StarRating({ value }: { value: number }) {
@@ -78,7 +91,35 @@ function StarRating({ value }: { value: number }) {
 }
 
 export default function PersonalLoansPage() {
+  const [lenders, setLenders] = useState<LenderCard[]>(fallbackCards);
   const [openFeatures, setOpenFeatures] = useState<number | null>(null);
+
+  useEffect(() => {
+    const fetchLenders = async () => {
+      try {
+        const { data } = await api.get("/api/lenders");
+        if (data && data.length > 0) {
+          const mapped = data.map((l: any) => ({
+            provider: l.name,
+            logo: l.logo,
+            applyLink: l.applyLink || `/LenderAPI/${l._id}`,
+            features: l.features || [],
+            ratings: l.ratings || 4.0,
+            support: l.support || "24/7 customer support",
+            processingFee: l.processingFee || "Starting from 2%",
+            interestRate: l.interestRate || "Starting from 1.5% per month",
+            loanAmount: l.loanAmount || "Up to ₹2,00,000",
+            approval: l.approval || "Good"
+          }));
+          setLenders(mapped);
+        }
+      } catch (error) {
+        console.error("Failed to fetch dynamic lenders, falling back to local metadata:", error);
+      }
+    };
+
+    fetchLenders();
+  }, []);
 
   const toggleFeatures = (idx: number) => {
     setOpenFeatures(openFeatures === idx ? null : idx);
@@ -126,7 +167,7 @@ export default function PersonalLoansPage() {
         {/* LIGHT BODY SECTION */}
         <section className="py-16 px-4 w-full max-w-5xl mx-auto">
           <div className="space-y-8 mt-[-80px] relative z-20"> {/* Negative margin to overlap hero slightly */}
-            {cardsData.map((card, idx) => (
+            {lenders.map((card, idx) => (
               <motion.div
                 key={idx}
                 initial={{ opacity: 0, y: 30 }}
@@ -137,13 +178,11 @@ export default function PersonalLoansPage() {
                 {/* Provider Info */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <div className="flex items-center gap-4">
-                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-[#FFF4E5] p-2 flex-shrink-0 shadow-inner">
-                      <Image
+                    <div className="w-16 h-16 md:w-20 md:h-20 rounded-2xl bg-[#FFF4E5] p-2 flex-shrink-0 shadow-inner flex items-center justify-center">
+                      <img
                         src={card.logo}
                         alt={card.provider}
-                        width={80}
-                        height={80}
-                        className="object-contain w-full h-full"
+                        style={{ maxWidth: "80px", maxHeight: "80px", width: "100%", height: "auto", objectFit: "contain" }}
                       />
                     </div>
                     <div>

@@ -29,7 +29,10 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api-proxy/:path*",
-        // Yahan se extra '/api' hata diya aur ise seedhe naye backend port 5010 par map kar diya
+        destination: "http://localhost:5001/api/:path*",
+      },
+      {
+        source: "/api/:path*",
         destination: "http://localhost:5001/api/:path*",
       },
     ];

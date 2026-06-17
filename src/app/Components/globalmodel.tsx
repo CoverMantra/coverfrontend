@@ -252,6 +252,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
                             <option value="SBI">SBI</option>
                             <option value="ICICI">ICICI</option>
                             <option value="AXIS">Axis Bank</option>
+                            <option value="Other">Other</option>
                           </select>
                         </div>
                       </div>

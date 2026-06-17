@@ -100,8 +100,7 @@ export default function PrivacyPolicyPage() {
             <div>
               <h2 className="text-xl font-bold mb-3 uppercase tracking-tight">6. Data Security</h2>
               <p className="text-gray-600 leading-relaxed text-sm">
-                Your data is stored on secure Microsoft Azure servers in India. We follow strict security protocols to prevent data breaches.
-              </p>
+Your data is securely hosted on our isolated Virtual Private Server (VPS) infrastructure. We implement multi-layered security measures to ensure data privacy and protection.              </p>
             </div>
           </section>
 
