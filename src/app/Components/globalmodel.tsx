@@ -44,10 +44,12 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
 
   const [form, setForm] = useState(emptyForm);
   const [consent, setConsent] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
     if (isOpen) {
       setCurrentStep(1); // Reset to step 1 when modal opens
+      setErrorMsg(""); // Clear error message
       const savedFormData = Cookies.get("loanFormData");
       const savedPhone = Cookies.get("co_phone");
       if (savedPhone && savedFormData) {
@@ -65,29 +67,48 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
 
   const handleChange = async (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
-    setForm(prev => ({ ...prev, [name]: value }));
-
-    if (name === "pincode" && value.length === 6) {
-      try {
-        const res = await fetch(`https://api.postalpincode.in/pincode/${value}`);
-        const data = await res.json();
-        if (data?.[0]?.Status === "Success" && data?.[0]?.PostOffice?.length > 0) {
-          const postOffice = data[0].PostOffice[0];
-          setForm(prev => ({
-            ...prev,
-            city: postOffice.District || "",
-            state: postOffice.State || "",
-          }));
-        }
-      } catch (err) {
-        console.error("Postal lookup failed:", err);
-      }
+    
+    if (name === "pan") {
+      const cleaned = value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 10);
+      setForm(prev => ({ ...prev, [name]: cleaned }));
+      return;
     }
+
+    if (name === "pincode") {
+      const cleaned = value.replace(/\D/g, "").slice(0, 6);
+      setForm(prev => ({ ...prev, [name]: cleaned }));
+      if (cleaned.length === 6) {
+        try {
+          const res = await fetch(`https://api.postalpincode.in/pincode/${cleaned}`);
+          const data = await res.json();
+          if (data?.[0]?.Status === "Success" && data?.[0]?.PostOffice?.length > 0) {
+            const postOffice = data[0].PostOffice[0];
+            setForm(prev => ({
+              ...prev,
+              city: postOffice.District || "",
+              state: postOffice.State || "",
+            }));
+          }
+        } catch (err) {
+          console.error("Postal lookup failed:", err);
+        }
+      }
+      return;
+    }
+
+    if (name === "loanAmount" || name === "income") {
+      const cleaned = value.replace(/\D/g, "");
+      setForm(prev => ({ ...prev, [name]: cleaned }));
+      return;
+    }
+
+    setForm(prev => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!consent) return;
+    setErrorMsg("");
 
     try {
       const payload: any = { 
@@ -105,15 +126,40 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
       closeModal();
       window.location.href = "/apply-success";
     } catch (err: any) {
-      alert("Failed to register. Please check your details.");
+      const serverError = err.response?.data?.message || err.response?.data || "Failed to register. Please check your details.";
+      setErrorMsg(serverError);
     }
   };
 
   if (!isOpen) return null;
 
+  // Real-time format validators
+  const isValidEmail = (emailStr: string) => {
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(emailStr.trim());
+  };
+
+  const isValidPAN = (panStr: string) => {
+    return /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(panStr.trim().toUpperCase());
+  };
+
   // Step Validation Real-time Checkers
-  const isStep1Valid = form.name && form.email && form.phone && form.gender && form.dob;
-  const isStep2Valid = form.pan && form.pincode && form.city && form.state && form.loanAmount && form.income;
+  const isStep1Valid = form.name.trim().length >= 2 && isValidEmail(form.email) && form.phone && form.gender && form.dob;
+  const isStep2Valid = isValidPAN(form.pan) && form.pincode.length === 6 && form.city && form.state && Number(form.loanAmount) >= 10000 && Number(form.income) > 0;
+
+  // Max date for DOB input (18 years ago)
+  const getMaxDobDate = () => {
+    const today = new Date();
+    const maxDate = new Date(today.getFullYear() - 18, today.getMonth(), today.getDate());
+    return maxDate.toISOString().split("T")[0];
+  };
+
+  // Dynamic validation helper error messages for UI feedback
+  const nameError = form.name && form.name.trim().length < 2 ? "Name must be at least 2 characters long" : "";
+  const emailError = form.email && !isValidEmail(form.email) ? "Invalid email format" : "";
+  const panError = form.pan && !isValidPAN(form.pan) ? "PAN format must be ABCDE1234F" : "";
+  const pincodeError = form.pincode && form.pincode.length < 6 ? "Pincode must be exactly 6 digits" : "";
+  const loanAmountError = form.loanAmount && Number(form.loanAmount) < 10000 ? "Minimum loan amount is ₹10,000" : "";
+  const incomeError = form.income && Number(form.income) < 5000 ? "Minimum monthly income is ₹5,000" : "";
   
   const isSalariedValid = form.employeeType === "salaried" ? (form.salaryMode && form.bankName) : true;
   const isSelfEmployedValid = form.employeeType === "self-employed" ? (form.businessName && form.businessType && form.doesITR && form.doesGST) : true;
@@ -178,6 +224,19 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
           <div className="p-5 sm:p-8 md:p-10 overflow-y-auto custom-scrollbar flex-grow bg-gradient-to-b from-white to-[#FFF4E5]/10">
             <form onSubmit={handleSubmit} className="space-y-6">
               
+              <AnimatePresence>
+                {errorMsg && (
+                  <motion.div 
+                    initial={{ opacity: 0, height: 0, y: -10 }} 
+                    animate={{ opacity: 1, height: "auto", y: 0 }} 
+                    exit={{ opacity: 0, height: 0, y: -10 }}
+                    className="bg-red-50 text-red-600 text-[11px] font-bold p-3 rounded-xl border border-red-100/50 flex items-center gap-2 shadow-sm"
+                  >
+                    <span>⚠️</span> {errorMsg}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+              
               {/* STEP 1: PERSONAL PARAMETERS */}
               {currentStep === 1 && (
                 <motion.div 
@@ -185,8 +244,8 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
                   animate={{ opacity: 1, x: 0 }} 
                   className="grid grid-cols-1 md:grid-cols-2 gap-5"
                 >
-                  <InputField label="Full Name" name="name" value={form.name} onChange={handleChange} icon={<User size={18}/>} placeholder="As per PAN" />
-                  <InputField label="Email Address" name="email" value={form.email} onChange={handleChange} icon={<Mail size={18}/>} type="email" placeholder="example@domain.com" />
+                  <InputField label="Full Name" name="name" value={form.name} onChange={handleChange} icon={<User size={18}/>} placeholder="As per PAN" error={nameError} />
+                  <InputField label="Email Address" name="email" value={form.email} onChange={handleChange} icon={<Mail size={18}/>} type="email" placeholder="example@domain.com" error={emailError} />
                   <InputField label="Phone" name="phone" value={form.phone} onChange={handleChange} icon={<Phone size={18}/>} readOnly={true} />
                   
                   <div className="flex flex-col gap-1.5">
@@ -201,7 +260,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
                     </div>
                   </div>
 
-                  <InputField label="Date of Birth" name="dob" value={form.dob} onChange={handleChange} icon={<Calendar size={18}/>} type="date" />
+                  <InputField label="Date of Birth" name="dob" value={form.dob} onChange={handleChange} icon={<Calendar size={18}/>} type="date" max={getMaxDobDate()} />
                 </motion.div>
               )}
 
@@ -212,12 +271,12 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
                   animate={{ opacity: 1, x: 0 }} 
                   className="grid grid-cols-1 md:grid-cols-2 gap-5"
                 >
-                  <InputField label="PAN Number" name="pan" value={form.pan} onChange={handleChange} icon={<ShieldCheck size={18}/>} placeholder="ABCDE1234F" className="uppercase tracking-widest font-mono" maxLength={10} />
-                  <InputField label="Pincode" name="pincode" value={form.pincode} onChange={handleChange} icon={<MapPin size={18}/>} placeholder="110001" maxLength={6} />
+                  <InputField label="PAN Number" name="pan" value={form.pan} onChange={handleChange} icon={<ShieldCheck size={18}/>} placeholder="ABCDE1234F" className="uppercase tracking-widest font-mono" maxLength={10} error={panError} />
+                  <InputField label="Pincode" name="pincode" value={form.pincode} onChange={handleChange} icon={<MapPin size={18}/>} placeholder="110001" maxLength={6} error={pincodeError} />
                   <InputField label="City" name="city" value={form.city} onChange={handleChange} icon={<MapPin size={18}/>} placeholder="Auto-fetched" />
                   <InputField label="State" name="state" value={form.state} onChange={handleChange} icon={<MapPin size={18}/>} placeholder="Auto-fetched" />
-                  <InputField label="Loan Amount" name="loanAmount" value={form.loanAmount} onChange={handleChange} icon={<IndianRupee size={18}/>} type="number" placeholder="Min ₹10,000" />
-                  <InputField label="Monthly Income" name="income" value={form.income} onChange={handleChange} icon={<IndianRupee size={18}/>} type="number" placeholder="Net take-home salary" />
+                  <InputField label="Loan Amount" name="loanAmount" value={form.loanAmount} onChange={handleChange} icon={<IndianRupee size={18}/>} type="number" placeholder="Min ₹10,000" error={loanAmountError} />
+                  <InputField label="Monthly Income" name="income" value={form.income} onChange={handleChange} icon={<IndianRupee size={18}/>} type="number" placeholder="Net take-home salary" error={incomeError} />
                 </motion.div>
               )}
 
@@ -379,7 +438,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
 };
 
 // Reusable Sub-Component for Clean Input Fields
-function InputField({ label, icon, className = "", ...props }: any) {
+function InputField({ label, icon, error, className = "", ...props }: any) {
   return (
     <div className="flex flex-col gap-1.5 w-full">
       <label className="text-[10px] font-black text-[#08101E]/40 uppercase tracking-widest ml-1">{label} *</label>
@@ -389,10 +448,11 @@ function InputField({ label, icon, className = "", ...props }: any) {
         </span>
         <input
           {...props}
-          className={`w-full bg-[#FFF4E5]/50 border border-transparent focus:border-[#FF7819]/30 focus:bg-white rounded-2xl px-12 py-3.5 text-[#08101E] font-bold text-sm outline-none transition-all shadow-inner placeholder:text-gray-300 ${className}`}
+          className={`w-full bg-[#FFF4E5]/50 border ${error ? 'border-red-500' : 'border-transparent focus:border-[#FF7819]/30'} focus:bg-white rounded-2xl px-12 py-3.5 text-[#08101E] font-bold text-sm outline-none transition-all shadow-inner placeholder:text-gray-300 ${className}`}
           required
         />
       </div>
+      {error && <p className="text-red-500 text-[9px] font-bold uppercase tracking-wider ml-1">{error}</p>}
     </div>
   );
 }
