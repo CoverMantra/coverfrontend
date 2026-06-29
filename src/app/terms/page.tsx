@@ -1,12 +1,21 @@
-"use client";
-
+import type { Metadata } from "next";
 import React from "react";
 import { 
   FaGavel, FaInfoCircle, FaBalanceScale, FaCheckCircle, 
   FaUserCheck, FaFileContract, FaLock, FaShieldAlt, 
   FaGlobe, FaEye, FaTimesCircle, FaExclamationTriangle, 
-  FaUserShield, FaHandshake, FaEnvelopeOpenText, FaHeadset 
+  FaUserShield, FaHandshake, FaHeadset 
 } from "react-icons/fa";
+
+export const metadata: Metadata = {
+  title: "Terms & Conditions | CoverMantra",
+  description:
+    "Read the terms and conditions for using CoverMantra's financial marketplace platform. Understand our role as a facilitator between users and lending/insurance partners.",
+  keywords: ["Terms and Conditions", "CoverMantra Agreement", "User Agreement India", "NBFC Facilitator Terms"],
+  alternates: {
+    canonical: "https://www.covermantra.com/terms",
+  },
+};
 
 export default function TermsPage() {
   const lastUpdated = "May 01, 2026";
@@ -120,7 +129,7 @@ export default function TermsPage() {
 
           {/* 9. Monitoring */}
           <section className="flex gap-4">
-            <div className="text-indigo-600 shrink-0"><FaEye size={22} /></div>
+            <div className="text-indigo-600 shrink-0"><FaGlobe size={22} /></div>
             <div>
               <h2 className="text-lg font-black uppercase mb-2">9. Monitoring of Platform</h2>
               <p className="text-sm text-gray-600 leading-relaxed">

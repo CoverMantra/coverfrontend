@@ -1,10 +1,19 @@
-"use client";
-
+import type { Metadata } from "next";
 import React from "react";
 import { 
   FaShieldAlt, FaUserCheck, FaDatabase, FaBullhorn, 
   FaCookieBite, FaUserShield, FaLock, FaExclamationTriangle, FaGavel 
 } from "react-icons/fa";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy | CoverMantra",
+  description:
+    "Read CoverMantra's Privacy Policy to understand how we collect, use, and protect your personal information on our loan and insurance comparison platform.",
+  keywords: ["Privacy Policy", "CoverMantra Privacy", "Data Protection Policy", "NBFC Lending Partners Privacy"],
+  alternates: {
+    canonical: "https://www.covermantra.com/privacy",
+  },
+};
 
 export default function PrivacyPolicyPage() {
   const lastUpdated = "May 01, 2026";
@@ -100,7 +109,8 @@ export default function PrivacyPolicyPage() {
             <div>
               <h2 className="text-xl font-bold mb-3 uppercase tracking-tight">6. Data Security</h2>
               <p className="text-gray-600 leading-relaxed text-sm">
-Your data is securely hosted on our isolated Virtual Private Server (VPS) infrastructure. We implement multi-layered security measures to ensure data privacy and protection.              </p>
+                Your data is securely hosted on our isolated Virtual Private Server (VPS) infrastructure. We implement multi-layered security measures to ensure data privacy and protection.
+              </p>
             </div>
           </section>
 

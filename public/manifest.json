@@ -1,0 +1,16 @@
+{
+  "name": "CoverMantra",
+  "short_name": "CoverMantra",
+  "description": "Compare and Buy the Best Loans & Insurance Plans Online with CoverMantra.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#08101E",
+  "theme_color": "#FF7819",
+  "icons": [
+    {
+      "src": "/icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

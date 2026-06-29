@@ -7,6 +7,7 @@ import Cookies from "js-cookie";
 import LoginModal from "./LoginModal";
 import GlobalModal from "./globalmodel";
 import { FaFacebookF, FaInstagram, FaLinkedinIn } from "react-icons/fa";
+import SeoFooter from "./SeoFooter";
 
 function Footer() {
   const router = useRouter();
@@ -139,6 +140,9 @@ function Footer() {
             </div>
           </div>
         </div>
+
+        {/* SEO Footer Accordion */}
+        <SeoFooter />
 
         {/* Bottom Bar */}
         <div className="pt-8 mt-12 border-t border-white/10">

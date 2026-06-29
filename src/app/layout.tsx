@@ -14,10 +14,21 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  themeColor: "#FF7819",
+};
+
 export const metadata: Metadata = {
   title: "CoverMantra - Your Trusted Loan & Insurance Partner",
   description:
     "Discover the best insurance plans with CoverMantra. Compare and buy health, life, car, and travel insurance policies at competitive rates. Get expert advice today!",
+  metadataBase: new URL("https://www.covermantra.com"),
+  manifest: "/manifest.json",
+  icons: {
+    icon: "/icon.png",
+    shortcut: "/icon.png",
+    apple: "/icon.png",
+  },
   keywords: [
     "CoverMantra",
     "covermantra loans",
@@ -47,6 +58,12 @@ export const metadata: Metadata = {
     locale: "en_US",
     type: "website",
   },
+  twitter: {
+    card: "summary_large_image",
+    title: "CoverMantra - Your Trusted Loan & Insurance Partner",
+    description: "Compare and buy the best insurance plans for your needs at affordable rates.",
+    images: ["https://www.covermantra.com/baseimage.png"],
+  },
   alternates: {
     canonical: "https://www.covermantra.com",
   },
@@ -57,9 +74,52 @@ export default function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const orgSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "CoverMantra",
+    "url": "https://www.covermantra.com",
+    "logo": "https://www.covermantra.com/icon.png",
+    "sameAs": [
+      "https://facebook.com",
+      "https://www.instagram.com/cover_mantra_pvt_ltd",
+      "https://www.linkedin.com/company/covermantra/about"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "email": "info@covermantra.in",
+      "contactType": "customer support"
+    }
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "CoverMantra",
+    "url": "https://www.covermantra.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://www.covermantra.com/?search={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Preconnect & DNS Prefetch to speed up load time */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+      </head>
       <body suppressHydrationWarning className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(orgSchema) }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }}
+        />
         <ClientLayout>{children}</ClientLayout>
       </body>
     </html>
