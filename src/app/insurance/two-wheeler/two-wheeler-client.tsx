@@ -29,8 +29,14 @@ export default function TwoWheelerInsurancePage() {
 
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 relative z-10">
           <div className="w-full md:w-1/2 text-center md:text-left" data-aos="fade-right">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-blue-400 text-sm font-bold mb-6">
-              <Zap size={16} fill="currentColor" /> Instant Protection for Every Rider
+            <div className="flex flex-wrap items-center gap-3 mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-blue-400 text-sm font-bold">
+                <Zap size={16} fill="currentColor" /> Instant Protection for Every Rider
+              </div>
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-[#FF7819]/10 border border-[#FF7819]/25 rounded-full backdrop-blur-md shadow-lg select-none animate-pulse">
+                <span className="w-2 h-2 rounded-full bg-[#FF7819]" />
+                <span className="text-[10px] font-black tracking-widest text-[#FF7819] uppercase">Product Launching Soon</span>
+              </div>
             </div>
             <h1 className="text-4xl md:text-7xl font-black text-white leading-tight">
               Ride Hard. <br />

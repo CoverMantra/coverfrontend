@@ -1,10 +1,10 @@
 "use client";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import api from "@/lib/axios";
 
 // Update base URL if needed based on your environment
-const API_BASE_URL = "http://localhost:5001/api";
+// const API_BASE_URL = "http://localhost:5001/api";
 
 interface Partner {
   _id?: string;
@@ -46,7 +46,8 @@ export default function OurPartners() {
   useEffect(() => {
     const fetchPartners = async () => {
       try {
-        const res = await axios.get(`${API_BASE_URL}/lenders`);
+        // const res = await axios.get(`${API_BASE_URL}/lenders`);
+        const res = await api.get("/api/lenders");
         if (res.data && res.data.length > 0) {
           // Sort explicitly just in case
           const sorted = res.data.sort((a: Partner, b: Partner) => (a.priority || 0) - (b.priority || 0));

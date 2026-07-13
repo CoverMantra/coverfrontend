@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { Reorder } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import axios from "axios";
-
+// import axios from "axios";
+import api from "@/lib/axios";
 // Update base URL if needed based on your environment
-const API_BASE_URL = "http://localhost:5001/api";
+// const API_BASE_URL = "http://localhost:5001/api";
 
 interface Lender {
   _id: string;
@@ -39,7 +39,8 @@ export default function AdminLenderManagement() {
 
   const fetchLenders = async () => {
     try {
-      const res = await axios.get(`${API_BASE_URL}/lenders`);
+      // const res = await axios.get(`${API_BASE_URL}/lenders`);
+      const res = await api.get("/api/lenders");
       if (res.data && res.data.length > 0) {
         setLenders(res.data);
       } else {
@@ -64,18 +65,26 @@ export default function AdminLenderManagement() {
     try {
       const orderedIds = lenders.map((l) => l._id);
       
-      await axios.put(
-        `${API_BASE_URL}/lenders/reorder`,
-        { orderedIds },
-        { 
-          headers: { 
-            "x-admin-secret": adminSecret,
-            // Assuming the token is in localstorage if standard auth was implemented
-            "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
-          } 
-        }
-      );
-      
+      // await axios.put(
+      //   `${API_BASE_URL}/lenders/reorder`,
+      //   { orderedIds },
+      //   { 
+      //     headers: { 
+      //       "x-admin-secret": adminSecret,
+      //       "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
+      //     } 
+      //   }
+      // );
+      await api.put(
+  "/api/lenders/reorder",
+  { orderedIds },
+  { 
+    headers: { 
+      "x-admin-secret": adminSecret,
+      "Authorization": `Bearer ${localStorage.getItem("token") || ""}`
+    } 
+  }
+);
       toast.success("Priority saved successfully!");
     } catch (error: any) {
       console.error(error);

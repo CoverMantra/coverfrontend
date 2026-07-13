@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import LoginModal from "./LoginModal";
 
-import EmiCalculator from "./EmiCalculator";
 import HeroSection from "./HeroSection";
 import HowItWorks from "./HowItWorks";
 import LoanInfo from "./LoanInfo";
@@ -25,7 +24,6 @@ export default function Body() {
       <HowItWorks />
       <Achievement />
       <Security />
-      <EmiCalculator />
       <TrustSection />
       <WhyChooseUs />
       <TestimonialSlider />

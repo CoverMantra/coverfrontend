@@ -38,6 +38,11 @@ export default function HomeInsurancePage() {
             />
           </div>
           
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 bg-[#FF7819]/10 border border-[#FF7819]/25 rounded-full backdrop-blur-md shadow-lg select-none animate-pulse">
+            <span className="w-2 h-2 rounded-full bg-[#FF7819]" />
+            <span className="text-[10px] font-black tracking-widest text-[#FF7819] uppercase">Product Launching Soon</span>
+          </div>
+
           <h1 className="text-4xl md:text-7xl font-black mb-6 tracking-tighter leading-tight italic">
             Elite <span className="text-[#FF7819]">Home Protection</span> <br />
             Beyond Boundaries

@@ -18,7 +18,7 @@ interface Props {
   onOtpVerified?: () => void;
 }
 
-export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalModal }: Props) {
+export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalModal, onOtpVerified }: Props) {
   const [phone, setPhone] = useState("");
   const [otp, setOtp] = useState("");
   const [step, setStep] = useState<"phone" | "otp">("phone");
@@ -97,6 +97,11 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
         Cookies.set("showRegistrationModal", "true", { expires: 1 });
 
         triggerLoginStatusChange();
+
+        if (onOtpVerified) {
+          onOtpVerified();
+          return;
+        }
 
         try {
           const userData = await getUser(phone);

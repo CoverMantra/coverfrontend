@@ -29,8 +29,14 @@ export default function LifeInsurancePage() {
 
         <div className="relative z-10 max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-12">
           <div className="w-full md:w-3/5 text-center md:text-left" data-aos="fade-right">
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[#FF7819] text-sm font-bold mb-6">
-              <Star size={16} fill="#FF7819" /> Rated #1 for Family Protection
+            <div className="flex flex-wrap items-center gap-3 mb-6">
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-[#FF7819] text-sm font-bold">
+                <Star size={16} fill="#FF7819" /> Rated #1 for Family Protection
+              </div>
+              <div className="inline-flex items-center gap-2 px-4 py-2 bg-[#FF7819]/10 border border-[#FF7819]/25 rounded-full backdrop-blur-md shadow-lg select-none animate-pulse">
+                <span className="w-2 h-2 rounded-full bg-[#FF7819]" />
+                <span className="text-[10px] font-black tracking-widest text-[#FF7819] uppercase">Product Launching Soon</span>
+              </div>
             </div>
             <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[1.1]">
               Your Legacy Is <br />
