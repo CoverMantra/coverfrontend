@@ -41,7 +41,7 @@ export default function AboutPage() {
     { title: "Innovation", desc: "Continuously evolving technology to provide the smartest and most efficient solutions." },
     { title: "Empowerment", desc: "Equipping our users with tools to take control of their financial future." },
   ];
-
+ 
   return (
     <div className="min-h-screen bg-[#FFF4E5] text-[#08101E] font-sans selection:bg-[#FF7819]/30 overflow-x-hidden">
       
