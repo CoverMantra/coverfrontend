@@ -8,6 +8,7 @@ import { useAuthStore } from "../../store/useAuthStore";
 import LoginModal from "../Components/LoginModal";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
+import { fetchUserData } from "../APIs/utils";
 
 export default function DeleteAccountPage() {
   const [email, setEmail] = useState("");
@@ -19,9 +20,10 @@ export default function DeleteAccountPage() {
   const { isAuthenticated, phone: authPhone, logout } = useAuthStore();
   const router = useRouter();
 
-  // Pre-fill email and phone from localStorage / session if logged in
+  // Pre-fill email and phone from localStorage / session / database if logged in
   useEffect(() => {
     if (isAuthenticated) {
+      // 1. Try local storage first
       const storedData = localStorage.getItem("userInfo");
       if (storedData) {
         try {
@@ -31,8 +33,23 @@ export default function DeleteAccountPage() {
         } catch (e) {
           console.error("Failed to parse userInfo:", e);
         }
-      } else if (authPhone) {
-        setPhone(authPhone);
+      }
+
+      // 2. Fetch fresh details from DB to make sure we have the correct email and phone
+      const activePhone = authPhone || Cookies.get("co_phone");
+      if (activePhone) {
+        const getProfile = async () => {
+          try {
+            const data = await fetchUserData(activePhone);
+            if (data) {
+              if (data.email) setEmail(data.email);
+              if (data.phone) setPhone(data.phone);
+            }
+          } catch (err) {
+            console.error("Failed to fetch fresh user data for deletion confirmation:", err);
+          }
+        };
+        getProfile();
       }
     }
   }, [isAuthenticated, authPhone]);
@@ -57,8 +74,8 @@ export default function DeleteAccountPage() {
           localStorage.removeItem("userInfo");
           logout();
           
-          // Redirect to Home
-          router.push("/");
+          window.dispatchEvent(new Event("loginStatusChanged"));
+          window.location.href = "/";
         }, 3000);
       } else {
         toast.error(`❌ ${res.data?.message || "Something went wrong."}`);
