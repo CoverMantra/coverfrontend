@@ -15,6 +15,7 @@ import {
 } from "react-icons/fa";
 
 const lenders = [
+/*
    {
     id: 1,
     name: "Money View",
@@ -37,6 +38,7 @@ const lenders = [
     features: ["Quick Approval", "Low Interest", "No Hidden Fees"],
     url: "https://zype.onelink.me/vx8a?af_xp=custom&pid=CustomerSource&af_dp=com.zype.mobile%3A%2F%2F&deep_link_value=myZype&af_click_lookback=30d&c=Spiraea",
   },
+*/
   {
     id: 5,
     name: "FlexSalary (Vivifi)",
