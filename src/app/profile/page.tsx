@@ -55,6 +55,10 @@ export default function ProfilePage() {
         } else {
           // Fallback if user data fails to load
           setUserData(null);
+          logout();
+          localStorage.removeItem("userInfo");
+          window.dispatchEvent(new Event("loginStatusChanged"));
+          window.location.href = "/";
         }
       } catch (error) {
         console.error("Failed to load profile", error);

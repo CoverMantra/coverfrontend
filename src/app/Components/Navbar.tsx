@@ -8,6 +8,7 @@ import LoginModal from "./LoginModal";
 import Cookies from "js-cookie";
 import GlobalModal from "./globalmodel";
 import Image from "next/image";
+import { useAuthStore } from "../../store/useAuthStore";
 
 export const triggerLoginStatusChange = () => {
   if (typeof window !== "undefined") {
@@ -25,15 +26,23 @@ export default function Navbar() {
   const pathname = usePathname();
   const router = useRouter();
 
+  const { isAuthenticated, logout } = useAuthStore();
+
   useEffect(() => {
     setIsClient(true);
     const updateLoginStatus = () => {
-      setIsLoggedIn(Cookies.get("co_login") === "true");
+      setIsLoggedIn(Cookies.get("co_login") === "true" || useAuthStore.getState().isAuthenticated);
     };
     updateLoginStatus();
     window.addEventListener("loginStatusChanged", updateLoginStatus);
     return () => window.removeEventListener("loginStatusChanged", updateLoginStatus);
   }, []);
+
+  useEffect(() => {
+    if (isClient) {
+      setIsLoggedIn(isAuthenticated || Cookies.get("co_login") === "true");
+    }
+  }, [isAuthenticated, isClient]);
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -46,7 +55,8 @@ export default function Navbar() {
   }, [pathname]);
 
   const handleLogout = () => {
-    ["co_login", "co_phone", "co_token", "loanFormData", "loanFormSubmitted"].forEach(c => Cookies.remove(c));
+    logout();
+    ["loanFormData", "loanFormSubmitted"].forEach(c => Cookies.remove(c));
     localStorage.removeItem("userInfo");
     setIsLoggedIn(false);
     triggerLoginStatusChange();

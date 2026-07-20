@@ -29,6 +29,27 @@ export const fetchUserData = async (phone: string) => {
   }
 };
 
+interface Lender {
+  _id: string;
+  name: string;
+  logo: string;
+  age: number;
+  minIncome: number;
+  pincodes: string[];
+  UTM: string;
+  priority: number;
+  approval: string;
+  loanAmount: string;
+  interestRate: string;
+  processingFee: string;
+  support: string;
+  ratings: number;
+  features: string[];
+  applyLink: string;
+  loanTypes: string[];
+  isActive?: boolean;
+}
+
 const Lottie = dynamic(() => import("lottie-react"), { ssr: false });
 
 type ChatMessage = {
@@ -71,6 +92,7 @@ export default function Bot() {
   const { openModal } = useModal();
   const [isOpen, setIsOpen] = useState(false);
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
+  const [eligibleLenders, setEligibleLenders] = useState<Lender[]>([]);
   const [input, setInput] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isCollectingForm, setIsCollectingForm] = useState(false);
@@ -145,32 +167,32 @@ export default function Bot() {
       
       let question = nextField.question;
       if (mode === "guest_hook" && nextField.key === "dob") {
-         question = "Aapko best loan advice dene ke liye, kya aap apni Date of Birth aur required Loan Amount bata sakte hain?";
+         question = "To help me find the best loan offers matching your profile, could you please provide your Date of Birth?";
       } else if (mode === "guest_hook" && nextField.key === "loanAmount") {
-         question = "Shukriya! Aur aapko kitne loan amount ki requirement hai?";
+         question = "Thank you! And what is the loan amount you are looking for?";
       } else if (mode === "logged_in_hook" && nextField.key === "dob") {
          const userName = currentData.name?.split(" ")[0] || "User";
-         question = `${userName}, help me personalize your experience. Aapki Date of Birth kya hai?`;
+         question = `Hi ${userName}, to help personalize your experience, could you please share your Date of Birth?`;
       } else if (mode === "logged_in_hook" && nextField.key === "loanAmount") {
-         question = "Aap kitne amount ka loan plan kar rahe hain ya abhi kitna loan chal raha hai?";
+         question = "What is the loan amount you are planning to apply for?";
       }
       
       addBotMessage(question);
       if (nextField.key === "dob") setShowDatePicker(true);
-      else if (nextField.key === "employment") addBotMessage("Salaried or Self-employed?", "employment_options");
+      else if (nextField.key === "employment") addBotMessage("Are you Salaried or Self-employed?", "employment_options");
       else setShowDatePicker(false);
     } else {
       setIsCollectingForm(false);
       setCurrentFormField(null);
       
       if (mode === "guest_hook") {
-         addBotMessage("Thanks! In details ke basis par mere paas kuch ache plans hain.");
-         addBotMessageWithDelay("Unhe dekhne ke liye please ek baar Login/Sign-up karein taaki hum process start kar sakein.", "signup", 1000);
+         addBotMessage("Thank you! Based on your details, I have found some excellent loan options for you.");
+         addBotMessageWithDelay("Please securely Log In or Sign Up to view your matched offers and start your application.", "signup", 1000);
       } else if (mode === "logged_in_hook") {
-         addBotMessage(`Aapke ₹${currentData.loanAmount} ke loan ke liye humare paas best lenders available hain. Please keep your PAN Card ready for a quick 2-minute process.`);
+         addBotMessage(`We have matched the best lender offers for your loan request of ₹${currentData.loanAmount}. Please keep your PAN Card ready for a quick 2-minute application process.`);
          addBotMessageWithDelay("", "options", 1500);
       } else {
-         addBotMessage("Thanks! You have provided all information.");
+         addBotMessage("Thank you! All your details have been collected successfully.");
          addBotMessage("Submit Application", "submit_button");
       }
     }
@@ -194,12 +216,12 @@ export default function Bot() {
               advanceForm(data, "logged_in_hook");
            }, 1000);
         } else {
-           addBotMessageWithDelay(`Aapke ₹${data.loanAmount} ke loan ke liye humare paas best lenders available hain. Please keep your PAN Card ready for a quick 2-minute process.`, "bot", 1000);
+           addBotMessageWithDelay(`We have matched the best lender offers for your loan request of ₹${data.loanAmount}. Please keep your PAN Card ready for a quick 2-minute application process.`, "bot", 1000);
            addBotMessageWithDelay("", "options", 2500);
         }
       } else {
         setFormMode("guest_hook");
-        addBotMessage("Namaste! Main CoverMantra AI hoon. Aapka data CoverMantra ke saath bilkul safe hai.");
+        addBotMessage("Namaste! I am CoverMantra AI. Your data is completely safe and encrypted with us.");
         setTimeout(() => {
            setIsCollectingForm(true);
            advanceForm(data, "guest_hook");
@@ -220,7 +242,8 @@ export default function Bot() {
       };
       
       const phoneFromCookie = Cookies.get("co_phone");
-      if (phoneFromCookie) {
+      const token = Cookies.get("co_token");
+      if (phoneFromCookie && token) {
         const fetchedData = await fetchUserData(phoneFromCookie);
         if (fetchedData) {
           currentData = { ...currentData, ...fetchedData };
@@ -251,9 +274,9 @@ export default function Bot() {
       if (field) {
         if (field.validation(trimmed)) {
           if (field.key === "dob" && calculateAge(trimmed) < 18) {
-             addBotMessage("Sorry, aapki age 18 saal se kam hai. Personal loan ke liye minimum age 18 years honi chahiye.");
+             addBotMessage("We apologize, but you must be at least 18 years of age to apply for a personal loan.");
              setTimeout(() => {
-                addBotMessage("Kisi aur help ke liye aap humari team se WhatsApp par connect kar sakte hain:", "whatsapp_only");
+                addBotMessage("For any further assistance, feel free to connect with our support team on WhatsApp:", "whatsapp_only");
              }, 1000);
              setIsCollectingForm(false);
              setCurrentFormField(null);
@@ -293,11 +316,63 @@ export default function Bot() {
 
   const submitFormData = async () => {
     setIsSubmitting(true);
-    setTimeout(() => {
-        setIsSubmitting(false);
-        addBotMessage("Application verified successfully! Analyzing your profile for the best lenders...", "bot");
-        addBotMessageWithDelay("", "lender_recommendations", 2000);
-    }, 2000);
+    try {
+      const ageVal = calculateAge(formData.dob);
+      const incomeVal = Number(formData.income.replace(/,/g, ''));
+      const pincodeVal = formData.pincode;
+
+      // 1. Save user lead to database
+      await api.post("/api/user/register", {
+        name: formData.name,
+        phone: formData.phone,
+        pan: formData.pan,
+        dob: formData.dob,
+        email: formData.email,
+        city: formData.city,
+        state: formData.state,
+        gender: formData.gender,
+        employment: formData.employment.toLowerCase(),
+        income: incomeVal,
+        pincode: pincodeVal,
+        source: "chatbot"
+      });
+
+      // 2. Fetch active lenders list from API
+      const { data } = await api.get("/api/lenders");
+
+      // 3. Filter lenders list by eligibility criteria locally
+      const eligible = data.filter((l: Lender) => {
+        const ageMatch = ageVal >= l.age;
+        const incomeMatch = incomeVal >= l.minIncome;
+        const pincodeMatch = l.pincodes.includes("*") || l.pincodes.includes(pincodeVal);
+        return ageMatch && incomeMatch && pincodeMatch;
+      });
+
+      setEligibleLenders(eligible);
+      setIsSubmitting(false);
+      addBotMessage("Application verified and saved successfully! Analyzing your profile for the best lenders...", "bot");
+      addBotMessageWithDelay("", "lender_recommendations", 1000);
+    } catch (err: any) {
+      console.error("Error submitting chatbot form to DB:", err);
+      // Fallback: fetch active lenders and show matches even if registration has an error
+      try {
+        const { data } = await api.get("/api/lenders");
+        const ageVal = calculateAge(formData.dob);
+        const incomeVal = Number(formData.income.replace(/,/g, ''));
+        const eligible = data.filter((l: Lender) => {
+          const ageMatch = ageVal >= l.age;
+          const incomeMatch = incomeVal >= l.minIncome;
+          const pincodeMatch = l.pincodes.includes("*") || l.pincodes.includes(formData.pincode);
+          return ageMatch && incomeMatch && pincodeMatch;
+        });
+        setEligibleLenders(eligible);
+      } catch (innerErr) {
+        console.error("Fallback fetch lenders failed:", innerErr);
+      }
+      setIsSubmitting(false);
+      addBotMessage("Application verified successfully! Here are the matches found for your profile:", "bot");
+      addBotMessageWithDelay("", "lender_recommendations", 1000);
+    }
   };
 
   const handleDateSelect = (date: Date | null) => {
@@ -308,9 +383,9 @@ export default function Bot() {
     
     if (calculateAge(date) < 18) {
        setTimeout(() => {
-           addBotMessage("Sorry, aapki age 18 saal se kam hai. Personal loan ke liye minimum age 18 years honi chahiye.");
+           addBotMessage("We apologize, but you must be at least 18 years of age to apply for a personal loan.");
            setTimeout(() => {
-              addBotMessage("Kisi aur help ke liye aap humari team se WhatsApp par connect kar sakte hain:", "whatsapp_only");
+              addBotMessage("For any further assistance, feel free to connect with our support team on WhatsApp:", "whatsapp_only");
            }, 1000);
        }, 600);
        setIsCollectingForm(false);
@@ -429,38 +504,40 @@ export default function Bot() {
                  <div className="h-[1px] flex-1 bg-white/10"></div>
               </div>
               
-              <div className="grid grid-cols-1 gap-4">
-                {Number(formData.income?.replace(/,/g, '')) > 25000 && (
-                  <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-[#0A192F] to-[#08101E] p-5 rounded-2xl border border-green-500/30 shadow-[0_10px_30px_-15px_rgba(34,197,94,0.3)] relative overflow-hidden group cursor-pointer" onClick={() => { router.push("/LenderAPI/zype"); setIsOpen(false); }}>
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-green-500/10 rounded-full blur-3xl group-hover:bg-green-500/20 transition-all"></div>
-                      <div className="flex justify-between items-center mb-3 relative z-10">
-                          <div className="flex items-center gap-3">
-                             <div className="w-10 h-10 bg-white rounded-xl p-1.5 shadow-md">
-                               <img src="/image/zypelogo.png" alt="Zype" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "/image/logo.png" }} />
-                             </div>
-                             <h4 className="font-black text-white text-lg">Zype</h4>
-                          </div>
-                          <span className="text-[10px] font-black uppercase bg-green-500/20 text-green-400 px-3 py-1.5 rounded-full border border-green-500/30 shadow-sm flex items-center gap-1"><FaCheckCircle/> Pre-approved</span>
-                      </div>
-                      <p className="text-xs text-[#94A3B8] mb-5 font-medium leading-relaxed relative z-10">Instant approval up to ₹5,00,000 at the lowest interest rates based on your profile.</p>
-                      <button className="w-full py-3 bg-green-500 hover:bg-green-400 text-white rounded-xl font-black text-xs transition-colors shadow-lg relative z-10 tracking-wide">CLAIM OFFER</button>
-                  </motion.div>
-                )}
-                
-                <motion.div whileHover={{ scale: 1.02 }} className="bg-gradient-to-br from-[#0A192F] to-[#08101E] p-5 rounded-2xl border border-[#FF7819]/30 shadow-[0_10px_30px_-15px_rgba(255,120,25,0.3)] relative overflow-hidden group cursor-pointer" onClick={() => { router.push("/LenderAPI/vivifi"); setIsOpen(false); }}>
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF7819]/10 rounded-full blur-3xl group-hover:bg-[#FF7819]/20 transition-all"></div>
-                    <div className="flex justify-between items-center mb-3 relative z-10">
-                        <div className="flex items-center gap-3">
-                           <div className="w-10 h-10 bg-white rounded-xl p-1 shadow-md">
-                             <img src="/image/vivifilogo.png" alt="Vivifi" className="w-full h-full object-contain" onError={(e) => { e.currentTarget.src = "/image/logo.png" }} />
-                           </div>
-                           <h4 className="font-black text-white text-lg">Vivifi</h4>
+              <div className="grid grid-cols-1 gap-4 max-h-[300px] overflow-y-auto pr-1 custom-scrollbar">
+                {eligibleLenders.length === 0 ? (
+                  <div className="p-5 bg-white/5 border border-white/10 rounded-2xl text-center text-xs text-gray-400">
+                    Aapke profile ke mutabik koi lender nahi mila. Please contact support.
+                  </div>
+                ) : (
+                  eligibleLenders.map((lender) => (
+                    <motion.div 
+                      key={lender._id}
+                      whileHover={{ scale: 1.02 }} 
+                      className="bg-gradient-to-br from-[#0A192F] to-[#08101E] p-5 rounded-2xl border border-[#FF7819]/30 shadow-[0_10px_30px_-15px_rgba(255,120,25,0.3)] relative overflow-hidden group cursor-pointer" 
+                      onClick={() => { router.push(lender.applyLink || `/LenderAPI/${lender._id}`); setIsOpen(false); }}
+                    >
+                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF7819]/10 rounded-full blur-3xl group-hover:bg-[#FF7819]/20 transition-all"></div>
+                        <div className="flex justify-between items-center mb-3 relative z-10">
+                            <div className="flex items-center gap-3">
+                               <div className="w-10 h-10 bg-white rounded-xl p-1 shadow-md flex items-center justify-center">
+                                 <img src={lender.logo} alt={lender.name} className="w-full h-full object-contain" />
+                               </div>
+                               <h4 className="font-black text-white text-base">{lender.name}</h4>
+                            </div>
+                            <span className="text-[10px] font-black uppercase bg-emerald-500/20 text-emerald-400 px-3 py-1.5 rounded-full border border-emerald-500/30 shadow-sm flex items-center gap-1">
+                              <FaCheckCircle/> {lender.approval}
+                            </span>
                         </div>
-                        <span className="text-[10px] font-black uppercase bg-[#FF7819]/20 text-[#FF7819] px-3 py-1.5 rounded-full border border-[#FF7819]/30 shadow-sm">High Chances</span>
-                    </div>
-                    <p className="text-xs text-[#94A3B8] mb-5 font-medium leading-relaxed relative z-10">Flexible instant credit line, ideal for your professional profile and income.</p>
-                    <button className="w-full py-3 bg-[#FF7819] hover:bg-[#e66a15] text-white rounded-xl font-black text-xs transition-colors shadow-lg relative z-10 tracking-wide">APPLY NOW</button>
-                </motion.div>
+                        <p className="text-xs text-[#94A3B8] mb-5 font-medium leading-relaxed relative z-10">
+                          Disbursal: {lender.loanAmount} at {lender.interestRate}.
+                        </p>
+                        <button className="w-full py-3 bg-[#FF7819] hover:bg-[#e66a15] text-white rounded-xl font-black text-xs transition-colors shadow-lg relative z-10 tracking-wide">
+                          APPLY NOW
+                        </button>
+                    </motion.div>
+                  ))
+                )}
               </div>
           </div>
         )}

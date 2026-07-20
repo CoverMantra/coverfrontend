@@ -6,6 +6,7 @@ import Image from "next/image";
 import { fetchUserData, updateUserProfile } from "../APIs/utils";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { useAuthStore } from "../../store/useAuthStore";
 
 interface FormData {
   name: string;
@@ -33,6 +34,7 @@ export default function Dashboard() {
   const [userData, setUserData] = useState<FormData | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(true);
+  const { logout } = useAuthStore();
 
   useEffect(() => {
     const fetchAndSetUser = async () => {
@@ -41,16 +43,29 @@ export default function Dashboard() {
       if (storedPhone) {
         setLoading(true);
         const user = await fetchUserData(storedPhone);
+        if (!user) {
+          // If user not in DB, log them out and redirect to home
+          logout();
+          localStorage.removeItem("userInfo");
+          window.dispatchEvent(new Event("loginStatusChanged"));
+          window.location.href = "/";
+          return;
+        }
         setUserData(user || null);
         setLoading(false);
       } else {
         console.warn("No phone found in cookies or localStorage");
         setLoading(false);
+        // Also log out and redirect if trying to access dashboard without stored credentials
+        logout();
+        localStorage.removeItem("userInfo");
+        window.dispatchEvent(new Event("loginStatusChanged"));
+        window.location.href = "/";
       }
     };
 
     fetchAndSetUser();
-  }, []);
+  }, [logout]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>

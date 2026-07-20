@@ -203,25 +203,87 @@ export default function CarInsurancePage() {
         </div>
       </section>
 
-      {/* 📊 COMPARISON SECTION */}
-      <section className="py-24 px-6 max-w-7xl mx-auto" data-aos="fade-up">
-        <h2 className="text-3xl md:text-5xl font-black text-center mb-16">
-          Trusted <span className="text-[#FF7819]">Partners</span>
-        </h2>
-        <div className="grid md:grid-cols-3 gap-8">
+      {/* 📊 COMPARISON SECTION (Coming Soon / Onboarding) */}
+      <section className="py-24 px-6 max-w-7xl mx-auto relative overflow-hidden" data-aos="fade-up">
+        {/* Glowing Background Orbs */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#FF7819]/5 rounded-full blur-[100px] pointer-events-none" />
+
+        <div className="text-center mb-16 relative z-10">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 mb-6 bg-[#FF7819]/10 border border-[#FF7819]/25 rounded-full backdrop-blur-md shadow-lg select-none">
+            <span className="w-2.5 h-2.5 rounded-full bg-[#FF7819] animate-ping" />
+            <span className="text-xs font-black tracking-widest text-[#FF7819] uppercase">Feature Under Development</span>
+          </div>
+          <h2 className="text-3xl md:text-5xl font-black mb-6">
+            Compare & Choose the <span className="text-[#FF7819]">Best Plans</span>
+          </h2>
+          <p className="text-gray-500 font-semibold text-lg max-w-2xl mx-auto leading-relaxed">
+            We are building a robust integration network to let you instantly compare policy benefits, pricing, and claims networks side-by-side.
+          </p>
+        </div>
+
+        <div className="grid md:grid-cols-3 gap-8 relative z-10">
           {[
-            { name: "HDFC Ergo", desc: "Affordable premium with wide coverage." },
-            { name: "ICICI Lombard", desc: "Trusted partner with cashless garages." },
-            { name: "Bajaj Allianz", desc: "Comprehensive coverage at best rates." },
-          ].map((plan, idx) => (
-            <div key={idx} className="bg-white rounded-[2.5rem] shadow-xl border border-gray-100 p-10 text-center group">
-              <h3 className="text-2xl font-black mb-4 group-hover:text-[#FF7819] transition-colors">{plan.name}</h3>
-              <p className="text-gray-500 font-medium mb-8 leading-relaxed">{plan.desc}</p>
-              <button className="bg-gray-50 text-[#08101E] px-8 py-3 rounded-xl font-bold border border-gray-200 hover:bg-[#08101E] hover:text-white transition-all">
-                Compare Now
-              </button>
-            </div>
+            {
+              title: "Comprehensive Coverage",
+              desc: "Compare plan features including own damage, personal accident, and third-party liabilities side-by-side.",
+              icon: <ShieldCheck className="text-[#FF7819]" size={36} />,
+              tag: "Coming Soon"
+            },
+            {
+              title: "Smart Premium Engine",
+              desc: "Get automated premium quotes customized for your vehicle's age, make, model, and history.",
+              icon: <Zap className="text-[#FF7819]" size={36} />,
+              tag: "Under Development"
+            },
+            {
+              title: "Cashless Network Mapper",
+              desc: "Instantly check which policies support cashless repairs at garages near your location.",
+              icon: <FileText className="text-[#FF7819]" size={36} />,
+              tag: "Coming Soon"
+            }
+          ].map((feature, idx) => (
+            <motion.div
+              key={idx}
+              whileHover={{ y: -8, scale: 1.02 }}
+              className="bg-white/90 backdrop-blur-xl rounded-[2.5rem] shadow-[0_20px_50px_rgba(0,0,0,0.04)] border border-gray-100/80 p-8 md:p-10 text-center flex flex-col justify-between group transition-all duration-300 relative overflow-hidden"
+            >
+              {/* Decorative side color stripe */}
+              <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-transparent via-[#FF7819]/45 to-transparent" />
+              
+              <div className="flex flex-col items-center">
+                <div className="w-16 h-16 bg-[#FFF4E5] rounded-[1.5rem] flex items-center justify-center mb-8 group-hover:scale-110 transition-transform duration-300">
+                  {feature.icon}
+                </div>
+
+                <span className="inline-flex items-center gap-1.5 text-[10px] font-black text-[#FF7819] bg-[#FF7819]/10 px-3 py-1 rounded-full border border-[#FF7819]/15 mb-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#FF7819] animate-pulse" />
+                  {feature.tag}
+                </span>
+
+                <h3 className="text-xl font-black mb-4 group-hover:text-[#FF7819] transition-colors duration-300">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-500 font-medium text-sm leading-relaxed mb-6">
+                  {feature.desc}
+                </p>
+              </div>
+
+              <div>
+                <button className="w-full bg-[#08101E] text-white hover:bg-[#FF7819] px-6 py-3.5 rounded-2xl font-black text-xs uppercase tracking-wider transition-all duration-300 shadow-[0_10px_20px_rgba(8,16,30,0.15)] hover:shadow-[0_10px_25px_rgba(255,120,25,0.3)]">
+                  Get Notified
+                </button>
+              </div>
+            </motion.div>
           ))}
+        </div>
+
+        {/* Dynamic bottom banner */}
+        <div className="mt-16 text-center z-10 relative">
+          <div className="inline-block bg-white/60 backdrop-blur-md rounded-[2rem] border border-gray-100 px-8 py-5 shadow-xl max-w-2xl mx-auto">
+            <p className="text-sm font-bold text-gray-500">
+              ⚡ Stay tuned! Our instant quote matching engine goes live soon.
+            </p>
+          </div>
         </div>
       </section>
 
