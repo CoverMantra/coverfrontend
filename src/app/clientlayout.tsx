@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import dynamic from "next/dynamic";
+import { usePathname } from "next/navigation";
 
 import { ModalProvider } from "./context/modelcontext";
 import Navbar from "./Components/Navbar";
@@ -24,6 +25,8 @@ export default function ClientLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isAdminPage = pathname?.startsWith("/admin");
 
   // Auth Check
   useEffect(() => {
@@ -137,6 +140,15 @@ export default function ClientLayout({
     };
 
   }, []);
+
+  if (isAdminPage) {
+    return (
+      <ModalProvider>
+        <main className="min-h-screen bg-[#FFF4E5]">{children}</main>
+        <GlobalModal />
+      </ModalProvider>
+    );
+  }
 
   return (
     <ModalProvider>

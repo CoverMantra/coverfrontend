@@ -35,9 +35,9 @@ yarn-error.log*
 
 # vercel
 .vercel
-frontend_Architecture.md
-architeecturefullstack.md
-implimentation_plan.md
+# Ignore all markdown files except README
+*.md
+!README.md
 # typescript
 *.tsbuildinfo
 next-env.d.ts
