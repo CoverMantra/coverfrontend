@@ -26,7 +26,7 @@ export default function ClientLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isAdminPage = pathname?.startsWith("/admin");
+  const isAdminPage = pathname?.startsWith("/admin") || pathname?.startsWith("/auth-gate-70898");
 
   // Auth Check
   useEffect(() => {
