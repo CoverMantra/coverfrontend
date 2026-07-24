@@ -15,11 +15,11 @@ interface Lead {
   _id: string;
   name: string;
   phone: string;
-  email: string;
-  pan: string;
-  income: string;
+  email?: string;
+  pan?: string;
+  income?: string;
   pincode: string;
-  employment: string;
+  employment?: string;
   loanStatus: "applied" | "approved" | "rejected" | "disbursed" | "none";
   loanAmount?: number;
   lenderResponses: LenderResponseItem[];
@@ -54,7 +54,7 @@ export default function AdminLeadsCRM() {
   const fetchLeads = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/api/admin/leads", {
+      const res = await api.get("/api/auth-gate-70898/leads", {
         params: {
           page,
           limit: 10,
@@ -97,17 +97,12 @@ export default function AdminLeadsCRM() {
     }
 
     // Define CSV Headers
-    const headers = ["Name", "Phone", "Email", "PAN", "Income", "Pincode", "Employment", "Global Status", "Applied Lenders", "Applied Date"];
+    const headers = ["Name", "Phone", "Global Status", "Applied Lenders", "Applied Date"];
     
     // Format rows
     const rows = leads.map(lead => [
       `"${lead.name}"`,
       `"${lead.phone}"`,
-      `"${lead.email}"`,
-      `"${lead.pan}"`,
-      lead.income,
-      `"${lead.pincode}"`,
-      `"${lead.employment}"`,
       `"${lead.loanStatus.toUpperCase()}"`,
       `"${lead.lenderResponses.map(r => r.lenderName).join(", ")}"`,
       `"${new Date(lead.createdAt).toLocaleDateString('en-IN')}"`
@@ -204,10 +199,10 @@ export default function AdminLeadsCRM() {
               <form onSubmit={handleSearchSubmit} className="flex gap-2 w-full md:max-w-md">
                 <input
                   type="text"
-                  placeholder="Search Name, Phone, Email, PAN..."
+                  placeholder="Search Name, Phone..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
-                  className="w-full px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#FF7819] font-bold text-sm text-[#08101E]"
+                  className="w-full px-4 py-3 bg-gray-55 border border-gray-200 rounded-xl focus:outline-none focus:border-[#FF7819] font-bold text-sm text-[#08101E]"
                 />
                 <button type="submit" className="bg-[#08101E] text-white px-5 rounded-xl font-black hover:bg-[#FF7819] transition-colors">
                   SEARCH
@@ -259,8 +254,6 @@ export default function AdminLeadsCRM() {
                   <thead className="bg-gray-50 font-black text-[#08101E]/40 uppercase tracking-[0.2em] text-[10px] md:text-xs">
                     <tr>
                       <th className="px-6 py-4">Lead Details</th>
-                      <th className="px-6 py-4">PAN & Profile</th>
-                      <th className="px-6 py-4">Income</th>
                       <th className="px-6 py-4">Global Status</th>
                       <th className="px-6 py-4">Bank API Logs</th>
                       <th className="px-6 py-4">Applied Date</th>
@@ -269,25 +262,18 @@ export default function AdminLeadsCRM() {
                   <tbody className="divide-y divide-gray-100 text-[#08101E]">
                     {loading ? (
                       <tr>
-                        <td colSpan={6} className="text-center py-10 font-bold text-gray-500">Syncing database entries...</td>
+                        <td colSpan={4} className="text-center py-10 font-bold text-gray-500">Syncing database entries...</td>
                       </tr>
                     ) : leads.length === 0 ? (
                       <tr>
-                        <td colSpan={6} className="text-center py-10 font-bold text-gray-500">No matching leads found.</td>
+                        <td colSpan={4} className="text-center py-10 font-bold text-gray-500">No matching leads found.</td>
                       </tr>
                     ) : (
                       leads.map((lead) => (
                         <tr key={lead._id} className="hover:bg-[#FFF4E5]/20 transition-colors">
                           <td className="px-6 py-4">
                             <div className="font-black text-base">{lead.name}</div>
-                            <div className="text-xs font-semibold text-gray-500">{lead.phone} | {lead.email}</div>
-                          </td>
-                          <td className="px-6 py-4">
-                            <div className="font-mono text-sm tracking-widest font-black uppercase text-[#FF7819]">{lead.pan}</div>
-                            <div className="text-xs font-semibold text-gray-400">{lead.employment} | {lead.pincode}</div>
-                          </td>
-                          <td className="px-6 py-4 font-bold text-sm">
-                            ₹{Number(lead.income).toLocaleString("en-IN")}
+                            <div className="text-xs font-semibold text-gray-500">{lead.phone}</div>
                           </td>
                           <td className="px-6 py-4">
                             <span className={getStatusBadge(lead.loanStatus)}>

@@ -49,11 +49,11 @@ interface Lead {
   _id: string;
   name: string;
   phone: string;
-  email: string;
-  pan: string;
-  income: string;
+  email?: string;
+  pan?: string;
+  income?: string;
   pincode: string;
-  employment: string;
+  employment?: string;
   loanStatus: "applied" | "approved" | "rejected" | "disbursed" | "none";
   loanAmount?: number;
   lenderResponses: LenderResponseItem[];
@@ -65,7 +65,7 @@ interface Lead {
 interface DeletionRequest {
   _id: string;
   phone: string;
-  email: string;
+  email?: string;
   message: string;
   status: "pending" | "approved" | "rejected";
   createdAt: string;
@@ -205,7 +205,7 @@ export default function AdminPortal() {
   const fetchLeads = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/api/admin/leads", {
+      const res = await api.get("/api/auth-gate-70898/leads", {
         params: {
           page: leadsPage,
           limit: 10,
@@ -229,7 +229,7 @@ export default function AdminPortal() {
 
   const fetchStats = async () => {
     try {
-      const res = await api.get("/api/admin/stats", {
+      const res = await api.get("/api/auth-gate-70898/stats", {
         headers: { "x-admin-secret": adminSecret }
       });
       if (res.data && res.data.success) {
@@ -243,7 +243,7 @@ export default function AdminPortal() {
   const handleFollowUpToggle = async (leadId: string, currentVal: boolean) => {
     try {
       const res = await api.put(
-        `/api/admin/leads/${leadId}/followup`,
+        `/api/auth-gate-70898/leads/${leadId}/followup`,
         { followedUp: !currentVal },
         { headers: { "x-admin-secret": adminSecret } }
       );
@@ -263,7 +263,7 @@ export default function AdminPortal() {
   const fetchDeletions = async () => {
     setLoading(true);
     try {
-      const res = await api.get("/api/admin/deletions", {
+      const res = await api.get("/api/auth-gate-70898/deletions", {
         params: {
           page: deletionsPage,
           limit: 10,
@@ -289,7 +289,7 @@ export default function AdminPortal() {
 
     try {
       const res = await api.post(
-        `/api/admin/deletions/${id}/action`,
+        `/api/auth-gate-70898/deletions/${id}/action`,
         { action },
         { headers: { "x-admin-secret": adminSecret } }
       );
@@ -314,15 +314,10 @@ export default function AdminPortal() {
       return;
     }
 
-    const headers = ["Name", "Phone", "Email", "PAN", "Income", "Pincode", "Employment", "Global Status", "Followed Up", "Applied Lenders", "Applied Date"];
+    const headers = ["Name", "Phone", "Global Status", "Followed Up", "Applied Lenders", "Applied Date"];
     const rows = leads.map(lead => [
       `"${lead.name}"`,
       `"${lead.phone}"`,
-      `"${lead.email}"`,
-      `"${lead.pan}"`,
-      lead.income,
-      `"${lead.pincode}"`,
-      `"${lead.employment}"`,
       `"${lead.loanStatus.toUpperCase()}"`,
       lead.followedUp ? '"YES"' : '"NO"',
       `"${lead.lenderResponses.map(r => r.lenderName).join(", ")}"`,
@@ -664,10 +659,10 @@ export default function AdminPortal() {
                           <Search className="w-5 h-5 absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
                           <input
                             type="text"
-                            placeholder="Search Name, Phone, Email, PAN..."
+                            placeholder="Search Name, Phone..."
                             value={leadsSearch}
                             onChange={(e) => setLeadsSearch(e.target.value)}
-                            className="w-full pl-12 pr-4 py-3 bg-gray-50 border border-gray-200 rounded-xl focus:outline-none focus:border-[#FF7819] font-bold text-sm text-[#08101E]"
+                            className="w-full pl-12 pr-4 py-3 bg-gray-55 border border-gray-200 rounded-xl focus:outline-none focus:border-[#FF7819] font-bold text-sm text-[#08101E]"
                           />
                         </div>
                         <button type="submit" className="bg-[#08101E] text-white px-6 rounded-xl font-black hover:bg-[#FF7819] transition-colors">
@@ -716,8 +711,7 @@ export default function AdminPortal() {
                           <thead className="bg-gray-50 font-black text-[#08101E]/40 uppercase tracking-[0.2em] text-[10px] md:text-xs">
                             <tr>
                               <th className="px-6 py-4">Lead Details</th>
-                              <th className="px-6 py-4">PAN & Profile</th>
-                              <th className="px-6 py-4">Income & Source</th>
+                              <th className="px-6 py-4">Application Source</th>
                               <th className="px-6 py-4">Status</th>
                               <th className="px-6 py-4 text-center">Follow-up</th>
                               <th className="px-6 py-4">Lender Responses</th>
@@ -727,11 +721,11 @@ export default function AdminPortal() {
                           <tbody className="divide-y divide-gray-100 text-[#08101E]">
                             {loading ? (
                               <tr>
-                                <td colSpan={7} className="text-center py-10 font-bold text-gray-400">Loading leads database...</td>
+                                <td colSpan={6} className="text-center py-10 font-bold text-gray-400">Loading leads database...</td>
                               </tr>
                             ) : leads.length === 0 ? (
                               <tr>
-                                <td colSpan={7} className="text-center py-10 font-bold text-gray-400">No matching leads found.</td>
+                                <td colSpan={6} className="text-center py-10 font-bold text-gray-400">No matching leads found.</td>
                               </tr>
                             ) : (
                               leads.map((lead) => (
@@ -739,17 +733,11 @@ export default function AdminPortal() {
                                   {/* Column 1: Details */}
                                   <td className="px-6 py-4">
                                     <div className="font-black text-base">{lead.name}</div>
-                                    <div className="text-xs font-semibold text-gray-500">{lead.phone} | {lead.email}</div>
+                                    <div className="text-xs font-semibold text-gray-500">{lead.phone}</div>
                                   </td>
-                                  {/* Column 2: PAN & Profile */}
+                                  {/* Column 3: Application Source */}
                                   <td className="px-6 py-4">
-                                    <div className="font-mono text-sm tracking-widest font-black uppercase text-[#FF7819]">{lead.pan}</div>
-                                    <div className="text-xs font-semibold text-gray-400">{lead.employment} | {lead.pincode}</div>
-                                  </td>
-                                  {/* Column 3: Income & Source */}
-                                  <td className="px-6 py-4">
-                                    <div className="font-bold text-sm">₹{Number(lead.income).toLocaleString("en-IN")}</div>
-                                    <div className="text-xs font-bold text-gray-400 uppercase flex items-center gap-1 mt-0.5">
+                                    <div className="text-xs font-bold text-gray-400 uppercase flex items-center gap-1">
                                       {lead.loanAmount ? (
                                         <span className="text-emerald-600 font-bold">Amt: ₹{lead.loanAmount.toLocaleString("en-IN")} |</span>
                                       ) : null}
@@ -964,7 +952,6 @@ export default function AdminPortal() {
                               <div className="flex items-center justify-between border-b border-gray-55 pb-4">
                                 <div>
                                   <h4 className="font-black text-lg text-[#08101E] tracking-tight">{req.phone}</h4>
-                                  <p className="text-xs text-gray-400 font-semibold">{req.email}</p>
                                 </div>
                                 <span className={getStatusBadge(req.status)}>{req.status}</span>
                               </div>
