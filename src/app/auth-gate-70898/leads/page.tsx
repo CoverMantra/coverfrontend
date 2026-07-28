@@ -37,6 +37,9 @@ export default function AdminLeadsCRM() {
   const [search, setSearch] = useState("");
   const [status, setStatus] = useState("all");
   const [lender, setLender] = useState("all");
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
   
   // Admin Authentication State (Matches Lender Dashboard)
   const [adminSecret, setAdminSecret] = useState("");
@@ -49,7 +52,62 @@ export default function AdminLeadsCRM() {
     if (isAuthenticated && adminSecret) {
       fetchLeads();
     }
-  }, [page, status, lender, isAuthenticated]);
+  }, [page, status, lender, startDate, endDate, isAuthenticated]);
+
+  // Load secret from sessionStorage if present
+  useEffect(() => {
+    const cachedSecret = sessionStorage.getItem("co_admin_secret");
+    if (cachedSecret) {
+      setAdminSecret(cachedSecret);
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLock = () => {
+    sessionStorage.removeItem("co_admin_secret");
+    setAdminSecret("");
+    setIsAuthenticated(false);
+    toast.info("CRM Portal Locked.");
+  };
+
+  // Inactivity / Idle Logout Timer (15 minutes)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    let timeoutId: NodeJS.Timeout;
+
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        handleLock();
+        toast.warning("Logged out due to 15 minutes of inactivity.");
+      }, 15 * 60 * 1000); // 15 minutes
+    };
+
+    const events = ["mousemove", "keydown", "click", "scroll"];
+
+    let lastReset = 0;
+    const throttledReset = () => {
+      const now = Date.now();
+      if (now - lastReset > 1000) {
+        lastReset = now;
+        resetTimer();
+      }
+    };
+
+    resetTimer();
+
+    events.forEach((event) => {
+      window.addEventListener(event, throttledReset);
+    });
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      events.forEach((event) => {
+        window.removeEventListener(event, throttledReset);
+      });
+    };
+  }, [isAuthenticated]);
 
   const fetchLeads = async () => {
     setLoading(true);
@@ -61,6 +119,8 @@ export default function AdminLeadsCRM() {
           search,
           status,
           lender,
+          startDate,
+          endDate,
         },
         headers: {
           "x-admin-secret": adminSecret,
@@ -90,36 +150,55 @@ export default function AdminLeadsCRM() {
     fetchLeads();
   };
 
-  const handleExportCSV = () => {
-    if (leads.length === 0) {
-      toast.info("No leads available to export.");
-      return;
+  const handleExportCSV = async () => {
+    setIsExporting(true);
+    try {
+      const res = await api.get("/api/auth-gate-70898/leads", {
+        params: {
+          limit: "all",
+          search,
+          status,
+          lender,
+          startDate,
+          endDate,
+        },
+        headers: {
+          "x-admin-secret": adminSecret,
+        },
+      });
+
+      if (!res.data || !res.data.success || !res.data.leads || res.data.leads.length === 0) {
+        toast.info("No leads available to export in selected range/filters.");
+        return;
+      }
+
+      const allLeads = res.data.leads;
+      const headers = ["Name", "Phone", "Global Status", "Applied Lenders", "Applied Date"];
+      
+      const rows = allLeads.map((lead: Lead) => [
+        `"${lead.name}"`,
+        `"${lead.phone}"`,
+        `"${lead.loanStatus.toUpperCase()}"`,
+        `"${lead.lenderResponses.map(r => r.lenderName).join(", ")}"`,
+        `"${new Date(lead.createdAt).toLocaleDateString('en-IN')}"`
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8," 
+        + [headers.join(","), ...rows.map((row: string[]) => row.join(","))].join("\n");
+      
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `CoverMantra_Leads_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success("CSV Export Completed successfully!");
+    } catch (err) {
+      toast.error("Failed to export Excel file.");
+    } finally {
+      setIsExporting(false);
     }
-
-    // Define CSV Headers
-    const headers = ["Name", "Phone", "Global Status", "Applied Lenders", "Applied Date"];
-    
-    // Format rows
-    const rows = leads.map(lead => [
-      `"${lead.name}"`,
-      `"${lead.phone}"`,
-      `"${lead.loanStatus.toUpperCase()}"`,
-      `"${lead.lenderResponses.map(r => r.lenderName).join(", ")}"`,
-      `"${new Date(lead.createdAt).toLocaleDateString('en-IN')}"`
-    ]);
-
-    // Construct CSV Content
-    const csvContent = "data:text/csv;charset=utf-8," 
-      + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
-    
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `CoverMantra_Leads_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast.success("CSV Export Triggered successfully!");
   };
 
   const getStatusBadge = (status: string) => {
@@ -174,9 +253,15 @@ export default function AdminLeadsCRM() {
                 className="bg-black/20 w-full pl-12 pr-4 py-3.5 md:py-4 rounded-xl md:rounded-2xl text-white placeholder-white/40 focus:outline-none focus:ring-2 focus:ring-[#FF7819]/50 transition-all font-medium border border-white/10 focus:border-transparent"
                 value={adminSecret}
                 onChange={(e) => {
-                  setAdminSecret(e.target.value);
-                  if (e.target.value.length > 0) setIsAuthenticated(true);
-                  else setIsAuthenticated(false);
+                  const val = e.target.value;
+                  setAdminSecret(val);
+                  if (val.trim()) {
+                    sessionStorage.setItem("co_admin_secret", val.trim());
+                    setIsAuthenticated(true);
+                  } else {
+                    sessionStorage.removeItem("co_admin_secret");
+                    setIsAuthenticated(false);
+                  }
                 }}
               />
             </div>
@@ -210,6 +295,26 @@ export default function AdminLeadsCRM() {
               </form>
 
               <div className="flex flex-wrap gap-4 w-full md:w-auto justify-end">
+                <div className="flex items-center gap-1.5 bg-gray-55 border border-gray-200 rounded-xl px-3 py-1">
+                  <span className="text-[10px] uppercase font-black text-gray-400">From:</span>
+                  <input
+                    type="date"
+                    value={startDate}
+                    onChange={(e) => { setStartDate(e.target.value); setPage(1); }}
+                    className="bg-transparent font-bold text-xs text-[#08101E] focus:outline-none cursor-pointer"
+                  />
+                </div>
+
+                <div className="flex items-center gap-1.5 bg-gray-55 border border-gray-200 rounded-xl px-3 py-1">
+                  <span className="text-[10px] uppercase font-black text-gray-400">To:</span>
+                  <input
+                    type="date"
+                    value={endDate}
+                    onChange={(e) => { setEndDate(e.target.value); setPage(1); }}
+                    className="bg-transparent font-bold text-xs text-[#08101E] focus:outline-none cursor-pointer"
+                  />
+                </div>
+
                 {/* Status Filter */}
                 <select
                   value={status}
@@ -239,10 +344,20 @@ export default function AdminLeadsCRM() {
                 {/* Export CSV */}
                 <button
                   onClick={handleExportCSV}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-black flex items-center gap-2 shadow-md hover:scale-102 transition-all"
+                  disabled={isExporting}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-black flex items-center gap-2 shadow-md hover:scale-102 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
-                  EXPORT EXCEL
+                  {isExporting ? (
+                    <>
+                      <svg className="w-5 h-5 animate-spin" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.21 8H17" /></svg>
+                      EXPORTING...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+                      EXPORT EXCEL
+                    </>
+                  )}
                 </button>
               </div>
             </div>

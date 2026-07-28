@@ -112,6 +112,9 @@ export default function AdminPortal() {
   const [leadsSearch, setLeadsSearch] = useState("");
   const [leadsStatus, setLeadsStatus] = useState("all");
   const [leadsLender, setLeadsLender] = useState("all");
+  const [leadsStartDate, setLeadsStartDate] = useState("");
+  const [leadsEndDate, setLeadsEndDate] = useState("");
+  const [isExporting, setIsExporting] = useState(false);
   const [selectedResponse, setSelectedResponse] = useState<any | null>(null);
 
   // Stats State
@@ -131,16 +134,59 @@ export default function AdminPortal() {
     if (isAuthenticated && adminSecret) {
       syncDashboardData();
     }
-  }, [activeTab, leadsPage, leadsStatus, leadsLender, deletionsPage, deletionsStatus, isAuthenticated, adminSecret]);
+  }, [activeTab, leadsPage, leadsStatus, leadsLender, leadsStartDate, leadsEndDate, deletionsPage, deletionsStatus, isAuthenticated, adminSecret]);
 
-  // Load secret from localStorage if present
+  // Load secret from sessionStorage if present
   useEffect(() => {
-    const cachedSecret = localStorage.getItem("co_admin_secret");
+    const cachedSecret = sessionStorage.getItem("co_admin_secret");
     if (cachedSecret) {
       setAdminSecret(cachedSecret);
       setIsAuthenticated(true);
     }
   }, []);
+
+  // Inactivity / Idle Logout Timer (15 minutes)
+  useEffect(() => {
+    if (!isAuthenticated) return;
+
+    let timeoutId: NodeJS.Timeout;
+
+    const resetTimer = () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        handleLock();
+        toast.warning("Logged out due to 15 minutes of inactivity.");
+      }, 15 * 60 * 1000); // 15 minutes
+    };
+
+    // Events to monitor user activity
+    const events = ["mousemove", "keydown", "click", "scroll"];
+
+    // Throttling timer resets to avoid resetting too frequently on mouse movements
+    let lastReset = 0;
+    const throttledReset = () => {
+      const now = Date.now();
+      if (now - lastReset > 1000) { // reset at most once per second
+        lastReset = now;
+        resetTimer();
+      }
+    };
+
+    // Initialize timer
+    resetTimer();
+
+    // Register event listeners
+    events.forEach((event) => {
+      window.addEventListener(event, throttledReset);
+    });
+
+    return () => {
+      if (timeoutId) clearTimeout(timeoutId);
+      events.forEach((event) => {
+        window.removeEventListener(event, throttledReset);
+      });
+    };
+  }, [isAuthenticated]);
 
   const syncDashboardData = () => {
     if (activeTab === "leads") {
@@ -154,14 +200,14 @@ export default function AdminPortal() {
   // Save auth credentials
   const handleUnlock = () => {
     if (adminSecret.trim()) {
-      localStorage.setItem("co_admin_secret", adminSecret);
+      sessionStorage.setItem("co_admin_secret", adminSecret);
       setIsAuthenticated(true);
       toast.success("CRM Portal Unlocked!");
     }
   };
 
   const handleLock = () => {
-    localStorage.removeItem("co_admin_secret");
+    sessionStorage.removeItem("co_admin_secret");
     setAdminSecret("");
     setIsAuthenticated(false);
     toast.info("CRM Portal Locked.");
@@ -212,6 +258,8 @@ export default function AdminPortal() {
           search: leadsSearch,
           status: leadsStatus,
           lender: leadsLender,
+          startDate: leadsStartDate,
+          endDate: leadsEndDate,
         },
         headers: { "x-admin-secret": adminSecret }
       });
@@ -308,33 +356,53 @@ export default function AdminPortal() {
     fetchLeads();
   };
 
-  const handleExportCSV = () => {
-    if (leads.length === 0) {
-      toast.info("No leads available to export.");
-      return;
+  const handleExportCSV = async () => {
+    setIsExporting(true);
+    try {
+      const res = await api.get("/api/auth-gate-70898/leads", {
+        params: {
+          limit: "all",
+          search: leadsSearch,
+          status: leadsStatus,
+          lender: leadsLender,
+          startDate: leadsStartDate,
+          endDate: leadsEndDate,
+        },
+        headers: { "x-admin-secret": adminSecret }
+      });
+
+      if (!res.data || !res.data.success || !res.data.leads || res.data.leads.length === 0) {
+        toast.info("No leads available to export in selected range/filters.");
+        return;
+      }
+
+      const allLeads = res.data.leads;
+      const headers = ["Name", "Phone", "Global Status", "Followed Up", "Applied Lenders", "Applied Date"];
+      const rows = allLeads.map((lead: Lead) => [
+        `"${lead.name}"`,
+        `"${lead.phone}"`,
+        `"${lead.loanStatus.toUpperCase()}"`,
+        lead.followedUp ? '"YES"' : '"NO"',
+        `"${lead.lenderResponses.map(r => r.lenderName).join(", ")}"`,
+        `"${new Date(lead.createdAt).toLocaleDateString('en-IN')}"`
+      ]);
+
+      const csvContent = "data:text/csv;charset=utf-8," 
+        + [headers.join(","), ...rows.map((row: string[]) => row.join(","))].join("\n");
+      
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", `CoverMantra_Leads_${new Date().toISOString().split('T')[0]}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      toast.success("CSV Export Completed!");
+    } catch (err) {
+      toast.error("Failed to export Excel file.");
+    } finally {
+      setIsExporting(false);
     }
-
-    const headers = ["Name", "Phone", "Global Status", "Followed Up", "Applied Lenders", "Applied Date"];
-    const rows = leads.map(lead => [
-      `"${lead.name}"`,
-      `"${lead.phone}"`,
-      `"${lead.loanStatus.toUpperCase()}"`,
-      lead.followedUp ? '"YES"' : '"NO"',
-      `"${lead.lenderResponses.map(r => r.lenderName).join(", ")}"`,
-      `"${new Date(lead.createdAt).toLocaleDateString('en-IN')}"`
-    ]);
-
-    const csvContent = "data:text/csv;charset=utf-8," 
-      + [headers.join(","), ...rows.map(e => e.join(","))].join("\n");
-    
-    const encodedUri = encodeURI(csvContent);
-    const link = document.createElement("a");
-    link.setAttribute("href", encodedUri);
-    link.setAttribute("download", `CoverMantra_Leads_${new Date().toISOString().split('T')[0]}.csv`);
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    toast.success("CSV Export Triggered!");
   };
 
   const getStatusBadge = (status: string) => {
@@ -671,10 +739,30 @@ export default function AdminPortal() {
                       </form>
 
                       <div className="flex flex-wrap gap-3 w-full lg:w-auto justify-end">
+                        <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-xl px-3 py-1">
+                          <span className="text-[10px] uppercase font-black text-gray-400">From:</span>
+                          <input
+                            type="date"
+                            value={leadsStartDate}
+                            onChange={(e) => { setLeadsStartDate(e.target.value); setLeadsPage(1); }}
+                            className="bg-transparent font-bold text-xs text-[#08101E] focus:outline-none cursor-pointer"
+                          />
+                        </div>
+
+                        <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-xl px-3 py-1">
+                          <span className="text-[10px] uppercase font-black text-gray-400">To:</span>
+                          <input
+                            type="date"
+                            value={leadsEndDate}
+                            onChange={(e) => { setLeadsEndDate(e.target.value); setLeadsPage(1); }}
+                            className="bg-transparent font-bold text-xs text-[#08101E] focus:outline-none cursor-pointer"
+                          />
+                        </div>
+
                         <select
                           value={leadsStatus}
                           onChange={(e) => { setLeadsStatus(e.target.value); setLeadsPage(1); }}
-                          className="px-4 py-3 bg-gray-50 border border-gray-200 rounded-xl font-bold text-sm text-[#08101E] focus:outline-none cursor-pointer"
+                          className="px-4 py-3 bg-gray-55 border border-gray-200 rounded-xl font-bold text-sm text-[#08101E] focus:outline-none cursor-pointer"
                         >
                           <option value="all">All Statuses</option>
                           <option value="applied">Applied</option>
@@ -697,9 +785,18 @@ export default function AdminPortal() {
 
                         <button
                           onClick={handleExportCSV}
-                          className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-black flex items-center gap-2 shadow-md transition-all active:scale-98 text-sm"
+                          disabled={isExporting}
+                          className="bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-3 rounded-xl font-black flex items-center gap-2 shadow-md transition-all active:scale-98 text-sm disabled:opacity-50 disabled:cursor-not-allowed"
                         >
-                          <FileSpreadsheet className="w-4 h-4" /> EXPORT EXCEL
+                          {isExporting ? (
+                            <>
+                              <RefreshCw className="w-4 h-4 animate-spin" /> EXPORTING...
+                            </>
+                          ) : (
+                            <>
+                              <FileSpreadsheet className="w-4 h-4" /> EXPORT EXCEL
+                            </>
+                          )}
                         </button>
                       </div>
                     </div>
