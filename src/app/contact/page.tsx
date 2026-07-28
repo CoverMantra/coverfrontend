@@ -218,7 +218,7 @@ function Contact() {
                  {[
                    { icon: <FaMapMarkerAlt />, label: "Our Office", val: "2nd Floor MK, Flex, Sanyas Ashram Road, Old Fatehabad, Haryana-125050" },
                    { icon: <FaEnvelope />, label: "Email Us", val: "info@covermantra.in", isLink: true, link: "mailto:info@covermantra.in" },
-                   { icon: <FaPhoneAlt />, label: "Call Anytime", val: "+91 9729509967", isBold: true }
+                   { icon: <FaPhoneAlt />, label: "Call Anytime", val: "+91 7404158096", isBold: true }
                  ].map((item, idx) => (
                    <div key={idx} className="flex items-start gap-5 group/item">
                       <div className="flex-shrink-0 w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-[#FF7819] group-hover/item:bg-[#FF7819] group-hover/item:text-white group-hover/item:rotate-[15deg] transition-all duration-500 shadow-lg">
@@ -252,7 +252,7 @@ function Contact() {
                <motion.a 
                  whileHover={{ y: -5 }}
                  whileTap={{ scale: 0.95 }}
-                 href="https://wa.me/919729509967" 
+                 href="https://wa.me/917404158096" 
                  target="_blank"
                  className="mt-12 flex items-center justify-center gap-3 w-full py-5 bg-[#25D366] text-white rounded-[2rem] font-black shadow-[0_20px_40px_-10px_rgba(37,211,102,0.4)] transition-all text-sm md:text-base uppercase italic tracking-widest"
                >

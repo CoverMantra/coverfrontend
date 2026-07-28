@@ -448,14 +448,14 @@ export default function Bot() {
              <button onClick={() => handleOptionSelect("apply")} className="p-4 bg-white/5 backdrop-blur-md text-white rounded-2xl font-bold border border-white/10 hover:bg-white/10 transition-all flex items-center justify-between group text-sm shadow-lg">
                Apply for Personal Loan <span className="text-[#FF7819] group-hover:translate-x-1 transition-transform">→</span>
              </button>                
-             <button onClick={() => window.open("https://wa.me/919729509967", "_blank")} className="p-4 bg-green-500/10 text-green-400 rounded-2xl font-bold border border-green-500/20 hover:bg-green-500/20 transition-all flex items-center justify-center gap-2 text-sm shadow-lg">
+             <button onClick={() => window.open("https://wa.me/917404158096", "_blank")} className="p-4 bg-green-500/10 text-green-400 rounded-2xl font-bold border border-green-500/20 hover:bg-green-500/20 transition-all flex items-center justify-center gap-2 text-sm shadow-lg">
                <FaWhatsapp size={16} /> Talk on WhatsApp
              </button>
            </div>
         )}
   
         {msg.type === "whatsapp_only" && (
-           <button onClick={() => window.open("https://wa.me/919729509967", "_blank")} className="w-full p-4 bg-green-500/10 text-green-400 rounded-2xl font-bold border border-green-500/20 hover:bg-green-500/20 transition-all flex items-center justify-center gap-2 text-sm shadow-lg">
+           <button onClick={() => window.open("https://wa.me/917404158096", "_blank")} className="w-full p-4 bg-green-500/10 text-green-400 rounded-2xl font-bold border border-green-500/20 hover:bg-green-500/20 transition-all flex items-center justify-center gap-2 text-sm shadow-lg">
              <FaWhatsapp size={18} /> Chat on WhatsApp
            </button>
         )}
