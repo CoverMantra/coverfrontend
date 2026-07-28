@@ -207,9 +207,18 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
                     initial={{ opacity: 0, height: 0, y: -10 }} 
                     animate={{ opacity: 1, height: "auto", y: 0 }} 
                     exit={{ opacity: 0, height: 0, y: -10 }}
-                    className="bg-red-50 text-red-600 text-[11px] font-bold p-3 rounded-xl border border-red-100/50 flex items-center gap-2 shadow-sm"
+                    className={`text-[11px] font-bold p-3.5 rounded-xl border flex items-start gap-2.5 shadow-sm leading-relaxed ${
+                      errorMsg.toLowerCase().includes("15 minutes") || errorMsg.toLowerCase().includes("too many requests")
+                        ? "bg-amber-50 text-amber-800 border-amber-200/60"
+                        : "bg-red-50 text-red-600 border-red-100/50"
+                    }`}
                   >
-                    <span>⚠️</span> {errorMsg}
+                    {errorMsg.toLowerCase().includes("15 minutes") || errorMsg.toLowerCase().includes("too many requests") ? (
+                      <span className="text-amber-500 mt-0.5 text-sm">⏳</span>
+                    ) : (
+                      <span className="text-red-500 mt-0.5 text-sm">⚠️</span>
+                    )}
+                    <span className="flex-1">{errorMsg}</span>
                   </motion.div>
                 )}
               </AnimatePresence>
