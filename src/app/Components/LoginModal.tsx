@@ -5,6 +5,7 @@ import Cookies from "js-cookie";
 import { useAuthStore } from "../../store/useAuthStore";
 import { sendOtp, verifyOtp, getUser } from "../APIs/utils";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useModal } from "../context/modelcontext";
 import { triggerLoginStatusChange } from "./Navbar";
 import { motion, AnimatePresence } from "framer-motion";
@@ -256,7 +257,7 @@ export default function LoginModal({ isOpen, onClose, onSuccess, suppressGlobalM
                       </div>
                     </div>
                     <label htmlFor="consent-check" className="text-[10px] font-semibold text-gray-500 leading-relaxed cursor-pointer select-none">
-                      I agree to the Terms & Conditions and allow contact via Email, WhatsApp, SMS, or Call.
+                      I agree to the <Link href="/terms" target="_blank" onClick={(e) => e.stopPropagation()} className="text-[#FF7819] hover:underline">Terms & Conditions</Link> & <Link href="/privacy" target="_blank" onClick={(e) => e.stopPropagation()} className="text-[#FF7819] hover:underline">Privacy Policy</Link> and allow contact via Email, WhatsApp, SMS,RCS or Call.
                     </label>
                   </div>
 

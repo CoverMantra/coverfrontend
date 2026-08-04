@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useModal } from "../context/modelcontext";
 import Cookies from "js-cookie";
+import Link from "next/link";
 import { registerUser } from "../APIs/utils";
 import { 
   X, ShieldCheck, MapPin, Briefcase, IndianRupee, User, 
@@ -116,7 +117,9 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
         pan: form.pan.toUpperCase(),
         employment: form.employeeType,
         city: form.city || "Unknown",
-        state: form.state || "Unknown"
+        state: form.state || "Unknown",
+        consent: true,
+        consentMessage: "I agree to the Terms & Conditions & Privacy Policy and to be contacted via Email, WhatsApp, SMS,RCS or Call regarding my dynamic loan application."
       };
       await registerUser(payload);
       Cookies.set("loanFormData", JSON.stringify(form), { expires: 7 });
@@ -356,7 +359,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
                     <label className="flex items-start gap-3 cursor-pointer group">
                       <input type="checkbox" checked={consent} onChange={() => setConsent(!consent)} className="mt-1 w-5 h-5 accent-[#FF7819] shrink-0" />
                       <span className="text-xs sm:text-sm text-gray-500 font-medium group-hover:text-[#08101E] transition-colors leading-relaxed">
-                        I agree to be contacted via Email, WhatsApp, SMS, or Call regarding my dynamic loan application.
+                        I agree to the <Link href="/terms" target="_blank" onClick={(e) => e.stopPropagation()} className="text-[#FF7819] hover:underline font-bold">Terms & Conditions</Link> & <Link href="/privacy" target="_blank" onClick={(e) => e.stopPropagation()} className="text-[#FF7819] hover:underline font-bold">Privacy Policy</Link> and to be contacted via Email, WhatsApp, SMS,RCS or Call regarding my dynamic loan application.
                       </span>
                     </label>
                   </div>

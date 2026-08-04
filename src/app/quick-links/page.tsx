@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import LoginModal from "../Components/LoginModal";
 import { registerUser } from "../APIs/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -141,7 +142,9 @@ export default function Page() {
         pan: form.pan.toUpperCase(),
         employment: form.employeeType,
         city: form.city || "Unknown",
-        state: form.state || "Unknown"
+        state: form.state || "Unknown",
+        consent: true,
+        consentMessage: "I agree to the Terms & Conditions & Privacy Policy and authorize CoverMantra to share my details with lenders and contact me for application updates."
       };
       await registerUser(payload);
       router.push("/personal-loans");
@@ -352,7 +355,7 @@ export default function Page() {
                 <div className="flex items-start gap-4 py-6 mt-6 border-t border-[#08101E]/5">
                   <input type="checkbox" id="consent" checked={consent} onChange={() => setConsent(!consent)} className="mt-1 w-5 h-5 accent-[#FF7819] cursor-pointer" required />
                   <label htmlFor="consent" className="text-[10px] text-[#08101E]/50 font-black uppercase tracking-tight leading-relaxed italic cursor-pointer">
-                    I authorize CoverMantra to share my details with lenders and contact me for application updates.
+                    I agree to the <Link href="/terms" target="_blank" onClick={(e) => e.stopPropagation()} className="text-[#FF7819] hover:underline">Terms & Conditions</Link> & <Link href="/privacy" target="_blank" onClick={(e) => e.stopPropagation()} className="text-[#FF7819] hover:underline">Privacy Policy</Link> and authorize CoverMantra to share my details with lenders and contact me for application updates.
                   </label>
                 </div>
 
