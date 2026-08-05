@@ -216,7 +216,7 @@ function Contact() {
                
                <div className="space-y-8 relative z-10">
                  {[
-                   { icon: <FaMapMarkerAlt />, label: "Our Office", val: "2nd Floor MK, Flex, Sanyas Ashram Road, Old Fatehabad, Haryana-125050" },
+                   { icon: <FaMapMarkerAlt />, label: "Our Office", val: "First Floor Building No. 233, Thakar Basti, Bagichi Mohalla,Dharamshala Road,Fatehabad -125050" },
                    { icon: <FaEnvelope />, label: "Email Us", val: "info@covermantra.in", isLink: true, link: "mailto:info@covermantra.in" },
                    { icon: <FaPhoneAlt />, label: "Call Anytime", val: "+91 7404158096", isBold: true }
                  ].map((item, idx) => (

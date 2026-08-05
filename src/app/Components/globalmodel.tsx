@@ -45,6 +45,7 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
 
   const [form, setForm] = useState(emptyForm);
   const [consent, setConsent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
   useEffect(() => {
@@ -108,8 +109,9 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!consent) return;
+    if (!consent || isSubmitting) return;
     setErrorMsg("");
+    setIsSubmitting(true);
 
     try {
       const payload: any = { 
@@ -125,10 +127,12 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
       Cookies.set("loanFormData", JSON.stringify(form), { expires: 7 });
       Cookies.set("loanFormSubmitted", "true", { expires: 7 });
       Cookies.set("isNewUserRegistration", "true", { expires: 1 });
+      setIsSubmitting(false);
       onFormSubmit?.();
       closeModal();
       window.location.href = "/apply-success";
     } catch (err: any) {
+      setIsSubmitting(false);
       const serverError = err.response?.data?.message || err.response?.data || "Failed to register. Please check your details.";
       setErrorMsg(serverError);
     }
@@ -391,13 +395,17 @@ const GlobalModal: React.FC<GlobalModalProps> = ({ onFormSubmit }) => {
                   </button>
                 ) : (
                   <motion.button
-                    whileHover={{ scale: 1.02 }}
-                    whileTap={{ scale: 0.98 }}
+                    whileHover={isStep3Valid && !isSubmitting ? { scale: 1.02 } : {}}
+                    whileTap={isStep3Valid && !isSubmitting ? { scale: 0.98 } : {}}
                     type="submit"
-                    disabled={!isStep3Valid}
-                    className="inline-flex items-center justify-center px-10 py-3.5 bg-[#FF7819] text-white rounded-2xl font-black uppercase tracking-wider text-xs shadow-[0_6px_20px_rgba(255,120,25,0.3)] disabled:opacity-40 disabled:shadow-none transition-all hover:bg-[#e66a15]"
+                    disabled={!isStep3Valid || isSubmitting}
+                    className="inline-flex items-center justify-center px-10 py-3.5 bg-[#FF7819] text-white rounded-2xl font-black uppercase tracking-wider text-xs shadow-[0_6px_20px_rgba(255,120,25,0.3)] disabled:opacity-40 disabled:shadow-none transition-all hover:bg-[#e66a15] min-w-[160px]"
                   >
-                    Submit Application
+                    {isSubmitting ? (
+                      <span className="w-4 h-4 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                    ) : (
+                      "Submit Application"
+                    )}
                   </motion.button>
                 )}
               </div>

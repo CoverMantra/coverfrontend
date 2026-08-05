@@ -217,7 +217,7 @@ function Footer() {
               <MapPin className="w-4 h-4 text-[#FF690B] shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold text-white/80 block uppercase tracking-wider mb-0.5 text-[9px]">Registered Office</span>
-                2nd Floor, MK Flex, Sanyash Aashram Road, Old Fatehabad, Fatehabad, Haryana - 125050
+                First Floor Building No. 233, Thakar Basti, Bagichi Mohalla,Dharamshala Road,Fatehabad -125050
               </div>
             </div>
 

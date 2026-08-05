@@ -211,7 +211,7 @@ export default function TermsPage() {
             <div className="space-y-4 text-sm relative z-10">
               <p><span className="text-gray-400 block uppercase text-[10px] tracking-widest">Nodal Officer</span> <strong className="text-lg">Mandeep Phulia</strong></p>
               <p><span className="text-gray-400 block uppercase text-[10px] tracking-widest">Email Support</span> <strong>info@covermantra.in</strong></p>
-              <p><span className="text-gray-400 block uppercase text-[10px] tracking-widest">Address</span> <span className="italic text-gray-300">CoverMantra Services Pvt. Ltd, 2nd Floor MK Flex, Sanyas Ashram Road, Old Fatehabad, Haryana-125050</span></p>
+              <p><span className="text-gray-400 block uppercase text-[10px] tracking-widest">Address</span> <span className="italic text-gray-300">CoverMantra Services Pvt. Ltd,  First Floor Building No. 233, Thakar Basti, Bagichi Mohalla,Dharamshala Road,Fatehabad -125050</span></p>
             </div>
           </section>
 

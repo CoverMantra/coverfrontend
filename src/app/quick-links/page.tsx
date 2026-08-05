@@ -84,6 +84,7 @@ const emptyForm = {
 export default function Page() {
   const [form, setForm] = useState({ ...emptyForm });
   const [consent, setConsent] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
   const router = useRouter();
 
@@ -128,12 +129,14 @@ export default function Page() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!consent) return alert("Please agree to terms.");
+    if (!consent || isSubmitting) return;
     const isLoggedIn = !!Cookies.get("co_token");
     isLoggedIn ? await handleRegisterUser() : setLoginModalOpen(true);
   };
 
   const handleRegisterUser = async () => {
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     try {
       const savedPhone = Cookies.get("co_phone") || form.phone;
       const payload = {
@@ -147,9 +150,11 @@ export default function Page() {
         consentMessage: "I agree to the Terms & Conditions & Privacy Policy and authorize CoverMantra to share my details with lenders and contact me for application updates."
       };
       await registerUser(payload);
+      setIsSubmitting(false);
       router.push("/personal-loans");
     } catch (err) {
       console.error("Failed to register user from eligibility check:", err);
+      setIsSubmitting(false);
       router.push("/personal-loans");
     }
   };
@@ -360,15 +365,19 @@ export default function Page() {
                 </div>
 
                 <motion.button 
-                  whileHover={consent ? { scale: 1.02 } : {}}
-                  whileTap={consent ? { scale: 0.98 } : {}}
+                  whileHover={consent && !isSubmitting ? { scale: 1.02 } : {}}
+                  whileTap={consent && !isSubmitting ? { scale: 0.98 } : {}}
                   type="submit" 
-                  disabled={!consent}
-                  className={`w-full py-6 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] shadow-2xl transition-all ${
-                    consent ? 'bg-[#FF7819] text-white' : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                  disabled={!consent || isSubmitting}
+                  className={`w-full py-6 rounded-[2rem] font-black text-xs uppercase tracking-[0.3em] shadow-2xl transition-all flex items-center justify-center gap-2 ${
+                    consent && !isSubmitting ? 'bg-[#FF7819] text-white' : 'bg-gray-200 text-gray-400 cursor-not-allowed'
                   }`}
                 >
-                  Submit Request 🏁
+                  {isSubmitting ? (
+                    <span className="w-5 h-5 border-2 border-white/20 border-t-white rounded-full animate-spin" />
+                  ) : (
+                    "Submit Request 🏁"
+                  )}
                 </motion.button>
               </form>
 

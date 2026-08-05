@@ -154,7 +154,7 @@ export default function PrivacyPolicyPage() {
                       </div>
                       <div className="space-y-2">
                         <p className="text-white/40">Corporate Address</p>
-                        <p className="text-xs leading-relaxed text-white/80">2nd Floor MK, Flex, Sanyas Ashram Road, Old Fatehabad, Haryana-125050</p>
+                        <p className="text-xs leading-relaxed text-white/80"> First Floor Building No. 233, Thakar Basti, Bagichi Mohalla,Dharamshala Road,Fatehabad -125050</p>
                         <p className="text-[#FF7819] tracking-widest">PH: 9996327316</p>
                       </div>
                    </div>

@@ -334,7 +334,9 @@ export default function Bot() {
         employment: formData.employment.toLowerCase(),
         income: incomeVal,
         pincode: pincodeVal,
-        source: "chatbot"
+        source: "chatbot",
+        consent: true,
+        consentMessage: "I agree to the Terms & Conditions & Privacy Policy and authorize CoverMantra to contact me regarding my loan application."
       });
 
       // 2. Fetch active lenders list from API
@@ -510,9 +512,9 @@ export default function Bot() {
                     Aapke profile ke mutabik koi lender nahi mila. Please contact support.
                   </div>
                 ) : (
-                  eligibleLenders.map((lender) => (
+                  eligibleLenders.map((lender, index) => (
                     <motion.div 
-                      key={lender._id}
+                      key={lender._id || lender.id || index}
                       whileHover={{ scale: 1.02 }} 
                       className="bg-gradient-to-br from-[#0A192F] to-[#08101E] p-5 rounded-2xl border border-[#FF7819]/30 shadow-[0_10px_30px_-15px_rgba(255,120,25,0.3)] relative overflow-hidden group cursor-pointer" 
                       onClick={() => { router.push(lender.applyLink || `/LenderAPI/${lender._id}`); setIsOpen(false); }}

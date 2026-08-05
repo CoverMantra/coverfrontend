@@ -21,7 +21,7 @@ export default function Page() {
     "description": "Your trusted partner for loan aggregation, lender comparison, and insurance discovery. Find the best rates for personal loans, business loans, and insurance.",
     "address": {
       "@type": "PostalAddress",
-      "streetAddress": "2nd Floor MK Flex, Sanyas Ashram Road, Old Fatehabad",
+      "streetAddress": "First Floor Building No. 233, Thakar Basti, Bagichi Mohalla,Dharamshala road",
       "addressLocality": "Fatehabad",
       "addressRegion": "Haryana",
       "postalCode": "125050",
