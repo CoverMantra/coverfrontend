@@ -138,6 +138,16 @@ export default function LenderFormContainer({ lenderId }: LenderFormContainerPro
       return;
     }
     setLoading(true);
+
+    const partnerUrlMap: Record<string, string> = {
+      fatakpay: "https://web.fatakpay.com/authentication/login?utm_source=651_TT83W&utm_medium=covermantra",
+      vivifi: "https://online.flexsalary.com/CustomerLogin/Index?CampaignID=9192300#x",
+      zype: "https://zype.onelink.me/vx8a?af_xp=custom&pid=CustomerSource&af_dp=com.zype.mobile%3A%2F%2F&deep_link_value=myZype&af_click_lookback=30d&c=Spiraea",
+      moneyview: "https://moneyview.in/personal-loan?utm_source=covermantra"
+    };
+
+    const targetFallbackUrl = partnerUrlMap[normalizedLenderId] || config?.redirectUrlOnSuccess || "/personal-loans";
+
     try {
       const { data } = await api.post(`/api/partners/${normalizedLenderId}/register`, {
         ...formData,
@@ -145,26 +155,25 @@ export default function LenderFormContainer({ lenderId }: LenderFormContainerPro
         consent_timestamp: new Date().toISOString(),
       });
 
-      if (data?.success) {
-        showModal(
-          `✅ Application Success! ${data.offer ? `Your Offer: ${data.offer}` : "You are eligible."}`,
-          "success"
-        );
-        setTimeout(() => {
-          window.location.href = data.redirectUrl || config?.redirectUrlOnSuccess || "/personal-loans";
-        }, 3000);
-      } else {
-        showModal(data?.message || "Not eligible for this lender. Try other lenders.", "error");
-        setTimeout(() => {
-          window.location.href = "/personal-loans";
-        }, 4000);
-      }
-    } catch (error: any) {
-      const errMessage = error.response?.data?.message || "Not eligible for this lender. Try other lenders.";
-      showModal(errMessage, "error");
+      const redirectUrl = data?.redirectUrl || targetFallbackUrl;
+
+      showModal(
+        `✅ Application Submitted Successfully!\nRedirecting to partner website...`,
+        "success"
+      );
       setTimeout(() => {
-        window.location.href = "/personal-loans";
-      }, 4000);
+        window.location.href = redirectUrl;
+      }, 2500);
+
+    } catch (error: any) {
+      // Even if API returns error, show success message and redirect to partner UTM link
+      showModal(
+        `✅ Application Submitted Successfully!\nRedirecting to partner website...`,
+        "success"
+      );
+      setTimeout(() => {
+        window.location.href = targetFallbackUrl;
+      }, 2500);
     } finally {
       setLoading(false);
     }

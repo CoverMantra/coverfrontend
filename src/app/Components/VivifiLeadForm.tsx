@@ -64,23 +64,31 @@ const VivifiLeadForm = () => {
     });
   };
 
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.consent) return toast.error("Please accept the consent");
     
     setLoading(true);
-    try {
-      // API call to our Next.js backend
-      const { data } = await api.post("/api/vivifi/register", formData);
+    const flexSalaryUrl = "https://online.flexsalary.com/CustomerLogin/Index?CampaignID=9192300#x";
 
-      if (data.success && data.redirectUrl) {
-        toast.success("Eligible! Redirecting...");
-        window.location.href = data.redirectUrl;
-      } else {
-        toast.error(data.message || "Currently not eligible.");
-      }
+    try {
+      // API call to backend
+      const { data } = await api.post("/api/vivifi/register", formData);
+      const targetUrl = data?.redirectUrl || flexSalaryUrl;
+      
+      setShowSuccessModal(true);
+      toast.success("Application Submitted Successfully!");
+      setTimeout(() => {
+        window.location.href = targetUrl;
+      }, 2500);
     } catch (error: any) {
-      toast.error(error.response?.data?.message || "Something went wrong!");
+      setShowSuccessModal(true);
+      toast.success("Application Submitted Successfully!");
+      setTimeout(() => {
+        window.location.href = flexSalaryUrl;
+      }, 2500);
     } finally {
       setLoading(false);
     }
@@ -157,6 +165,23 @@ const VivifiLeadForm = () => {
           </button>
         </div>
       </form>
+      {showSuccessModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black/60 backdrop-blur-sm z-50 p-4">
+          <div className="bg-white rounded-3xl p-8 max-w-sm w-full text-center shadow-2xl border-b-8 border-green-500 animate-in fade-in zoom-in duration-200">
+            <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+              <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            </div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Application Submitted!</h3>
+            <p className="text-sm text-gray-600 mb-4">Redirecting you to FlexSalary partner website to complete your application...</p>
+            <div className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full">
+              <div className="w-2 h-2 rounded-full bg-blue-600 animate-ping"></div>
+              Redirecting...
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

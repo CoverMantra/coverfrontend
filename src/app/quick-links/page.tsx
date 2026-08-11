@@ -53,25 +53,14 @@ const lenders = [
   },
   {
     id: 3,
-    name: "FatakPay Personal Loans",
+    name: "FATAKPAY Loans",
     logo: "https://www.fdplfinance.com/assets/images/logo/FatakLoans.svg",
     approval: "90%",
     amount: "Upto 5L",
     rate: "12% - 35.95% p.a",
     tenure: "3-24 months",
     features: ["Instant Cash", "Digital KYC", "Flexible EMI"],
-    url: "https://web.fatakpay.com/authentication/login?utm_source=651_TT83W?utm_medium=",
-  },
-  {
-    id: 4,
-    name: "FatakPay Short Term",
-    logo: "https://www.fdplfinance.com/assets/images/logo/FatakLoans.svg",
-    approval: "90%",
-    amount: "Upto 5000",
-    rate: "12% - 35.95% p.a",
-    tenure: "3-24 months",
-    features: ["Zero Paperwork", "Small Credit", "Instant Disbursal"],
-    url: "https://www.fatakpay.com/",
+    url: "https://web.fatakpay.com/authentication/login?utm_source=651_TT83W&utm_medium=covermantra",
   }
   
 ];
@@ -95,7 +84,7 @@ export default function Page() {
        if (l.name.includes("Money View")) return income >= 25000;
        if (l.name.includes("Zype")) return income >= 15000;
        if (l.name.includes("FlexSalary")) return income >= 12000;
-       if (l.name.includes("FatakPay Personal")) return income >= 20000;
+       if (l.name.includes("FatakPay") || l.name.includes("FATAKPAY")) return income >= 16000;
        return true; 
     });
   }, [form.income]);

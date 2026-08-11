@@ -34,7 +34,7 @@ const fallbackCards: LenderCard[] = [
     ]
   },
   {
-    provider: "FatakPay Personal Loans",
+    provider: "FATAKPAY Loans",
     approval: "Good",
     loanAmount: "Up to ₹2,00,000",
     interestRate: "Starting from 12% to 35.95% per month",
@@ -43,20 +43,6 @@ const fallbackCards: LenderCard[] = [
     ratings: 4.0,
     logo: "https://www.fdplfinance.com/assets/images/logo/FatakLoans.svg",
     applyLink: "/LenderAPI/fatakPay",
-    features: [
-      "Quick disbursement", "Paperless process", "Low processing fee", "Instant approval", "No hidden charges", "24/7 customer support"
-    ]
-  },
-  {
-    provider: "FatakPay Short Term Loans",
-    approval: "Good",
-    loanAmount: "Up to ₹2,00,000",
-    interestRate: "Starting from 12% to 35.95% per month",
-    processingFee: "Starting from 2.5% of the approved loan amount",
-    support: "24/7 customer support",
-    ratings: 4.0,
-    logo: "https://www.fdplfinance.com/assets/images/logo/FatakLoans.svg",
-    applyLink: "/LenderAPI/fatakPaydcl",
     features: [
       "Quick disbursement", "Paperless process", "Low processing fee", "Instant approval", "No hidden charges", "24/7 customer support"
     ]
@@ -73,6 +59,20 @@ const fallbackCards: LenderCard[] = [
     applyLink: "/LenderAPI/zype",
     features: [
       "Quick disbursement", "Paperless process", "Low processing fee", "Instant approval", "No hidden charges", "24/7 customer support"
+    ]
+  },
+  {
+    provider: "MoneyView",
+    approval: "Good",
+    loanAmount: "Up to ₹5,00,000",
+    interestRate: "Starting from 1.33% per month",
+    processingFee: "Starting from 2% of the approved loan amount",
+    support: "24/7 customer support",
+    ratings: 4.5,
+    logo: "https://moneyview.in/images/mv-green-logo-v3Compressed.svg",
+    applyLink: "/LenderAPI/moneyView",
+    features: [
+      "Direct bank transfer", "Paperless process", "Minimal documentation", "Flexible repayment tenures"
     ]
   }
 ];

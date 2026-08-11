@@ -30,7 +30,8 @@ export const fetchUserData = async (phone: string) => {
 };
 
 interface Lender {
-  _id: string;
+  _id?: string;
+  id?: string;
   name: string;
   logo: string;
   age: number;
@@ -517,7 +518,7 @@ export default function Bot() {
                       key={lender._id || lender.id || index}
                       whileHover={{ scale: 1.02 }} 
                       className="bg-gradient-to-br from-[#0A192F] to-[#08101E] p-5 rounded-2xl border border-[#FF7819]/30 shadow-[0_10px_30px_-15px_rgba(255,120,25,0.3)] relative overflow-hidden group cursor-pointer" 
-                      onClick={() => { router.push(lender.applyLink || `/LenderAPI/${lender._id}`); setIsOpen(false); }}
+                      onClick={() => { router.push(lender.applyLink || `/LenderAPI/${lender._id || lender.id}`); setIsOpen(false); }}
                     >
                         <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF7819]/10 rounded-full blur-3xl group-hover:bg-[#FF7819]/20 transition-all"></div>
                         <div className="flex justify-between items-center mb-3 relative z-10">

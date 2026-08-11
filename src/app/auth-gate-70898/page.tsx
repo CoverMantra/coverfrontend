@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 import { Reorder, motion, AnimatePresence } from "framer-motion";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -436,12 +437,12 @@ export default function AdminPortal() {
           Responsive Mobile Header (Hamburger Menu)
          ------------------------------------------------------------- */}
       <div className="md:hidden w-full bg-[#08101E] text-white p-4.5 flex justify-between items-center shadow-lg relative z-30">
-        <div className="flex items-center gap-3">
-          <img src="/image/logo.png" alt="CoverMantra Logo" className="w-9 h-9 object-contain brightness-0 invert" />
+        <Link href="/" className="flex items-center gap-3">
+          <img src="/image/logo.png" alt="CoverMantra Logo" className="w-9 h-9 object-contain" />
           <h1 className="text-lg font-black tracking-tight uppercase italic text-transparent bg-clip-text bg-gradient-to-r from-white to-white/70">
             CM ADMIN
           </h1>
-        </div>
+        </Link>
         {isAuthenticated && (
           <button 
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
@@ -508,7 +509,9 @@ export default function AdminPortal() {
         <div>
           {/* Brand Header */}
           <div className={`p-6 border-b border-white/5 flex items-center gap-3 relative ${isSidebarCollapsed ? "justify-center" : ""}`}>
-            <img src="/image/logo.png" alt="CoverMantra Logo" className="w-9 h-9 object-contain brightness-0 invert shrink-0" />
+            <Link href="/" className="shrink-0 flex items-center justify-center">
+              <img src="/image/logo.png" alt="CoverMantra Logo" className="w-10 h-10 object-contain shrink-0 hover:scale-105 transition-transform" />
+            </Link>
             {!isSidebarCollapsed && (
               <div className="flex flex-col">
                 <span className="text-[#FF7819] font-black tracking-[0.25em] text-[10px] uppercase">
