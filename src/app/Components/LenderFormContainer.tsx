@@ -148,6 +148,43 @@ export default function LenderFormContainer({ lenderId }: LenderFormContainerPro
 
     const targetFallbackUrl = partnerUrlMap[normalizedLenderId] || config?.redirectUrlOnSuccess || "/personal-loans";
 
+    const decorateUrl = (baseUrl: string) => {
+      const phone = formData.phone || formData.mobile || Cookies.get("co_phone") || "";
+      const pincode = formData.pincode || "";
+      const salary = formData.income || formData.salary || "";
+
+      try {
+        const absoluteUrl = baseUrl.startsWith("/") 
+          ? `${window.location.origin}${baseUrl}` 
+          : (baseUrl.startsWith("http") ? baseUrl : `https://${baseUrl}`);
+
+        const urlObj = new URL(absoluteUrl);
+        if (phone) {
+          urlObj.searchParams.set("phone", String(phone));
+          urlObj.searchParams.set("mobile", String(phone));
+        }
+        if (pincode) urlObj.searchParams.set("pincode", String(pincode));
+        if (salary) urlObj.searchParams.set("salary", String(salary));
+        return urlObj.toString();
+      } catch (e) {
+        const separator = baseUrl.includes("?") ? "&" : "?";
+        let params = [];
+        if (phone) {
+          params.push(`phone=${phone}`);
+          params.push(`mobile=${phone}`);
+        }
+        if (pincode) params.push(`pincode=${pincode}`);
+        if (salary) params.push(`salary=${salary}`);
+        return params.length > 0 ? `${baseUrl}${separator}${params.join("&")}` : baseUrl;
+      }
+    };
+
+    // Open a blank tab synchronously in the user interaction thread to bypass popup blocker
+    const newTab = typeof window !== "undefined" ? window.open("", "_blank") : null;
+    if (newTab) {
+      newTab.document.write("<p style='font-family:sans-serif; text-align:center; margin-top:20%; color:#08101E; font-weight:bold;'>Redirecting to partner website... Please wait.</p>");
+    }
+
     try {
       const { data } = await api.post(`/api/partners/${normalizedLenderId}/register`, {
         ...formData,
@@ -155,24 +192,51 @@ export default function LenderFormContainer({ lenderId }: LenderFormContainerPro
         consent_timestamp: new Date().toISOString(),
       });
 
-      const redirectUrl = data?.redirectUrl || targetFallbackUrl;
+      const rawRedirectUrl = data?.redirectUrl || targetFallbackUrl;
+      const decoratedUrl = decorateUrl(rawRedirectUrl);
 
       showModal(
         `✅ Application Submitted Successfully!\nRedirecting to partner website...`,
         "success"
       );
+
+      // Track applied state locally
+      try {
+        const saved = localStorage.getItem("co_applied_lenders") || "[]";
+        const current = JSON.parse(saved);
+        const mappedNames: Record<string, string> = {
+          fatakpay: "FATAKPAY Loans",
+          vivifi: "FlexSalary (Vivifi)",
+          zype: "Zype",
+          moneyview: "MoneyView"
+        };
+        const displayName = mappedNames[normalizedLenderId] || normalizedLenderId;
+        const updated = [...new Set([...current, displayName])];
+        localStorage.setItem("co_applied_lenders", JSON.stringify(updated));
+      } catch (err) {}
+
       setTimeout(() => {
-        window.location.href = redirectUrl;
+        if (newTab) {
+          newTab.location.href = decoratedUrl;
+        } else {
+          window.open(decoratedUrl, "_blank");
+        }
+        window.location.href = "/apply-success";
       }, 2500);
 
     } catch (error: any) {
-      // Even if API returns error, show success message and redirect to partner UTM link
+      const decoratedUrl = decorateUrl(targetFallbackUrl);
       showModal(
         `✅ Application Submitted Successfully!\nRedirecting to partner website...`,
         "success"
       );
       setTimeout(() => {
-        window.location.href = targetFallbackUrl;
+        if (newTab) {
+          newTab.location.href = decoratedUrl;
+        } else {
+          window.open(decoratedUrl, "_blank");
+        }
+        window.location.href = "/apply-success";
       }, 2500);
     } finally {
       setLoading(false);

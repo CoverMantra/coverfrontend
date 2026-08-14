@@ -14,45 +14,24 @@ import {
   FaChartLine, 
   FaCheckCircle 
 } from "react-icons/fa";
+import api from "@/lib/axios";
 
-const lenders = [
-/*
-   {
-    id: 1,
-    name: "Money View",
-    logo: "https://moneyview.in/images/mv-green-logo-v3Compressed.svg",
-    approval: "95%",
-    amount: "Upto 10L",
-    rate: "8% / mo",
-    tenure: "6-18 months",
-    features: ["Quick Approval", "Low Interest", "No Hidden Fees"],
-    url: "https://moneyview.in/personal-loan?utm_source=covermantra",
-  },
+const fallbackLenders = [
   {
-    id: 2,
-    name: "Zype",
-    logo: "https://www.getzype.com/wp-content/uploads/2024/09/Zype_svg_black.svg",
-    approval: "95%",
-    amount: "Upto 3L",
-    rate: "1.5% / mo",
-    tenure: "6-18 months",
-    features: ["Quick Approval", "Low Interest", "No Hidden Fees"],
-    url: "https://zype.onelink.me/vx8a?af_xp=custom&pid=CustomerSource&af_dp=com.zype.mobile%3A%2F%2F&deep_link_value=myZype&af_click_lookback=30d&c=Spiraea",
-  },
-*/
-  {
-    id: 5,
+    id: "v1",
     name: "FlexSalary (Vivifi)",
-    logo: "https://www.flexsalary.com/images/global/flexsalary-color-black.webp",
+    logo: "https://www.vivifin.com/images/vivifi-logo.png",
     approval: "92%",
     amount: "Upto 3L",
     rate: "1.5% / mo",
     tenure: "Flexible",
     features: ["Credit Line", "Instant Transfer", "No Fixed EMI"],
     url: "https://online.flexsalary.com/CustomerLogin/Index?CampaignID=9192300#x",
+    minIncome: 15000,
+    age: 21
   },
   {
-    id: 3,
+    id: "f1",
     name: "FATAKPAY Loans",
     logo: "https://www.fdplfinance.com/assets/images/logo/FatakLoans.svg",
     approval: "90%",
@@ -61,8 +40,9 @@ const lenders = [
     tenure: "3-24 months",
     features: ["Instant Cash", "Digital KYC", "Flexible EMI"],
     url: "https://web.fatakpay.com/authentication/login?utm_source=651_TT83W&utm_medium=covermantra",
+    minIncome: 16000,
+    age: 20
   }
-  
 ];
 
 const emptyForm = {
@@ -75,19 +55,131 @@ export default function Page() {
   const [consent, setConsent] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginModalOpen, setLoginModalOpen] = useState(false);
+  const [dynamicLenders, setDynamicLenders] = useState<any[]>([]);
+  const [loadingLenders, setLoadingLenders] = useState(true);
+  const [appliedLenders, setAppliedLenders] = useState<string[]>([]);
   const router = useRouter();
 
+  useEffect(() => {
+    const savedLenders = localStorage.getItem("co_applied_lenders");
+    const savedTimestamps = localStorage.getItem("co_applied_lenders_timestamp");
+    if (savedLenders && savedTimestamps) {
+      try {
+        const lendersList = JSON.parse(savedLenders);
+        const timestampsObj = JSON.parse(savedTimestamps);
+        const now = Date.now();
+        const expiryTime = 24 * 60 * 60 * 1000; // 24 Hours in milliseconds
+
+        const validLenders = lendersList.filter((lender: string) => {
+          const timestamp = timestampsObj[lender];
+          return timestamp && now - timestamp < expiryTime;
+        });
+
+        if (validLenders.length !== lendersList.length) {
+          localStorage.setItem("co_applied_lenders", JSON.stringify(validLenders));
+          const newTimestamps: Record<string, number> = {};
+          validLenders.forEach((lender: string) => {
+            newTimestamps[lender] = timestampsObj[lender];
+          });
+          localStorage.setItem("co_applied_lenders_timestamp", JSON.stringify(newTimestamps));
+        }
+        setAppliedLenders(validLenders);
+      } catch (e) {}
+    } else if (savedLenders) {
+      try {
+        setAppliedLenders(JSON.parse(savedLenders));
+      } catch (e) {}
+    }
+
+    const fetchLenders = async () => {
+      try {
+        const { data } = await api.get("/api/lenders");
+        if (data && data.length > 0) {
+          const mapped = data.map((l: any) => ({
+            id: l._id,
+            name: l.name,
+            logo: l.logo,
+            approval: l.approval || "95%",
+            amount: l.loanAmount || "Up to ₹2,00,000",
+            rate: l.interestRate || "Starting from 1.5% per month",
+            tenure: l.support || "24/7 support",
+            features: l.features || ["Quick Approval", "Low Interest", "No Hidden Fees"],
+            url: l.applyLink || l.UTM || `/LenderAPI/${l._id}`,
+            minIncome: l.minIncome || 15000,
+            age: l.age || 21
+          }));
+          setDynamicLenders(mapped);
+        } else {
+          setDynamicLenders(fallbackLenders);
+        }
+      } catch (err) {
+        console.error("Failed to load lenders in quick-links:", err);
+        setDynamicLenders(fallbackLenders);
+      } finally {
+        setLoadingLenders(false);
+      }
+    };
+    fetchLenders();
+  }, []);
+
+  const decorateUrl = (baseUrl: string) => {
+    if (!baseUrl) return "#";
+    const phone = Cookies.get("co_phone") || localStorage.getItem("co_phone") || "";
+    const pincode = localStorage.getItem("co_pincode") || "";
+    const salary = localStorage.getItem("co_income") || "";
+
+    try {
+      const absoluteUrl = baseUrl.startsWith("/") 
+        ? `${window.location.origin}${baseUrl}` 
+        : (baseUrl.startsWith("http") ? baseUrl : `https://${baseUrl}`);
+
+      const urlObj = new URL(absoluteUrl);
+      if (phone) {
+        urlObj.searchParams.set("phone", String(phone));
+        urlObj.searchParams.set("mobile", String(phone));
+      }
+      if (pincode) urlObj.searchParams.set("pincode", String(pincode));
+      if (salary) urlObj.searchParams.set("salary", String(salary));
+      return urlObj.toString();
+    } catch (e) {
+      const separator = baseUrl.includes("?") ? "&" : "?";
+      let params = [];
+      if (phone) {
+        params.push(`phone=${phone}`);
+        params.push(`mobile=${phone}`);
+      }
+      if (pincode) params.push(`pincode=${pincode}`);
+      if (salary) params.push(`salary=${salary}`);
+      return params.length > 0 ? `${baseUrl}${separator}${params.join("&")}` : baseUrl;
+    }
+  };
+
+  const handleApply = (providerName: string, applyLink: string) => {
+    const now = Date.now();
+    const saved = localStorage.getItem("co_applied_lenders_timestamp") || "{}";
+    let timestampsObj: Record<string, number> = {};
+    try {
+      timestampsObj = JSON.parse(saved);
+    } catch (e) {}
+    timestampsObj[providerName] = now;
+    localStorage.setItem("co_applied_lenders_timestamp", JSON.stringify(timestampsObj));
+
+    const updated = [...new Set([...appliedLenders, providerName])];
+    setAppliedLenders(updated);
+    localStorage.setItem("co_applied_lenders", JSON.stringify(updated));
+
+    const decoratedUrl = decorateUrl(applyLink);
+    window.location.href = decoratedUrl;
+  };
+
   const filteredLenders = React.useMemo(() => {
-    if (!form.income || isNaN(Number(form.income))) return lenders;
+    const currentList = dynamicLenders.length > 0 ? dynamicLenders : fallbackLenders;
+    if (!form.income || isNaN(Number(form.income))) return currentList;
     const income = Number(form.income);
-    return lenders.filter(l => {
-       if (l.name.includes("Money View")) return income >= 25000;
-       if (l.name.includes("Zype")) return income >= 15000;
-       if (l.name.includes("FlexSalary")) return income >= 12000;
-       if (l.name.includes("FatakPay") || l.name.includes("FATAKPAY")) return income >= 16000;
-       return true; 
+    return currentList.filter(l => {
+       return income >= (l.minIncome || 12000);
     });
-  }, [form.income]);
+  }, [dynamicLenders, form.income]);
 
   useEffect(() => {
     const savedPhone = Cookies.get("co_phone");
@@ -139,10 +231,20 @@ export default function Page() {
         consentMessage: "I agree to the Terms & Conditions & Privacy Policy and authorize CoverMantra to share my details with lenders and contact me for application updates."
       };
       await registerUser(payload);
+      
+      // Save details to localStorage for URL auto-fill
+      localStorage.setItem("co_phone", savedPhone);
+      localStorage.setItem("co_pincode", form.pincode);
+      localStorage.setItem("co_income", form.income);
+
       setIsSubmitting(false);
       router.push("/personal-loans");
     } catch (err) {
       console.error("Failed to register user from eligibility check:", err);
+      // Fallback save even on registration API failure
+      localStorage.setItem("co_phone", form.phone);
+      localStorage.setItem("co_pincode", form.pincode);
+      localStorage.setItem("co_income", form.income);
       setIsSubmitting(false);
       router.push("/personal-loans");
     }
@@ -203,66 +305,76 @@ export default function Page() {
                  <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">No lenders match your current profile.</p>
                </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <AnimatePresence>
-                {filteredLenders.map((lender, index) => (
-                  <motion.div 
-                    key={lender.id}
-                    layout
-                    initial={{ opacity: 0, scale: 0.8 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    exit={{ opacity: 0, scale: 0.8 }}
-                    transition={{ duration: 0.3, delay: index * 0.05 }}
-                    whileHover={{ rotateY: -3, rotateX: 3, scale: 1.02 }}
-                    style={{ transformStyle: "preserve-3d" }}
-                    className="group bg-white p-8 rounded-[3rem] border border-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(255,120,25,0.15)] transition-all duration-500 relative overflow-hidden"
-                  >
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF7819]/5 rounded-full -mr-16 -mt-16 group-hover:bg-[#FF7819]/10 transition-colors"></div>
+               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                 <AnimatePresence>
+                 {filteredLenders.map((lender: any, index: number) => (
+                   <motion.div 
+                     key={lender.id}
+                     layout
+                     initial={{ opacity: 0, scale: 0.8 }}
+                     animate={{ opacity: 1, scale: 1 }}
+                     exit={{ opacity: 0, scale: 0.8 }}
+                     transition={{ duration: 0.3, delay: index * 0.05 }}
+                     whileHover={{ rotateY: -3, rotateX: 3, scale: 1.02 }}
+                     style={{ transformStyle: "preserve-3d" }}
+                     className="group bg-white p-8 rounded-[3rem] border border-white shadow-[0_30px_60px_-15px_rgba(0,0,0,0.05)] hover:shadow-[0_40px_80px_-20px_rgba(255,120,25,0.15)] transition-all duration-500 relative overflow-hidden"
+                   >
+                     <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF7819]/5 rounded-full -mr-16 -mt-16 group-hover:bg-[#FF7819]/10 transition-colors"></div>
 
-                    <div className="flex justify-between items-start mb-8">
-                      <div className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center h-16 w-32 group-hover:scale-105 transition-transform">
-                        <img src={lender.logo} alt={lender.name} className="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all" />
-                      </div>
-                      <div className="flex items-center gap-1.5 bg-green-500 text-white px-4 py-1.5 rounded-full font-black shadow-lg shadow-green-500/20 text-[10px] tracking-tighter">
-                        {lender.approval} SUCCESS
-                      </div>
-                    </div>
+                     <div className="flex justify-between items-start mb-8">
+                       <div className="bg-white p-3 rounded-2xl shadow-sm border border-gray-100 flex items-center justify-center h-16 w-32 group-hover:scale-105 transition-transform">
+                         <img src={lender.logo} alt={lender.name} className="max-h-full max-w-full object-contain grayscale group-hover:grayscale-0 transition-all" />
+                       </div>
+                       <div className="flex items-center gap-1.5 bg-green-500 text-white px-4 py-1.5 rounded-full font-black shadow-lg shadow-green-500/20 text-[10px] tracking-tighter">
+                         {lender.approval} SUCCESS
+                       </div>
+                     </div>
 
-                    <h3 className="text-xl font-black text-[#08101E] mb-6 tracking-tight uppercase italic">{lender.name}</h3>
+                     <h3 className="text-xl font-black text-[#08101E] mb-6 tracking-tight uppercase italic">{lender.name}</h3>
 
-                    <div className="grid grid-cols-2 gap-4 mb-8">
-                      <div className="bg-[#FFF4E5]/50 p-4 rounded-2xl border border-[#FF7819]/5">
-                        <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Max Amount</p>
-                        <p className="text-sm font-black text-[#FF7819] flex items-center gap-1"><FaHandHoldingUsd /> {lender.amount}</p>
-                      </div>
-                      <div className="bg-[#FFF4E5]/50 p-4 rounded-2xl border border-[#FF7819]/5">
-                        <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Interest</p>
-                        <p className="text-[11px] font-black text-[#08101E] flex items-center gap-1"><FaChartLine /> {lender.rate}</p>
-                      </div>
-                    </div>
+                     <div className="grid grid-cols-2 gap-4 mb-8">
+                       <div className="bg-[#FFF4E5]/50 p-4 rounded-2xl border border-[#FF7819]/5">
+                         <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Max Amount</p>
+                         <p className="text-sm font-black text-[#FF7819] flex items-center gap-1"><FaHandHoldingUsd /> {lender.amount}</p>
+                       </div>
+                       <div className="bg-[#FFF4E5]/50 p-4 rounded-2xl border border-[#FF7819]/5">
+                         <p className="text-[9px] text-gray-400 font-black uppercase tracking-[0.2em] mb-1">Interest</p>
+                         <p className="text-[11px] font-black text-[#08101E] flex items-center gap-1"><FaChartLine /> {lender.rate}</p>
+                       </div>
+                     </div>
 
-                    <div className="mb-10">
-                      <div className="flex flex-wrap gap-2">
-                        {lender.features.map((feature, i) => (
-                          <span key={i} className="flex items-center gap-1.5 text-[9px] font-black bg-gray-50 text-gray-500 px-3 py-2 rounded-xl border border-gray-100 uppercase tracking-wider group-hover:bg-green-50 group-hover:text-green-600 transition-all">
-                            <FaCheckCircle className="text-[10px]" /> {feature}
-                          </span>
-                        ))}
-                      </div>
-                    </div>
+                     <div className="mb-10">
+                       <div className="flex flex-wrap gap-2">
+                         {lender.features.map((feature: string, i: number) => (
+                           <span key={i} className="flex items-center gap-1.5 text-[9px] font-black bg-gray-50 text-gray-500 px-3 py-2 rounded-xl border border-gray-100 uppercase tracking-wider group-hover:bg-green-50 group-hover:text-green-600 transition-all">
+                             <FaCheckCircle className="text-[10px]" /> {feature}
+                           </span>
+                         ))}
+                       </div>
+                     </div>
 
-                    <a href={lender.url} target="_blank" rel="noopener noreferrer" className="block relative z-10">
+                      {appliedLenders.includes(lender.name) && (
+                        <div className="text-[10px] font-bold text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200 uppercase tracking-wider text-center w-fit mx-auto mb-2">
+                          ✓ Applied (In-Progress)
+                        </div>
+                      )}
                       <motion.button 
+                        onClick={() => handleApply(lender.name, lender.url)}
                         whileTap={{ scale: 0.95 }}
                         className="w-full bg-[#08101E] hover:bg-[#FF7819] text-white font-black py-5 rounded-[1.8rem] shadow-xl transition-all flex items-center justify-center gap-3 uppercase tracking-widest text-[10px]"
                       >
                         Apply Instantly <FaBolt className="text-[#FF7819] group-hover:text-white" />
                       </motion.button>
-                    </a>
-                  </motion.div>
-                ))}
-                </AnimatePresence>
-              </div>
+
+                      {appliedLenders.length > 0 && !appliedLenders.includes(lender.name) && (
+                        <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-[10px] text-amber-800 font-bold text-center">
+                          💡 Tip: Apply to {lender.name} too to increase your approval chances by 80%!
+                        </div>
+                      )}
+                    </motion.div>
+                 ))}
+                 </AnimatePresence>
+               </div>
             )}
           </div>
 

@@ -77,6 +77,8 @@ const fallbackCards: LenderCard[] = [
   }
 ];
 
+import Cookies from "js-cookie";
+
 function StarRating({ value }: { value: number }) {
   const stars = [];
   for (let i = 1; i <= 5; i++) {
@@ -92,8 +94,39 @@ function StarRating({ value }: { value: number }) {
 export default function PersonalLoansPage() {
   const [lenders, setLenders] = useState<LenderCard[]>(fallbackCards);
   const [openFeatures, setOpenFeatures] = useState<number | null>(null);
+  const [appliedLenders, setAppliedLenders] = useState<string[]>([]);
 
   useEffect(() => {
+    const savedLenders = localStorage.getItem("co_applied_lenders");
+    const savedTimestamps = localStorage.getItem("co_applied_lenders_timestamp");
+    if (savedLenders && savedTimestamps) {
+      try {
+        const lendersList = JSON.parse(savedLenders);
+        const timestampsObj = JSON.parse(savedTimestamps);
+        const now = Date.now();
+        const expiryTime = 24 * 60 * 60 * 1000; // 24 Hours in milliseconds
+
+        const validLenders = lendersList.filter((lender: string) => {
+          const timestamp = timestampsObj[lender];
+          return timestamp && now - timestamp < expiryTime;
+        });
+
+        if (validLenders.length !== lendersList.length) {
+          localStorage.setItem("co_applied_lenders", JSON.stringify(validLenders));
+          const newTimestamps: Record<string, number> = {};
+          validLenders.forEach((lender: string) => {
+            newTimestamps[lender] = timestampsObj[lender];
+          });
+          localStorage.setItem("co_applied_lenders_timestamp", JSON.stringify(newTimestamps));
+        }
+        setAppliedLenders(validLenders);
+      } catch (e) {}
+    } else if (savedLenders) {
+      try {
+        setAppliedLenders(JSON.parse(savedLenders));
+      } catch (e) {}
+    }
+
     const fetchLenders = async () => {
       try {
         const { data } = await api.get("/api/lenders");
@@ -101,7 +134,7 @@ export default function PersonalLoansPage() {
           const mapped = data.map((l: any) => ({
             provider: l.name,
             logo: l.logo,
-            applyLink: l.applyLink || `/LenderAPI/${l._id}`,
+            applyLink: l.applyLink || l.UTM || `/LenderAPI/${l._id}`,
             features: l.features || [],
             ratings: l.ratings || 4.0,
             support: l.support || "24/7 customer support",
@@ -122,6 +155,56 @@ export default function PersonalLoansPage() {
 
   const toggleFeatures = (idx: number) => {
     setOpenFeatures(openFeatures === idx ? null : idx);
+  };
+
+  const decorateUrl = (baseUrl: string) => {
+    if (!baseUrl) return "#";
+    const phone = Cookies.get("co_phone") || localStorage.getItem("co_phone") || "";
+    const pincode = localStorage.getItem("co_pincode") || "";
+    const salary = localStorage.getItem("co_income") || "";
+
+    try {
+      const absoluteUrl = baseUrl.startsWith("/") 
+        ? `${window.location.origin}${baseUrl}` 
+        : (baseUrl.startsWith("http") ? baseUrl : `https://${baseUrl}`);
+
+      const urlObj = new URL(absoluteUrl);
+      if (phone) {
+        urlObj.searchParams.set("phone", String(phone));
+        urlObj.searchParams.set("mobile", String(phone));
+      }
+      if (pincode) urlObj.searchParams.set("pincode", String(pincode));
+      if (salary) urlObj.searchParams.set("salary", String(salary));
+      return urlObj.toString();
+    } catch (e) {
+      const separator = baseUrl.includes("?") ? "&" : "?";
+      let params = [];
+      if (phone) {
+        params.push(`phone=${phone}`);
+        params.push(`mobile=${phone}`);
+      }
+      if (pincode) params.push(`pincode=${pincode}`);
+      if (salary) params.push(`salary=${salary}`);
+      return params.length > 0 ? `${baseUrl}${separator}${params.join("&")}` : baseUrl;
+    }
+  };
+
+  const handleApply = (providerName: string, applyLink: string) => {
+    const now = Date.now();
+    const saved = localStorage.getItem("co_applied_lenders_timestamp") || "{}";
+    let timestampsObj: Record<string, number> = {};
+    try {
+      timestampsObj = JSON.parse(saved);
+    } catch (e) {}
+    timestampsObj[providerName] = now;
+    localStorage.setItem("co_applied_lenders_timestamp", JSON.stringify(timestampsObj));
+
+    const updated = [...new Set([...appliedLenders, providerName])];
+    setAppliedLenders(updated);
+    localStorage.setItem("co_applied_lenders", JSON.stringify(updated));
+
+    const decoratedUrl = decorateUrl(applyLink);
+    window.location.href = decoratedUrl;
   };
 
   return (
@@ -157,7 +240,7 @@ export default function PersonalLoansPage() {
           </motion.p>
         </div>
       </section>
-
+ 
       {/* LIGHT BODY SECTION */}
       <section className="py-16 px-4 w-full max-w-5xl mx-auto">
         <div className="space-y-8 mt-[-80px] relative z-20">
@@ -193,12 +276,27 @@ export default function PersonalLoansPage() {
                   </div>
                 </div>
                 
-                <Link href={card.applyLink} className="w-full md:w-auto">
-                  <button className="w-full md:w-auto bg-[#FF7819] hover:bg-[#e66a15] text-white font-bold py-3 px-10 rounded-2xl shadow-lg shadow-[#FF7819]/30 transition-all active:scale-95">
+                <div className="flex flex-col items-end gap-2 w-full md:w-auto">
+                  {appliedLenders.includes(card.provider) && (
+                    <span className="text-[10px] font-bold text-green-700 bg-green-50 px-3 py-1 rounded-full border border-green-200 uppercase tracking-wider">
+                      ✓ Applied (In-Progress)
+                    </span>
+                  )}
+                  <button 
+                    onClick={() => handleApply(card.provider, card.applyLink)}
+                    className="w-full md:w-auto bg-[#FF7819] hover:bg-[#e66a15] text-white font-bold py-3 px-10 rounded-2xl shadow-lg shadow-[#FF7819]/30 transition-all active:scale-95 flex items-center justify-center animate-pulse"
+                  >
                     Apply Now
                   </button>
-                </Link>
+                </div>
               </div>
+
+              {/* Highlight prompt for remaining lenders */}
+              {appliedLenders.length > 0 && !appliedLenders.includes(card.provider) && (
+                <div className="mt-4 p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 font-bold flex items-center gap-2">
+                  💡 Tip: Apply to {card.provider} too to increase your approval chances by 80%!
+                </div>
+              )}
 
               {/* Details Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mt-8 p-5 bg-[#F9FAFB] rounded-2xl border border-gray-100">
