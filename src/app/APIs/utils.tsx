@@ -14,7 +14,7 @@ export const sendOtp = async (phone: string): Promise<any> => {
     throw error;
   }
 };
-
+// kk
 export const verifyOtp = async (phone: string, otp: string): Promise<any> => {
   try {
     const { data } = await api.post("/api/user/verify-otp", { phone, otp });
